@@ -1,5 +1,0 @@
-# Manual fixes for configs that don't follow generic naming
-# (Placeholder for future expansion)
-skr_mini_e3_v2:
-  stepper_x:
-    dir_pin: "!PB4"
