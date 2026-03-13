@@ -5,6 +5,11 @@ KACE is a Python-based automation tool designed to eliminate the manual complexi
 ## Quick Start (via SSH)
 
 If you have Git installed on your Klipper host, you can run KACE directly:
+If you don´t, or just don´t now, you can intall it here:
+
+```
+sudo apt-get update && sudo apt-get install git -y
+```
 
 ```bash
 # 1. Clone the repository
