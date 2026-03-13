@@ -1,7 +1,6 @@
 import urllib.request
 import json
-import configparser
-import io
+import re
 
 def fetch_config_list():
     """Fetches the list of generic and printer configs from Klipper GitHub."""
@@ -27,21 +26,30 @@ def fetch_raw_config(filename):
 def parse_config(raw_cfg):
     """
     Parses the raw Klipper config. 
-    Klipper configs often have inline comments without a space, or multiple same-named sections.
-    We use configparser with strict=False to extract stepper, heater, and fan pins.
+    Extracts pins even from commented-out sections (like #[tmc2208 stepper_x]).
     """
-    config = configparser.ConfigParser(allow_no_value=True, strict=False, inline_comment_prefixes=('#', ';'))
-    try:
-        config.read_string(raw_cfg)
-    except configparser.Error:
-        pass
-    
     data = {}
-    for section in config.sections():
-        data[section] = {}
-        for key, val in config.items(section):
-            # Clean up inline comments from values if any slipped through
-            if val and '#' in val:
-                val = val.split('#')[0].strip()
-            data[section][key] = val
+    current_section = None
+    for line in raw_cfg.split('
+'):
+        line = line.strip()
+        
+        # Match section headers like [stepper_x] or #[tmc2208 stepper_x]
+        section_match = re.match(r'^#?s*[(.*?)]', line)
+        if section_match:
+            current_section = section_match.group(1)
+            if current_section not in data:
+                data[current_section] = {}
+            continue
+        
+        if current_section:
+            # Match key-value pairs like step_pin: P2.2 or #uart_pin: P1.10
+            kv_match = re.match(r'^#?s*([a-zA-Z0-9_]+)s*:s*(.*)', line)
+            if kv_match:
+                key = kv_match.group(1)
+                val = kv_match.group(2)
+                # Clean up inline comments
+                if '#' in val:
+                    val = val.split('#')[0].strip()
+                data[current_section][key] = val
     return data

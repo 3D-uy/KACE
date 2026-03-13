@@ -49,7 +49,7 @@ def main():
             except KeyboardInterrupt:
                 print("\nServer stopped.")
     else:
-        print("\n\033[92mSUCCESS:\033[0m printer.cfg generated successfully in the current directory!")
+        print(f"\n\033[92mSUCCESS:\033[0m printer.cfg generated successfully at \033[93m{os.path.abspath('printer.cfg')}\033[0m")
 
 if __name__ == "__main__":
     main()
