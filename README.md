@@ -3,6 +3,8 @@
 ![Klipper](https://img.shields.io/badge/Klipper-Automation-orange?style=for-the-badge&logo=klipper)
 ![Python](https://img.shields.io/badge/Python-3.9+-blue?style=for-the-badge&logo=python)
 
+[Español (ES)](README_ES.md) | [Português (BR)](README_BR.md)
+
 KACE is a high-performance automation tool designed to eliminate the manual complexity of creating a `printer.cfg`. It bridges the gap between raw hardware and a perfectly tuned Klipper installation.
 
 ---
@@ -16,13 +18,10 @@ Run KACE directly on your Klipper host with these optimized commands:
 git clone https://github.com/3D-uy/KACE.git
 cd KACE
 
-# 2. Enter the code directory
-cd KACE 
-
-# 3. Install dependencies (with modern OS bypass)
+# 2. Install dependencies (with modern OS bypass)
 pip3 install -r requirements.txt --break-system-packages
 
-# 4. Launch the Ecosystem
+# 3. Launch the Ecosystem
 python3 main.py
 ```
 
