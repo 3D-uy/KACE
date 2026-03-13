@@ -11,17 +11,27 @@ KACE é uma ferramenta de automação de alto desempenho projetada para eliminar
 
 ## ⚡ Início Rápido (via SSH)
 
+Para baixar este script, é necessário ter o git instalado.
+Se você não o tiver instalado ou não tiver certeza, execute o seguinte comando:
+
+```
+sudo apt-get update && sudo apt-get install git -y
+```
+
 Execute o KACE diretamente no seu host Klipper com estes comandos otimizados:
 
-```bash
+
 # 1. Clonar o repositório
+```
 git clone https://github.com/3D-uy/KACE.git
 cd KACE
-
+```
 # 2. Instalar dependências (com bypass para SO modernos)
+```
 pip3 install -r requirements.txt --break-system-packages
-
+```
 # 3. Iniciar o Ecossistema
+```
 python3 main.py
 ```
 
