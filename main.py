@@ -7,11 +7,12 @@ from core.deployer import deploy_config
 
 def print_header():
     print("\033[94m" + "="*60 + "\033[0m")
-    print("\033[92m" + "   _  __  ___   _____  ______" + "\033[0m")
-    print("\033[92m" + "  / |/ / / _ | / ___/ / __  /" + "\033[0m")
-    print("\033[92m" + " /    / / __ |/ /__  / /___/ " + "\033[0m")
-    print("\033[92m" + "/_/|_/ /_/ |_|\___/ /_____/  " + "\033[0m")
-    print("\033[94m" + "  Klipper Automated Configuration Ecosystem" + "\033[0m")
+    print("\033[96m" + "    __ __  ___   ______  ______" + "\033[0m")
+    print("\033[96m" + "   / //_/ /   | / ____/ / ____/" + "\033[0m")
+    print("\033[92m" + "  / ,<   / /| |/ /     / __/   " + "\033[0m")
+    print("\033[92m" + " / /| | / ___ / /___  / /___   " + "\033[0m")
+    print("\033[93m" + "/_/ |_|/_/  |_\____/ /_____/   " + "\033[0m")
+    print("\033[97m\033[1m" + "  Klipper Automated Configuration Ecosystem" + "\033[0m")
     print("\033[94m" + "="*60 + "\033[0m")
 
 def main():
@@ -30,11 +31,25 @@ def main():
     generate_config(parsed_data, user_data)
     
     # SSH Deployment
-    if user_data.get('deploy_ssh'):
+    if user_data.get('deploy_choice') == "Deploy to Klipper host via SSH":
         print("\033[96m[3/3]\033[0m Deploying to Klipper host via SSH...")
         deploy_config(user_data)
-    else:
+    elif user_data.get('deploy_choice') == "Start a temporary web server to download to PC":
         print("\n\033[92mSUCCESS:\033[0m printer.cfg generated successfully!")
+        print("\033[96m[3/3]\033[0m Starting temporary web server...")
+        import http.server
+        import socketserver
+        PORT = 8080
+        Handler = http.server.SimpleHTTPRequestHandler
+        with socketserver.TCPServer(("", PORT), Handler) as httpd:
+            print(f"\033[93mDownload your file at: http://<raspberry-pi-ip>:{PORT}/printer.cfg\033[0m")
+            print("Press Ctrl+C to stop the server and exit.")
+            try:
+                httpd.serve_forever()
+            except KeyboardInterrupt:
+                print("\nServer stopped.")
+    else:
+        print("\n\033[92mSUCCESS:\033[0m printer.cfg generated successfully in the current directory!")
 
 if __name__ == "__main__":
     main()

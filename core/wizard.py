@@ -73,9 +73,18 @@ def run_wizard():
             style=custom_style
         ).ask()
     
-    deploy_ssh = questionary.confirm("Deploy printer.cfg to Klipper host via SSH?", style=custom_style).ask()
+    deploy_choice = questionary.select(
+        "What would you like to do with the generated printer.cfg?",
+        choices=[
+            "Save locally (current directory)",
+            "Deploy to Klipper host via SSH",
+            "Start a temporary web server to download to PC"
+        ],
+        style=custom_style
+    ).ask()
+    
     ssh_data = {}
-    if deploy_ssh:
+    if deploy_choice == "Deploy to Klipper host via SSH":
         ssh_data['host'] = questionary.text("SSH Host (IP or hostname):", default="192.168.1.100", style=custom_style).ask()
         ssh_data['user'] = questionary.text("SSH Username:", default="pi", style=custom_style).ask()
         ssh_data['password'] = questionary.password("SSH Password:", style=custom_style).ask()
@@ -91,6 +100,6 @@ def run_wizard():
         "probe": probe,
         "driver_type": driver_type,
         "driver_mode": driver_mode,
-        "deploy_ssh": deploy_ssh,
+        "deploy_choice": deploy_choice,
         **ssh_data
     }
