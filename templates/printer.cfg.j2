@@ -143,9 +143,9 @@ position_max: {{ user.z_size }}
 {{ prefix }}run_current: 0.650
 {{ prefix }}hold_current: 0.400
 {{ prefix }}stealthchop_threshold: 999999
-{%- endif %}
+{% endif %}
 
-{%- if user.z_motors == '2' %}
+{% if user.z_motors == '2' %}
 
 [stepper_z1]
 {%- set z1_pins = pins.get('stepper_z1', pins.get('extruder_1', pins.get('extruder1', {}))) %}
@@ -188,14 +188,10 @@ rotation_distance: 8
 {{ prefix_z1 }}run_current: 0.650
 {{ prefix_z1 }}hold_current: 0.400
 {{ prefix_z1 }}stealthchop_threshold: 999999
-{%- endif %}
-{%- endif %}
+{% endif %}
+{% endif %}
 
-
-
-
-
-{%- if user.probe != 'None' %}
+{% if user.probe != 'None' %}
 [{{ user.probe | lower }}]
 {%- set probe_sec = pins.get('bltouch', pins.get('probe', {})) %}
 sensor_pin: {{ probe_sec.get('sensor_pin', '^TODO') }}

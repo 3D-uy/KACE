@@ -1,7 +1,16 @@
 import glob
+import re
 import questionary
 from questionary import Style
 from .scraper import fetch_config_list
+
+MCU_SUGGESTIONS = {
+    "lpc1769": ["BTT SKR 1.4", "BTT SKR 1.3"],
+    "stm32f103": ["Creality 4.2.2", "Creality 4.2.7", "BTT SKR Mini E3"],
+    "stm32f446": ["BTT Octopus", "BTT Octopus Pro"],
+    "rp2040": ["BTT SKR Pico"],
+    "atmega2560": ["RAMPS 1.4 / Arduino Mega"]
+}
 
 # Custom KIAUH-inspired style
 custom_style = Style([
@@ -34,6 +43,16 @@ def run_wizard():
     print("\033[95m>>> Starting Hardware Discovery...\033[0m")
     mcu_path = discover_mcu()
     
+    match = re.search(r'usb-Klipper_([a-zA-Z0-9]+)_', mcu_path)
+    if match:
+        mcu = match.group(1).lower()
+        print(f"\nDetected MCU: {mcu.upper()}\n")
+        if mcu in MCU_SUGGESTIONS:
+            print("Suggested boards based on this MCU:")
+            for b in MCU_SUGGESTIONS[mcu]:
+                print(f"- {b}")
+            print()
+            
     print("\033[95m>>> Fetching board database...\033[0m")
     boards = fetch_config_list()
     

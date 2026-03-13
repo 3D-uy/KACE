@@ -23,7 +23,7 @@ def fetch_raw_config(filename):
     with urllib.request.urlopen(req) as response:
         return response.read().decode()
 
-def parse_config(raw_cfg):
+def parse_config(raw_cfg, filename=""):
     """
     Parses the raw Klipper config. 
     Extracts pins even from commented-out sections (like #[tmc2208 stepper_x]).
@@ -52,4 +52,35 @@ def parse_config(raw_cfg):
                 if '#' in val:
                     val = val.split('#')[0].strip()
                 data[current_section][key] = val
+                
+    # Inject known BLTouch pins for popular boards if missing
+    if "bltouch" not in data:
+        data["bltouch"] = {}
+        
+    fname = filename.lower()
+    if "skr-v1.4" in fname:
+        if "sensor_pin" not in data["bltouch"]: data["bltouch"]["sensor_pin"] = "^P0.10"
+        if "control_pin" not in data["bltouch"]: data["bltouch"]["control_pin"] = "P2.0"
+    elif "skr-v1.3" in fname:
+        if "sensor_pin" not in data["bltouch"]: data["bltouch"]["sensor_pin"] = "^P1.27"
+        if "control_pin" not in data["bltouch"]: data["bltouch"]["control_pin"] = "P2.0"
+    elif "skr-mini-e3-v2.0" in fname:
+        if "sensor_pin" not in data["bltouch"]: data["bltouch"]["sensor_pin"] = "^PC14"
+        if "control_pin" not in data["bltouch"]: data["bltouch"]["control_pin"] = "PA1"
+    elif "skr-mini-e3-v3.0" in fname:
+        if "sensor_pin" not in data["bltouch"]: data["bltouch"]["sensor_pin"] = "^PC14"
+        if "control_pin" not in data["bltouch"]: data["bltouch"]["control_pin"] = "PA1"
+    elif "creality-v4.2.2" in fname or "creality-v4.2.7" in fname:
+        if "sensor_pin" not in data["bltouch"]: data["bltouch"]["sensor_pin"] = "^PB1"
+        if "control_pin" not in data["bltouch"]: data["bltouch"]["control_pin"] = "PB0"
+    elif "mks-gen-l" in fname:
+        if "sensor_pin" not in data["bltouch"]: data["bltouch"]["sensor_pin"] = "^D18"
+        if "control_pin" not in data["bltouch"]: data["bltouch"]["control_pin"] = "D11"
+    elif "mks-sgen-l" in fname:
+        if "sensor_pin" not in data["bltouch"]: data["bltouch"]["sensor_pin"] = "^P1.27"
+        if "control_pin" not in data["bltouch"]: data["bltouch"]["control_pin"] = "P2.0"
+    elif "mks-robin-nano" in fname:
+        if "sensor_pin" not in data["bltouch"]: data["bltouch"]["sensor_pin"] = "^PA11"
+        if "control_pin" not in data["bltouch"]: data["bltouch"]["control_pin"] = "PA8"
+        
     return data

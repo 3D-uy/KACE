@@ -24,7 +24,7 @@ def main():
     # Milestone 1: The Scraper
     print(f"\n\033[96m[1/3]\033[0m Fetching configuration for \033[93m{user_data['board']}\033[0m...")
     raw_cfg = fetch_raw_config(user_data['board'])
-    parsed_data = parse_config(raw_cfg)
+    parsed_data = parse_config(raw_cfg, user_data['board'])
     
     # Milestone 2: The Template Generator
     print("\033[96m[2/3]\033[0m Generating printer.cfg...")
