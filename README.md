@@ -31,7 +31,6 @@ pip3 install -r requirements.txt --break-system-packages
 ```
 # 3. Launch the Ecosystem
 ```bash
-clear
 python3 KACE.py
 ```
 

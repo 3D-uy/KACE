@@ -5,10 +5,19 @@
 [include mainsail.cfg]
 
 [mcu]
+# Serial connection to the printer controller board.
+# This value is automatically detected by KACE.
+# If the printer cannot connect, verify the path in /dev/serial/by-id/.
 serial: {{ user.mcu_path }}
 
 [printer]
+# Printer kinematics type.
+# Common values:
+# cartesian
+# corexy
+# delta
 kinematics: {{ user.kinematics }}
+# Maximum movement speeds and accelerations.
 max_velocity: 300
 max_accel: 3000
 max_z_velocity: 5
@@ -16,12 +25,20 @@ max_z_accel: 100
 
 [stepper_x]
 {%- if 'stepper_x' in pins %}
+# Step pin for the X stepper driver.
 step_pin: {{ pins['stepper_x'].get('step_pin', 'TODO') }}
+# Direction pin.
+# If the motor moves in the wrong direction,
+# add or remove "!" before the pin.
 dir_pin: {{ pins['stepper_x'].get('dir_pin', 'TODO') }}
+# Enable pin for the stepper driver.
 enable_pin: {{ pins['stepper_x'].get('enable_pin', 'TODO') }}
 {%- endif %}
 microsteps: 16
 rotation_distance: 40
+# Endstop pin.
+# If the endstop logic is reversed,
+# add or remove "!" before the pin.
 endstop_pin: {{ pins['stepper_x'].get('endstop_pin', 'TODO') if 'stepper_x' in pins else 'TODO' }}
 position_endstop: 0
 position_max: {{ user.x_size }}
@@ -32,6 +49,7 @@ homing_speed: 50
 {%- set prefix = '' if has_pins else '# ' %}
 {{ prefix }}[{{ user.driver_type | lower }} stepper_x]
 {%- if user.driver_mode == 'UART' %}
+{{ prefix }}# UART communication pin
 {{ prefix }}uart_pin: {{ tmc.get('uart_pin', 'TODO') }}
 {%- if 'tx_pin' in tmc %}
 {{ prefix }}tx_pin: {{ tmc.get('tx_pin') }}
@@ -53,17 +71,27 @@ homing_speed: 50
 {%- endif %}
 {{ prefix }}run_current: 0.800
 {{ prefix }}hold_current: 0.400
+{{ prefix }}# If stealthchop_threshold = 0
+{{ prefix }}# the driver will use spreadCycle mode.
 {{ prefix }}stealthchop_threshold: 999999
 {%- endif %}
 
 [stepper_y]
 {%- if 'stepper_y' in pins %}
+# Step pin for the Y stepper driver.
 step_pin: {{ pins['stepper_y'].get('step_pin', 'TODO') }}
+# Direction pin.
+# If the motor moves in the wrong direction,
+# add or remove "!" before the pin.
 dir_pin: {{ pins['stepper_y'].get('dir_pin', 'TODO') }}
+# Enable pin for the stepper driver.
 enable_pin: {{ pins['stepper_y'].get('enable_pin', 'TODO') }}
 {%- endif %}
 microsteps: 16
 rotation_distance: 40
+# Endstop pin.
+# If the endstop logic is reversed,
+# add or remove "!" before the pin.
 endstop_pin: {{ pins['stepper_y'].get('endstop_pin', 'TODO') if 'stepper_y' in pins else 'TODO' }}
 position_endstop: 0
 position_max: {{ user.y_size }}
@@ -74,6 +102,7 @@ homing_speed: 50
 {%- set prefix = '' if has_pins else '# ' %}
 {{ prefix }}[{{ user.driver_type | lower }} stepper_y]
 {%- if user.driver_mode == 'UART' %}
+{{ prefix }}# UART communication pin
 {{ prefix }}uart_pin: {{ tmc.get('uart_pin', 'TODO') }}
 {%- if 'tx_pin' in tmc %}
 {{ prefix }}tx_pin: {{ tmc.get('tx_pin') }}
@@ -95,22 +124,35 @@ homing_speed: 50
 {%- endif %}
 {{ prefix }}run_current: 0.800
 {{ prefix }}hold_current: 0.400
+{{ prefix }}# If stealthchop_threshold = 0
+{{ prefix }}# the driver will use spreadCycle mode.
 {{ prefix }}stealthchop_threshold: 999999
 {%- endif %}
 
 [stepper_z]
 {%- if 'stepper_z' in pins %}
+# Step pin for the Z stepper driver.
 step_pin: {{ pins['stepper_z'].get('step_pin', 'TODO') }}
+# Direction pin.
+# If the motor moves in the wrong direction,
+# add or remove "!" before the pin.
 dir_pin: {{ pins['stepper_z'].get('dir_pin', 'TODO') }}
+# Enable pin for the stepper driver.
 enable_pin: {{ pins['stepper_z'].get('enable_pin', 'TODO') }}
 {%- endif %}
 microsteps: 16
 rotation_distance: 8
 {%- if user.probe != 'None' %}
+# Endstop pin.
+# If the endstop logic is reversed,
+# add or remove "!" before the pin.
 endstop_pin: probe:z_virtual_endstop
 # endstop_pin: {{ pins['stepper_z'].get('endstop_pin', 'TODO') if 'stepper_z' in pins else 'TODO' }}
 # position_endstop: 0
 {%- else %}
+# Endstop pin.
+# If the endstop logic is reversed,
+# add or remove "!" before the pin.
 endstop_pin: {{ pins['stepper_z'].get('endstop_pin', 'TODO') if 'stepper_z' in pins else 'TODO' }}
 position_endstop: 0
 {%- endif %}
@@ -121,6 +163,7 @@ position_max: {{ user.z_size }}
 {%- set prefix = '' if has_pins else '# ' %}
 {{ prefix }}[{{ user.driver_type | lower }} stepper_z]
 {%- if user.driver_mode == 'UART' %}
+{{ prefix }}# UART communication pin
 {{ prefix }}uart_pin: {{ tmc.get('uart_pin', 'TODO') }}
 {%- if 'tx_pin' in tmc %}
 {{ prefix }}tx_pin: {{ tmc.get('tx_pin') }}
@@ -142,6 +185,8 @@ position_max: {{ user.z_size }}
 {%- endif %}
 {{ prefix }}run_current: 0.650
 {{ prefix }}hold_current: 0.400
+{{ prefix }}# If stealthchop_threshold = 0
+{{ prefix }}# the driver will use spreadCycle mode.
 {{ prefix }}stealthchop_threshold: 999999
 {% endif %}
 
@@ -150,12 +195,22 @@ position_max: {{ user.z_size }}
 [stepper_z1]
 {%- set z1_pins = pins.get('stepper_z1', pins.get('extruder_1', pins.get('extruder1', {}))) %}
 {%- if z1_pins %}
+# Step pin for the Z1 stepper driver.
 step_pin: {{ z1_pins.get('step_pin', 'TODO') }}
+# Direction pin.
+# If the motor moves in the wrong direction,
+# add or remove "!" before the pin.
 dir_pin: {{ z1_pins.get('dir_pin', 'TODO') }}
+# Enable pin for the stepper driver.
 enable_pin: {{ z1_pins.get('enable_pin', 'TODO') }}
 {%- else %}
+# Step pin for the Z1 stepper driver.
 step_pin: TODO
+# Direction pin.
+# If the motor moves in the wrong direction,
+# add or remove "!" before the pin.
 dir_pin: TODO
+# Enable pin for the stepper driver.
 enable_pin: TODO
 {%- endif %}
 microsteps: 16
@@ -166,6 +221,7 @@ rotation_distance: 8
 {%- set prefix_z1 = '' if has_pins_z1 else '# ' %}
 {{ prefix_z1 }}[{{ user.driver_type | lower }} stepper_z1]
 {%- if user.driver_mode == 'UART' %}
+{{ prefix_z1 }}# UART communication pin
 {{ prefix_z1 }}uart_pin: {{ tmc_z1.get('uart_pin', 'TODO') }}
 {%- if 'tx_pin' in tmc_z1 %}
 {{ prefix_z1 }}tx_pin: {{ tmc_z1.get('tx_pin') }}
@@ -187,6 +243,8 @@ rotation_distance: 8
 {%- endif %}
 {{ prefix_z1 }}run_current: 0.650
 {{ prefix_z1 }}hold_current: 0.400
+{{ prefix_z1 }}# If stealthchop_threshold = 0
+{{ prefix_z1 }}# the driver will use spreadCycle mode.
 {{ prefix_z1 }}stealthchop_threshold: 999999
 {% endif %}
 {% endif %}
@@ -198,8 +256,12 @@ sensor_pin: {{ probe_sec.get('sensor_pin', '^TODO') }}
 {%- if user.probe | lower == 'bltouch' or 'control_pin' in probe_sec %}
 control_pin: {{ probe_sec.get('control_pin', 'TODO') }}
 {%- endif %}
+# Offsets relative to the nozzle.
+# These must be measured for your specific printer.
 x_offset: 0
 y_offset: 0
+# Z offset should be calibrated using:
+# PROBE_CALIBRATE
 z_offset: 0
 
 [safe_z_home]
@@ -234,6 +296,7 @@ max_temp: 250
 {%- set prefix = '' if has_pins else '# ' %}
 {{ prefix }}[{{ user.driver_type | lower }} extruder]
 {%- if user.driver_mode == 'UART' %}
+{{ prefix }}# UART communication pin
 {{ prefix }}uart_pin: {{ tmc.get('uart_pin', 'TODO') }}
 {%- if 'tx_pin' in tmc %}
 {{ prefix }}tx_pin: {{ tmc.get('tx_pin') }}
@@ -255,6 +318,8 @@ max_temp: 250
 {%- endif %}
 {{ prefix }}run_current: 0.650
 {{ prefix }}hold_current: 0.400
+{{ prefix }}# If stealthchop_threshold = 0
+{{ prefix }}# the driver will use spreadCycle mode.
 {{ prefix }}stealthchop_threshold: 999999
 {%- endif %}
 
