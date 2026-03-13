@@ -107,7 +107,7 @@ enable_pin: {{ pins['stepper_z'].get('enable_pin', 'TODO') }}
 microsteps: 16
 rotation_distance: 8
 {%- if user.probe != 'None' %}
-# endstop_pin: probe:z_virtual_endstop
+endstop_pin: probe:z_virtual_endstop
 # endstop_pin: {{ pins['stepper_z'].get('endstop_pin', 'TODO') if 'stepper_z' in pins else 'TODO' }}
 # position_endstop: 0
 {%- else %}
@@ -194,21 +194,21 @@ rotation_distance: 8
 
 
 {%- if user.probe != 'None' %}
-# [{{ user.probe | lower }}]
+[{{ user.probe | lower }}]
 {%- set probe_sec = pins.get('bltouch', pins.get('probe', {})) %}
-# sensor_pin: {{ probe_sec.get('sensor_pin', '^TODO') }}
+sensor_pin: {{ probe_sec.get('sensor_pin', '^TODO') }}
 {%- if user.probe | lower == 'bltouch' or 'control_pin' in probe_sec %}
-# control_pin: {{ probe_sec.get('control_pin', 'TODO') }}
+control_pin: {{ probe_sec.get('control_pin', 'TODO') }}
 {%- endif %}
-# x_offset: 0
-# y_offset: 0
-# z_offset: 0
+x_offset: 0
+y_offset: 0
+z_offset: 0
 
-# [safe_z_home]
-# home_xy_position: {{ user.x_size | int / 2 }}, {{ user.y_size | int / 2 }}
-# speed: 50
-# z_hop: 10
-# z_hop_speed: 5
+[safe_z_home]
+home_xy_position: {{ user.x_size | int / 2 }}, {{ user.y_size | int / 2 }}
+speed: 50
+z_hop: 10
+z_hop_speed: 5
 {%- endif %}
 
 [extruder]
@@ -266,7 +266,10 @@ heater_pin: {{ pins['heater_bed'].get('heater_pin', 'TODO') }}
 sensor_pin: {{ pins['heater_bed'].get('sensor_pin', 'TODO') }}
 {%- endif %}
 sensor_type: EPCOS 100K B57560G104F
-control: watermark
+control: pid
+pid_Kp: 54.027
+pid_Ki: 0.770
+pid_Kd: 948.182
 min_temp: 0
 max_temp: 130
 
