@@ -8,7 +8,7 @@ If you have Git installed on your Klipper host, you can run KACE directly:
 
 ```bash
 # 1. Clone the repository (replace with your repo URL if you upload it)
-git clone https://github.com/yourusername/kace.git
+git clone https://github.com/3D-uy/KACE.git
 cd kace
 
 # 2. Install dependencies
