@@ -34,7 +34,7 @@ def parse_config(raw_cfg):
         line = line.strip()
         
         # Match section headers like [stepper_x] or #[tmc2208 stepper_x]
-        section_match = re.match(r'^#?s*[(.*?)]', line)
+        section_match = re.match(r'^#?\s*\[(.*?)\]', line)
         if section_match:
             current_section = section_match.group(1)
             if current_section not in data:
@@ -43,7 +43,7 @@ def parse_config(raw_cfg):
         
         if current_section:
             # Match key-value pairs like step_pin: P2.2 or #uart_pin: P1.10
-            kv_match = re.match(r'^#?s*([a-zA-Z0-9_]+)s*:s*(.*)', line)
+            kv_match = re.match(r'^#?\s*([a-zA-Z0-9_]+)\s*:\s*(.*)', line)
             if kv_match:
                 key = kv_match.group(1)
                 val = kv_match.group(2)

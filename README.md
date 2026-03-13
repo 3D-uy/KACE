@@ -31,7 +31,7 @@ pip3 install -r requirements.txt --break-system-packages
 ```
 # 3. Launch the Ecosystem
 ```bash
-python3 main.py
+python3 KACE.py
 ```
 
 ---
@@ -51,7 +51,7 @@ python3 main.py
 
 1. **Download**: Click **"Download Project (.zip)"** in the KACE portal.
 2. **Upload**: Drag the `kace` folder to your Pi via MobaXterm SFTP.
-3. **Execute**: Run `python3 main.py` in the terminal.
+3. **Execute**: Run `python3 KACE.py` in the terminal.
 
 ---
 
