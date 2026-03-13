@@ -107,7 +107,7 @@ enable_pin: {{ pins['stepper_z'].get('enable_pin', 'TODO') }}
 microsteps: 16
 rotation_distance: 8
 {%- if user.probe != 'None' %}
-endstop_pin: probe:z_virtual_endstop
+# endstop_pin: probe:z_virtual_endstop
 # endstop_pin: {{ pins['stepper_z'].get('endstop_pin', 'TODO') if 'stepper_z' in pins else 'TODO' }}
 # position_endstop: 0
 {%- else %}
@@ -148,10 +148,11 @@ position_max: {{ user.z_size }}
 {%- if user.z_motors == '2' %}
 
 [stepper_z1]
-{%- if 'stepper_z1' in pins %}
-step_pin: {{ pins['stepper_z1'].get('step_pin', 'TODO') }}
-dir_pin: {{ pins['stepper_z1'].get('dir_pin', 'TODO') }}
-enable_pin: {{ pins['stepper_z1'].get('enable_pin', 'TODO') }}
+{%- set z1_pins = pins.get('stepper_z1', pins.get('extruder_1', pins.get('extruder1', {}))) %}
+{%- if z1_pins %}
+step_pin: {{ z1_pins.get('step_pin', 'TODO') }}
+dir_pin: {{ z1_pins.get('dir_pin', 'TODO') }}
+enable_pin: {{ z1_pins.get('enable_pin', 'TODO') }}
 {%- else %}
 step_pin: TODO
 dir_pin: TODO
@@ -160,7 +161,7 @@ enable_pin: TODO
 microsteps: 16
 rotation_distance: 8
 {% if user.driver_type != 'None (Standard)' and user.driver_type != 'A4988' and user.driver_mode != 'Standalone' %}
-{%- set tmc_z1 = pins.get('tmc2209 stepper_z1', pins.get('tmc2208 stepper_z1', pins.get('tmc2130 stepper_z1', pins.get('tmc5160 stepper_z1', {})))) %}
+{%- set tmc_z1 = pins.get('tmc2209 stepper_z1', pins.get('tmc2208 stepper_z1', pins.get('tmc2130 stepper_z1', pins.get('tmc5160 stepper_z1', pins.get('tmc2209 extruder_1', pins.get('tmc2208 extruder_1', pins.get('tmc2130 extruder_1', pins.get('tmc5160 extruder_1', pins.get('tmc2209 extruder1', pins.get('tmc2208 extruder1', pins.get('tmc2130 extruder1', pins.get('tmc5160 extruder1', {})))))))))))) %}
 {%- set has_pins_z1 = (user.driver_mode == 'UART' and 'uart_pin' in tmc_z1) or (user.driver_mode == 'SPI' and 'cs_pin' in tmc_z1) %}
 {%- set prefix_z1 = '' if has_pins_z1 else '# ' %}
 {{ prefix_z1 }}[{{ user.driver_type | lower }} stepper_z1]
@@ -189,6 +190,8 @@ rotation_distance: 8
 {{ prefix_z1 }}stealthchop_threshold: 999999
 {%- endif %}
 {%- endif %}
+
+
 
 {%- if user.probe != 'None' %}
 # [{{ user.probe | lower }}]
