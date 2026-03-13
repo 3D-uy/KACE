@@ -30,8 +30,7 @@ def parse_config(raw_cfg):
     """
     data = {}
     current_section = None
-    for line in raw_cfg.split('
-'):
+    for line in raw_cfg.split('\n'):
         line = line.strip()
         
         # Match section headers like [stepper_x] or #[tmc2208 stepper_x]
