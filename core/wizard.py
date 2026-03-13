@@ -64,6 +64,14 @@ def run_wizard():
         choices=["None (Standard)", "TMC2208", "TMC2209", "TMC2130", "A4988"],
         style=custom_style
     ).ask()
+
+    driver_mode = "Standalone"
+    if driver_type in ["TMC2208", "TMC2209", "TMC2130"]:
+        driver_mode = questionary.select(
+            f"Select {driver_type} Communication Mode:",
+            choices=["UART", "SPI", "Standalone"],
+            style=custom_style
+        ).ask()
     
     deploy_ssh = questionary.confirm("Deploy printer.cfg to Klipper host via SSH?", style=custom_style).ask()
     ssh_data = {}
@@ -82,6 +90,7 @@ def run_wizard():
         "z_size": z_size,
         "probe": probe,
         "driver_type": driver_type,
+        "driver_mode": driver_mode,
         "deploy_ssh": deploy_ssh,
         **ssh_data
     }

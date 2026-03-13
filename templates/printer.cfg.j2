@@ -2,6 +2,8 @@
 # Board: {{ user.board }}
 # Kinematics: {{ user.kinematics }}
 
+[include mainsail.cfg]
+
 [mcu]
 serial: {{ user.mcu_path }}
 
@@ -25,9 +27,16 @@ position_endstop: 0
 position_max: {{ user.x_size }}
 homing_speed: 50
 
-{% if user.driver_type != 'None (Standard)' and user.driver_type != 'A4988' %}
+{% if user.driver_type != 'None (Standard)' and user.driver_type != 'A4988' and user.driver_mode != 'Standalone' %}
 [{{ user.driver_type | lower }} stepper_x]
+{% if user.driver_mode == 'UART' %}
 uart_pin: TODO
+{% elif user.driver_mode == 'SPI' %}
+cs_pin: TODO
+spi_software_sclk_pin: TODO
+spi_software_mosi_pin: TODO
+spi_software_miso_pin: TODO
+{% endif %}
 run_current: 0.800
 stealthchop_threshold: 999999
 {% endif %}
@@ -45,9 +54,16 @@ position_endstop: 0
 position_max: {{ user.y_size }}
 homing_speed: 50
 
-{% if user.driver_type != 'None (Standard)' and user.driver_type != 'A4988' %}
+{% if user.driver_type != 'None (Standard)' and user.driver_type != 'A4988' and user.driver_mode != 'Standalone' %}
 [{{ user.driver_type | lower }} stepper_y]
+{% if user.driver_mode == 'UART' %}
 uart_pin: TODO
+{% elif user.driver_mode == 'SPI' %}
+cs_pin: TODO
+spi_software_sclk_pin: TODO
+spi_software_mosi_pin: TODO
+spi_software_miso_pin: TODO
+{% endif %}
 run_current: 0.800
 stealthchop_threshold: 999999
 {% endif %}
@@ -68,9 +84,16 @@ position_endstop: 0
 {% endif %}
 position_max: {{ user.z_size }}
 
-{% if user.driver_type != 'None (Standard)' and user.driver_type != 'A4988' %}
+{% if user.driver_type != 'None (Standard)' and user.driver_type != 'A4988' and user.driver_mode != 'Standalone' %}
 [{{ user.driver_type | lower }} stepper_z]
+{% if user.driver_mode == 'UART' %}
 uart_pin: TODO
+{% elif user.driver_mode == 'SPI' %}
+cs_pin: TODO
+spi_software_sclk_pin: TODO
+spi_software_mosi_pin: TODO
+spi_software_miso_pin: TODO
+{% endif %}
 run_current: 0.650
 stealthchop_threshold: 999999
 {% endif %}
@@ -110,9 +133,16 @@ pid_Kd: 114
 min_temp: 0
 max_temp: 250
 
-{% if user.driver_type != 'None (Standard)' and user.driver_type != 'A4988' %}
+{% if user.driver_type != 'None (Standard)' and user.driver_type != 'A4988' and user.driver_mode != 'Standalone' %}
 [{{ user.driver_type | lower }} extruder]
+{% if user.driver_mode == 'UART' %}
 uart_pin: TODO
+{% elif user.driver_mode == 'SPI' %}
+cs_pin: TODO
+spi_software_sclk_pin: TODO
+spi_software_mosi_pin: TODO
+spi_software_miso_pin: TODO
+{% endif %}
 run_current: 0.650
 stealthchop_threshold: 999999
 {% endif %}
