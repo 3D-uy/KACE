@@ -4,12 +4,12 @@ import questionary
 from questionary import Style
 from .scraper import fetch_config_list
 
-MCU_SUGGESTIONS = {
-    "lpc1769": ["BTT SKR 1.4", "BTT SKR 1.3"],
-    "stm32f103": ["Creality 4.2.2", "Creality 4.2.7", "BTT SKR Mini E3"],
-    "stm32f446": ["BTT Octopus", "BTT Octopus Pro"],
-    "rp2040": ["BTT SKR Pico"],
-    "atmega2560": ["RAMPS 1.4 / Arduino Mega"]
+MCU_SEARCH_TERMS = {
+    "lpc1769": ["skr-v1.4", "skr-v1.3", "sgen-l"],
+    "stm32f103": ["creality-v4.2.2", "creality-v4.2.7", "skr-mini-e3"],
+    "stm32f446": ["octopus", "spider"],
+    "rp2040": ["skr-pico"],
+    "atmega2560": ["ramps", "mega2560"]
 }
 
 # Custom KIAUH-inspired style
@@ -43,24 +43,40 @@ def run_wizard():
     print("\033[95m>>> Starting Hardware Discovery...\033[0m")
     mcu_path = discover_mcu()
     
+    print("\033[95m>>> Fetching board database...\033[0m")
+    boards = fetch_config_list()
+    
+    board = None
     match = re.search(r'usb-Klipper_([a-zA-Z0-9]+)_', mcu_path)
     if match:
         mcu = match.group(1).lower()
         print(f"\nDetected MCU: {mcu.upper()}\n")
-        if mcu in MCU_SUGGESTIONS:
-            print("Suggested boards based on this MCU:")
-            for b in MCU_SUGGESTIONS[mcu]:
-                print(f"- {b}")
-            print()
+        if mcu in MCU_SEARCH_TERMS:
+            search_terms = MCU_SEARCH_TERMS[mcu]
+            suggested_configs = []
+            for b in boards:
+                if any(term in b.lower() for term in search_terms):
+                    suggested_configs.append(b)
             
-    print("\033[95m>>> Fetching board database...\033[0m")
-    boards = fetch_config_list()
-    
-    board = questionary.autocomplete(
-        "Select your board (type to search):",
-        choices=boards,
-        style=custom_style
-    ).ask()
+            if suggested_configs:
+                choices = suggested_configs + ["Search manually..."]
+                choice = questionary.select(
+                    "Suggested boards based on your MCU:",
+                    choices=choices,
+                    style=custom_style
+                ).ask()
+                
+                if choice != "Search manually...":
+                    board = choice
+            else:
+                print("No exact config matches found for suggestions. Please search manually.\n")
+                
+    if not board:
+        board = questionary.autocomplete(
+            "Select your board (type to search):",
+            choices=boards,
+            style=custom_style
+        ).ask()
     
     kinematics = questionary.select(
         "Select Kinematics:",
