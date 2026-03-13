@@ -11,8 +11,8 @@ KACE es una herramienta de automatización de alto rendimiento diseñada para el
 
 ## ⚡ Inicio Rápido (vía SSH)
 
-Para descargar este script, es necesario tener **git** instalado.
-Si no lo tiene instalado o no está seguro, ejecute el siguiente comando:
+Para descargar este script es necesario tener **git** instalado.  
+Si no lo tienes instalado o no estás seguro, ejecuta el siguiente comando:
 
 ```bash
 sudo apt-get update && sudo apt-get install git -y
@@ -20,15 +20,17 @@ sudo apt-get update && sudo apt-get install git -y
 
 Ejecuta KACE directamente en tu host Klipper con estos comandos optimizados:
 
-```bash
 # 1. Clonar el repositorio
+```bash
 git clone https://github.com/3D-uy/KACE.git
 cd KACE
-
+```
 # 2. Instalar dependencias (con bypass para SO modernos)
+```bash
 pip3 install -r requirements.txt --break-system-packages
-
+```
 # 3. Iniciar el Ecosistema
+```bash
 python3 main.py
 ```
 

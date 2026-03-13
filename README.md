@@ -11,7 +11,7 @@ KACE is a high-performance automation tool designed to eliminate the manual comp
 
 ## ⚡ Quick Start (via SSH)
 
-To download this script, it is necessary to have **git** installed.
+To download this script, it is necessary to have **git** installed.  
 If you do not have it installed or are not sure, run the following command:
 
 ```bash
@@ -20,15 +20,17 @@ sudo apt-get update && sudo apt-get install git -y
 
 Run KACE directly on your Klipper host with these optimized commands:
 
-```bash
 # 1. Clone the repository
+```bash
 git clone https://github.com/3D-uy/KACE.git
 cd KACE
-
+```
 # 2. Install dependencies (with modern OS bypass)
+```bash
 pip3 install -r requirements.txt --break-system-packages
-
+```
 # 3. Launch the Ecosystem
+```bash
 python3 main.py
 ```
 

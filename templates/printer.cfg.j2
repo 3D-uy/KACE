@@ -29,13 +29,26 @@ homing_speed: 50
 
 {% if user.driver_type != 'None (Standard)' and user.driver_type != 'A4988' and user.driver_mode != 'Standalone' %}
 [{{ user.driver_type | lower }} stepper_x]
+{% set tmc = pins.get('tmc2209 stepper_x', pins.get('tmc2208 stepper_x', pins.get('tmc2130 stepper_x', pins.get('tmc5160 stepper_x', {})))) %}
 {% if user.driver_mode == 'UART' %}
-uart_pin: TODO
+uart_pin: {{ tmc.get('uart_pin', 'TODO') }}
+{% if 'tx_pin' in tmc %}
+tx_pin: {{ tmc.get('tx_pin') }}
+{% endif %}
 {% elif user.driver_mode == 'SPI' %}
-cs_pin: TODO
-spi_software_sclk_pin: TODO
-spi_software_mosi_pin: TODO
-spi_software_miso_pin: TODO
+cs_pin: {{ tmc.get('cs_pin', 'TODO') }}
+{% if 'spi_software_sclk_pin' in tmc %}
+spi_software_sclk_pin: {{ tmc.get('spi_software_sclk_pin') }}
+{% endif %}
+{% if 'spi_software_mosi_pin' in tmc %}
+spi_software_mosi_pin: {{ tmc.get('spi_software_mosi_pin') }}
+{% endif %}
+{% if 'spi_software_miso_pin' in tmc %}
+spi_software_miso_pin: {{ tmc.get('spi_software_miso_pin') }}
+{% endif %}
+{% if 'spi_bus' in tmc %}
+spi_bus: {{ tmc.get('spi_bus') }}
+{% endif %}
 {% endif %}
 run_current: 0.800
 stealthchop_threshold: 999999
@@ -56,13 +69,26 @@ homing_speed: 50
 
 {% if user.driver_type != 'None (Standard)' and user.driver_type != 'A4988' and user.driver_mode != 'Standalone' %}
 [{{ user.driver_type | lower }} stepper_y]
+{% set tmc = pins.get('tmc2209 stepper_y', pins.get('tmc2208 stepper_y', pins.get('tmc2130 stepper_y', pins.get('tmc5160 stepper_y', {})))) %}
 {% if user.driver_mode == 'UART' %}
-uart_pin: TODO
+uart_pin: {{ tmc.get('uart_pin', 'TODO') }}
+{% if 'tx_pin' in tmc %}
+tx_pin: {{ tmc.get('tx_pin') }}
+{% endif %}
 {% elif user.driver_mode == 'SPI' %}
-cs_pin: TODO
-spi_software_sclk_pin: TODO
-spi_software_mosi_pin: TODO
-spi_software_miso_pin: TODO
+cs_pin: {{ tmc.get('cs_pin', 'TODO') }}
+{% if 'spi_software_sclk_pin' in tmc %}
+spi_software_sclk_pin: {{ tmc.get('spi_software_sclk_pin') }}
+{% endif %}
+{% if 'spi_software_mosi_pin' in tmc %}
+spi_software_mosi_pin: {{ tmc.get('spi_software_mosi_pin') }}
+{% endif %}
+{% if 'spi_software_miso_pin' in tmc %}
+spi_software_miso_pin: {{ tmc.get('spi_software_miso_pin') }}
+{% endif %}
+{% if 'spi_bus' in tmc %}
+spi_bus: {{ tmc.get('spi_bus') }}
+{% endif %}
 {% endif %}
 run_current: 0.800
 stealthchop_threshold: 999999
@@ -86,13 +112,26 @@ position_max: {{ user.z_size }}
 
 {% if user.driver_type != 'None (Standard)' and user.driver_type != 'A4988' and user.driver_mode != 'Standalone' %}
 [{{ user.driver_type | lower }} stepper_z]
+{% set tmc = pins.get('tmc2209 stepper_z', pins.get('tmc2208 stepper_z', pins.get('tmc2130 stepper_z', pins.get('tmc5160 stepper_z', {})))) %}
 {% if user.driver_mode == 'UART' %}
-uart_pin: TODO
+uart_pin: {{ tmc.get('uart_pin', 'TODO') }}
+{% if 'tx_pin' in tmc %}
+tx_pin: {{ tmc.get('tx_pin') }}
+{% endif %}
 {% elif user.driver_mode == 'SPI' %}
-cs_pin: TODO
-spi_software_sclk_pin: TODO
-spi_software_mosi_pin: TODO
-spi_software_miso_pin: TODO
+cs_pin: {{ tmc.get('cs_pin', 'TODO') }}
+{% if 'spi_software_sclk_pin' in tmc %}
+spi_software_sclk_pin: {{ tmc.get('spi_software_sclk_pin') }}
+{% endif %}
+{% if 'spi_software_mosi_pin' in tmc %}
+spi_software_mosi_pin: {{ tmc.get('spi_software_mosi_pin') }}
+{% endif %}
+{% if 'spi_software_miso_pin' in tmc %}
+spi_software_miso_pin: {{ tmc.get('spi_software_miso_pin') }}
+{% endif %}
+{% if 'spi_bus' in tmc %}
+spi_bus: {{ tmc.get('spi_bus') }}
+{% endif %}
 {% endif %}
 run_current: 0.650
 stealthchop_threshold: 999999
@@ -100,8 +139,11 @@ stealthchop_threshold: 999999
 
 {% if user.probe != 'None' %}
 [{{ user.probe | lower }}]
-sensor_pin: ^TODO
-control_pin: TODO
+{% set probe_sec = pins.get('bltouch', pins.get('probe', {})) %}
+sensor_pin: {{ probe_sec.get('sensor_pin', '^TODO') }}
+{% if user.probe | lower == 'bltouch' or 'control_pin' in probe_sec %}
+control_pin: {{ probe_sec.get('control_pin', 'TODO') }}
+{% endif %}
 x_offset: 0
 y_offset: 0
 z_offset: 0
@@ -135,13 +177,26 @@ max_temp: 250
 
 {% if user.driver_type != 'None (Standard)' and user.driver_type != 'A4988' and user.driver_mode != 'Standalone' %}
 [{{ user.driver_type | lower }} extruder]
+{% set tmc = pins.get('tmc2209 extruder', pins.get('tmc2208 extruder', pins.get('tmc2130 extruder', pins.get('tmc5160 extruder', {})))) %}
 {% if user.driver_mode == 'UART' %}
-uart_pin: TODO
+uart_pin: {{ tmc.get('uart_pin', 'TODO') }}
+{% if 'tx_pin' in tmc %}
+tx_pin: {{ tmc.get('tx_pin') }}
+{% endif %}
 {% elif user.driver_mode == 'SPI' %}
-cs_pin: TODO
-spi_software_sclk_pin: TODO
-spi_software_mosi_pin: TODO
-spi_software_miso_pin: TODO
+cs_pin: {{ tmc.get('cs_pin', 'TODO') }}
+{% if 'spi_software_sclk_pin' in tmc %}
+spi_software_sclk_pin: {{ tmc.get('spi_software_sclk_pin') }}
+{% endif %}
+{% if 'spi_software_mosi_pin' in tmc %}
+spi_software_mosi_pin: {{ tmc.get('spi_software_mosi_pin') }}
+{% endif %}
+{% if 'spi_software_miso_pin' in tmc %}
+spi_software_miso_pin: {{ tmc.get('spi_software_miso_pin') }}
+{% endif %}
+{% if 'spi_bus' in tmc %}
+spi_bus: {{ tmc.get('spi_bus') }}
+{% endif %}
 {% endif %}
 run_current: 0.650
 stealthchop_threshold: 999999
