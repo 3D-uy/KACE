@@ -73,6 +73,12 @@ def run_wizard():
             style=custom_style
         ).ask()
     
+    z_motors = questionary.select(
+        "How many Z motors are you using?",
+        choices=["1", "2"],
+        style=custom_style
+    ).ask()
+    
     deploy_choice = questionary.select(
         "What would you like to do with the generated printer.cfg?",
         choices=[
@@ -97,6 +103,7 @@ def run_wizard():
         "x_size": x_size,
         "y_size": y_size,
         "z_size": z_size,
+        "z_motors": z_motors,
         "probe": probe,
         "driver_type": driver_type,
         "driver_mode": driver_mode,
