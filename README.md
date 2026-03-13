@@ -11,14 +11,16 @@ If you don´t, or just don´t now, you can intall it here:
 sudo apt-get update && sudo apt-get install git -y
 ```
 
-```bash
+```
 # 1. Clone the repository
 git clone https://github.com/3D-uy/KACE.git
 cd KACE
-
+```
+```
 # 2. Install dependencies
 pip install -r requirements.txt
-
+```
+```
 # 3. Run the wizard
 python main.py
 ```
