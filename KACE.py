@@ -3,6 +3,7 @@ import sys
 import time
 import shutil
 import subprocess
+import questionary
 from core.scraper import fetch_config_list, fetch_raw_config, parse_config
 from core.wizard import run_wizard
 from core.generator import generate_config
@@ -44,7 +45,13 @@ def deploy_local(config_path):
         
         shutil.copy2("printer.cfg", target)
         print(f"\033[92m>>> Configuration deployed to {target}\033[0m")
-        print("\033[93m>>> Manual restart required in your web interface.\033[0m")
+        
+        if questionary.confirm("Would you like to restart Klipper now?", default=True).ask():
+            print("\033[96m>>> Restarting Klipper...\033[0m")
+            subprocess.run(["sudo", "systemctl", "restart", "klipper"], check=False)
+            print("\033[92m>>> Klipper restart command sent!\033[0m")
+        else:
+            print("\033[93m>>> Manual restart required in your web interface.\033[0m")
     except Exception as e:
         print(f"\033[91mERROR during local deployment: {e}\033[0m")
 
@@ -60,7 +67,6 @@ def deploy_ssh(deploy_data):
         try:
             ssh.connect(deploy_data['host'], username=deploy_data['user'], timeout=10)
         except paramiko.AuthenticationException:
-            import questionary
             password = questionary.password(f"Enter SSH password for {deploy_data['user']}:").ask()
             ssh.connect(deploy_data['host'], username=deploy_data['user'], password=password)
 
@@ -70,8 +76,16 @@ def deploy_ssh(deploy_data):
         print("\033[96m>>> Uploading printer.cfg...\033[0m")
         sftp.put("printer.cfg", remote_path)
         sftp.close()
+        
+        if questionary.confirm("Would you like to restart Klipper now?", default=True).ask():
+            print("\033[96m>>> Restarting Klipper...\033[0m")
+            ssh.exec_command("sudo systemctl restart klipper")
+            print("\033[92m>>> Klipper restart command sent!\033[0m")
+        else:
+            print("\033[93m>>> Manual restart required in your web interface.\033[0m")
+            
         ssh.close()
-        print("\033[92m>>> Deployment successful! Manual restart required in your web interface.\033[0m")
+        print("\033[92m>>> Deployment successful!\033[0m")
     except ImportError:
         print("\033[91mERROR: 'paramiko' library not found. Install it with: pip install paramiko\033[0m")
     except Exception as e:
