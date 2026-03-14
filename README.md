@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/kace_banner2.png" width="500">
+  <img src="assets/kace_banner2.png" width="800">
 </p>
 
 # 🚀 KACE: Klipper Automated Configuration Ecosystem
