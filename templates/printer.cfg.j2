@@ -304,7 +304,7 @@ max_temp: 130 # Maximum safe temperature
 # --------------------------------------------------
 {%- if 'board_pins' in pins %}
 [board_pins]
-aliases: {{ pins['board_pins'].get('aliases', '\n    EXP1_1=TODO, EXP1_2=TODO') }} # Define aliases for board pins (e.g., EXP1 and EXP2 headers)
+aliases: {{ pins['board_pins'].get('aliases', '\\n    EXP1_1=TODO, EXP1_2=TODO') }} # Define aliases for board pins (e.g., EXP1 and EXP2 headers)
 {%- else %}
 # [board_pins]
 # aliases:
