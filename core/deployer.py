@@ -27,7 +27,5 @@ def deploy_config(user_data):
         
         sftp.close()
         ssh.close()
-        print("\033[92mDeployment successful!\033[0m")
-        print("\033[93mPlease restart Klipper via your web interface to apply the new configuration.\033[0m")
     except Exception as e:
         print(f"\033[91mDeployment failed: {e}\033[0m")

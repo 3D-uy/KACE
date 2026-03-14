@@ -119,6 +119,7 @@ def run_wizard():
         "What would you like to do with the generated printer.cfg?",
         choices=[
             "Save locally (current directory)",
+            "Copy to Klipper config directory (~/printer_data/config/)",
             "Deploy to Klipper host via SSH",
             "Start a temporary web server to download to PC"
         ],

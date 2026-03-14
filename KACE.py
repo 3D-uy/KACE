@@ -37,6 +37,18 @@ def main():
         print("\033[91m[3/3]\033[0m Deploying to Klipper host via SSH...")
         deploy_config(user_data)
         print("\033[92m[3/3]\033[0m Deploying to Klipper host via SSH... Done!")
+        print("\033[92mDeployment successful!\033[0m")
+        print("\033[93mPlease restart Klipper via your web interface to apply the new configuration.\033[0m")
+    elif user_data.get('deploy_choice') == "Copy to Klipper config directory (~/printer_data/config/)":
+        print("\033[91m[3/3]\033[0m Copying to Klipper config directory...")
+        import shutil
+        dest = os.path.expanduser("~/printer_data/config/printer.cfg")
+        os.makedirs(os.path.dirname(dest), exist_ok=True)
+        shutil.copy("printer.cfg", dest)
+        print(f"Copied printer.cfg to {dest}...")
+        print("\033[92m[3/3]\033[0m Copying to Klipper config directory... Done!")
+        print("\033[92mDeployment successful!\033[0m")
+        print("\033[93mPlease restart Klipper via your web interface to apply the new configuration.\033[0m")
     elif user_data.get('deploy_choice') == "Start a temporary web server to download to PC":
         print("\n\033[92mSUCCESS:\033[0m printer.cfg generated successfully!")
         print("\033[96m[3/3]\033[0m Starting temporary web server...")
