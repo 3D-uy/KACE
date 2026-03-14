@@ -1,5 +1,6 @@
 import glob
 import re
+import os
 import questionary
 from questionary import Style
 from .scraper import fetch_config_list
@@ -126,7 +127,14 @@ def run_wizard():
     
     ssh_data = {}
     if deploy_choice == "Deploy to Klipper host via SSH":
-        ssh_data['host'] = questionary.text("SSH Host (IP or hostname):", default="192.168.1.100", style=custom_style).ask()
+        default_host = "192.168.1.100"
+        ssh_conn = os.environ.get('SSH_CONNECTION')
+        if ssh_conn:
+            parts = ssh_conn.split()
+            if len(parts) >= 3:
+                default_host = parts[2]
+                
+        ssh_data['host'] = questionary.text("SSH Host (IP or hostname):", default=default_host, style=custom_style).ask()
         ssh_data['user'] = questionary.text("SSH Username:", default="pi", style=custom_style).ask()
         ssh_data['password'] = questionary.password("SSH Password:", style=custom_style).ask()
         ssh_data['dest_path'] = questionary.text("Destination path on host:", default="~/printer_data/config/printer.cfg", style=custom_style).ask()

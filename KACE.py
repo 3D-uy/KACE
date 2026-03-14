@@ -22,18 +22,21 @@ def main():
     user_data = run_wizard()
     
     # Milestone 1: The Scraper
-    print(f"\n\033[96m[1/3]\033[0m Fetching configuration for \033[93m{user_data['board']}\033[0m...")
+    print(f"\n\033[91m[1/3]\033[0m Fetching configuration for \033[93m{user_data['board']}\033[0m...", end="", flush=True)
     raw_cfg = fetch_raw_config(user_data['board'])
     parsed_data = parse_config(raw_cfg, user_data['board'])
+    print(f"\r\033[92m[1/3]\033[0m Fetching configuration for \033[93m{user_data['board']}\033[0m... Done!")
     
     # Milestone 2: The Template Generator
-    print("\033[96m[2/3]\033[0m Generating printer.cfg...")
+    print("\033[91m[2/3]\033[0m Generating printer.cfg...", end="", flush=True)
     generate_config(parsed_data, user_data)
+    print("\r\033[92m[2/3]\033[0m Generating printer.cfg... Done!")
     
     # SSH Deployment
     if user_data.get('deploy_choice') == "Deploy to Klipper host via SSH":
-        print("\033[96m[3/3]\033[0m Deploying to Klipper host via SSH...")
+        print("\033[91m[3/3]\033[0m Deploying to Klipper host via SSH...")
         deploy_config(user_data)
+        print("\033[92m[3/3]\033[0m Deploying to Klipper host via SSH... Done!")
     elif user_data.get('deploy_choice') == "Start a temporary web server to download to PC":
         print("\n\033[92mSUCCESS:\033[0m printer.cfg generated successfully!")
         print("\033[96m[3/3]\033[0m Starting temporary web server...")
