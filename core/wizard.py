@@ -17,10 +17,10 @@ MCU_SEARCH_TERMS = {
 custom_style = Style([
     ('qmark', 'fg:#673ab7 bold'),       # token in front of the question
     ('question', 'bold'),               # question text
-    ('answer', 'fg:#f44336 bold'),      # submitted answer text behind the question
-    ('pointer', 'fg:#673ab7 bold'),     # pointer used in select and checkbox prompts
-    ('highlighted', 'fg:#ffffff bg:#673ab7 bold'), # pointed-at choice in select and checkbox prompts
-    ('selected', 'fg:#cc5454'),         # selected choice in checkbox prompts
+    ('answer', 'fg:#4caf50 bold'),      # submitted answer text behind the question (green after selected)
+    ('pointer', 'fg:#f44336 bold'),     # pointer used in select and checkbox prompts (red while selecting)
+    ('highlighted', 'fg:#f44336 bold'), # pointed-at choice in select and checkbox prompts (red while selecting)
+    ('selected', 'fg:#4caf50'),         # selected choice in checkbox prompts
     ('separator', 'fg:#cc5454'),        # separator in lists
     ('instruction', ''),                # help text for the user
     ('text', ''),                       # any generic text
