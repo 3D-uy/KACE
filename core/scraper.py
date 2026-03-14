@@ -30,8 +30,9 @@ def parse_config(raw_cfg, filename=""):
     """
     data = {}
     current_section = None
-    for line in raw_cfg.split('\n'):
-        line = line.strip()
+    last_key = None
+    for raw_line in raw_cfg.split('\n'):
+        line = raw_line.strip()
         if not line: continue
         
         # Match section headers like [stepper_x] or #[tmc2208 stepper_x]
@@ -40,6 +41,7 @@ def parse_config(raw_cfg, filename=""):
             current_section = section_match.group(1).strip().lower()
             if current_section not in data:
                 data[current_section] = {}
+            last_key = None
             continue
         
         if current_section:
@@ -49,9 +51,20 @@ def parse_config(raw_cfg, filename=""):
                 key = kv_match.group(1).strip().lower()
                 val = kv_match.group(2).strip()
                 # Clean up inline comments
-                if '#' in val:
+                if '#' in val and key != 'aliases':
                     val = val.split('#')[0].strip()
                 data[current_section][key] = val
+                last_key = key
+            elif last_key == 'aliases':
+                clean_val = line
+                if clean_val.startswith('#'):
+                    stripped = clean_val.lstrip('#').strip()
+                    if '=' in stripped:
+                        clean_val = stripped
+                    else:
+                        clean_val = '# ' + stripped
+                if clean_val:
+                    data[current_section][last_key] += '\n    ' + clean_val
                 
     # Inject known BLTouch pins for popular boards if missing
     if "bltouch" not in data:

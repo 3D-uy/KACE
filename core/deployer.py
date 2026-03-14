@@ -25,6 +25,10 @@ def deploy_config(user_data):
         print(f"Uploading printer.cfg to {dest}...")
         sftp.put('printer.cfg', dest)
         
+        print("Restarting Klipper service...")
+        stdin, stdout, stderr = ssh.exec_command('sudo systemctl restart klipper || curl -s -X POST http://localhost:7125/printer/firmware_restart')
+        stdout.channel.recv_exit_status()
+        
         sftp.close()
         ssh.close()
         print("Deployment successful!")
