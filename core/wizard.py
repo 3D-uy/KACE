@@ -121,42 +121,6 @@ def run_wizard():
         style=custom_style
     ).ask()
     
-    deploy_choice = questionary.select(
-        "What would you like to do with the generated printer.cfg?",
-        choices=[
-            "Save locally (current directory)",
-            "Copy to Klipper config directory (~/printer_data/config/)",
-            "Deploy to Klipper host via SSH",
-            "Start a temporary web server to download to PC"
-        ],
-        style=custom_style
-    ).ask()
-    
-    ssh_data = {}
-    if deploy_choice == "Deploy to Klipper host via SSH":
-        default_host = "192.168.1.100"
-        ssh_conn = os.environ.get('SSH_CONNECTION')
-        if ssh_conn:
-            parts = ssh_conn.split()
-            if len(parts) >= 3:
-                default_host = parts[2]
-                
-        ssh_data['host'] = questionary.text("SSH Host (IP or hostname):", default=default_host, style=custom_style).ask()
-        
-        # Detect if trying to SSH into self
-        is_local = False
-        if ssh_data['host'] in ['localhost', '127.0.0.1', default_host]:
-            is_local = True
-            
-        if is_local:
-            print("\n\033[93m[!] NOTE: You are running KACE on the target host.\033[0m")
-            print("\033[93m[!] Switching to 'Local Copy' for better stability and to prevent connection drops.\033[0m\n")
-            deploy_choice = "Copy to Klipper config directory (~/printer_data/config/)"
-        else:
-            ssh_data['user'] = questionary.text("SSH Username:", default="pi", style=custom_style).ask()
-            ssh_data['password'] = questionary.password("SSH Password:", style=custom_style).ask()
-            ssh_data['dest_path'] = questionary.text("Destination path on host:", default="~/printer_data/config/printer.cfg", style=custom_style).ask()
-
     return {
         "mcu_path": mcu_path,
         "board": board,
@@ -168,7 +132,5 @@ def run_wizard():
         "web_interface": web_interface,
         "probe": probe,
         "driver_type": driver_type,
-        "driver_mode": driver_mode,
-        "deploy_choice": deploy_choice,
-        **ssh_data
+        "driver_mode": driver_mode
     }
