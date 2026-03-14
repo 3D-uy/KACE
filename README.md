@@ -38,7 +38,7 @@ sudo apt-get update && sudo apt-get install git -y
 
 Run KACE directly on your Klipper host with these optimized commands:
 
-## 1. 
+## # 1. 
   - Clone the repository
   - Install dependencies (with modern OS bypass)
   - Launch the Ecosystem
