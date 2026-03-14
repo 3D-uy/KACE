@@ -5,11 +5,20 @@
 # Probe: {{ user.probe }}
 # Z Motors: {{ user.z_motors }}
 
+# --------------------------------------------------
+# Includes
+# --------------------------------------------------
 [include mainsail.cfg]
 
+# --------------------------------------------------
+# MCU
+# --------------------------------------------------
 [mcu]
 serial: {{ user.mcu_path }}  # Serial connection to the printer controller board. Auto-detected by KACE. Verify in /dev/serial/by-id/ if connection fails.
 
+# --------------------------------------------------
+# Printer
+# --------------------------------------------------
 [printer]
 kinematics: {{ user.kinematics }}  # Printer kinematics type (cartesian, corexy, delta)
 max_velocity: 300  # Maximum movement speeds and accelerations.
@@ -17,6 +26,9 @@ max_accel: 3000
 max_z_velocity: 5
 max_z_accel: 100
 
+# --------------------------------------------------
+# Steppers
+# --------------------------------------------------
 [stepper_x]
 {%- if 'stepper_x' in pins %}
 step_pin: {{ pins['stepper_x'].get('step_pin', 'TODO') }}  # Step pin for the X stepper driver
@@ -29,35 +41,6 @@ endstop_pin: {{ pins['stepper_x'].get('endstop_pin', 'TODO') if 'stepper_x' in p
 position_endstop: 0
 position_max: {{ user.x_size }}
 homing_speed: 50
-{% if user.driver_type != 'None (Standard)' and user.driver_type != 'A4988' and user.driver_mode != 'Standalone' %}
-{%- set tmc = pins.get('tmc2209 stepper_x', pins.get('tmc2208 stepper_x', pins.get('tmc2130 stepper_x', pins.get('tmc5160 stepper_x', {})))) %}
-{%- set has_pins = (user.driver_mode == 'UART' and 'uart_pin' in tmc) or (user.driver_mode == 'SPI' and 'cs_pin' in tmc) %}
-{%- set prefix = '' if has_pins else '# ' %}
-{{ prefix }}[{{ user.driver_type | lower }} stepper_x]
-{%- if user.driver_mode == 'UART' %}
-{{ prefix }}uart_pin: {{ tmc.get('uart_pin', 'TODO') }}  # UART communication pin
-{%- if 'tx_pin' in tmc %}
-{{ prefix }}tx_pin: {{ tmc.get('tx_pin') }}
-{%- endif %}
-{%- elif user.driver_mode == 'SPI' %}
-{{ prefix }}cs_pin: {{ tmc.get('cs_pin', 'TODO') }}
-{%- if 'spi_software_sclk_pin' in tmc %}
-{{ prefix }}spi_software_sclk_pin: {{ tmc.get('spi_software_sclk_pin') }}
-{%- endif %}
-{%- if 'spi_software_mosi_pin' in tmc %}
-{{ prefix }}spi_software_mosi_pin: {{ tmc.get('spi_software_mosi_pin') }}
-{%- endif %}
-{%- if 'spi_software_miso_pin' in tmc %}
-{{ prefix }}spi_software_miso_pin: {{ tmc.get('spi_software_miso_pin') }}
-{%- endif %}
-{%- if 'spi_bus' in tmc %}
-{{ prefix }}spi_bus: {{ tmc.get('spi_bus') }}
-{%- endif %}
-{%- endif %}
-{{ prefix }}run_current: 0.800
-{{ prefix }}hold_current: 0.400
-{{ prefix }}stealthchop_threshold: 999999  # Set to 0 to use spreadCycle mode
-{%- endif %}
 
 [stepper_y]
 {%- if 'stepper_y' in pins %}
@@ -71,35 +54,6 @@ endstop_pin: {{ pins['stepper_y'].get('endstop_pin', 'TODO') if 'stepper_y' in p
 position_endstop: 0
 position_max: {{ user.y_size }}
 homing_speed: 50
-{% if user.driver_type != 'None (Standard)' and user.driver_type != 'A4988' and user.driver_mode != 'Standalone' %}
-{%- set tmc = pins.get('tmc2209 stepper_y', pins.get('tmc2208 stepper_y', pins.get('tmc2130 stepper_y', pins.get('tmc5160 stepper_y', {})))) %}
-{%- set has_pins = (user.driver_mode == 'UART' and 'uart_pin' in tmc) or (user.driver_mode == 'SPI' and 'cs_pin' in tmc) %}
-{%- set prefix = '' if has_pins else '# ' %}
-{{ prefix }}[{{ user.driver_type | lower }} stepper_y]
-{%- if user.driver_mode == 'UART' %}
-{{ prefix }}uart_pin: {{ tmc.get('uart_pin', 'TODO') }}  # UART communication pin
-{%- if 'tx_pin' in tmc %}
-{{ prefix }}tx_pin: {{ tmc.get('tx_pin') }}
-{%- endif %}
-{%- elif user.driver_mode == 'SPI' %}
-{{ prefix }}cs_pin: {{ tmc.get('cs_pin', 'TODO') }}
-{%- if 'spi_software_sclk_pin' in tmc %}
-{{ prefix }}spi_software_sclk_pin: {{ tmc.get('spi_software_sclk_pin') }}
-{%- endif %}
-{%- if 'spi_software_mosi_pin' in tmc %}
-{{ prefix }}spi_software_mosi_pin: {{ tmc.get('spi_software_mosi_pin') }}
-{%- endif %}
-{%- if 'spi_software_miso_pin' in tmc %}
-{{ prefix }}spi_software_miso_pin: {{ tmc.get('spi_software_miso_pin') }}
-{%- endif %}
-{%- if 'spi_bus' in tmc %}
-{{ prefix }}spi_bus: {{ tmc.get('spi_bus') }}
-{%- endif %}
-{%- endif %}
-{{ prefix }}run_current: 0.800
-{{ prefix }}hold_current: 0.400
-{{ prefix }}stealthchop_threshold: 999999  # Set to 0 to use spreadCycle mode
-{%- endif %}
 
 [stepper_z]
 {%- if 'stepper_z' in pins %}
@@ -111,44 +65,13 @@ microsteps: 16
 rotation_distance: 8
 {%- if user.probe != 'None' %}
 endstop_pin: probe:z_virtual_endstop  # Endstop pin. Add or remove "!" to invert logic
-# endstop_pin: {{ pins['stepper_z'].get('endstop_pin', 'TODO') if 'stepper_z' in pins else 'TODO' }}
-# position_endstop: 0
 {%- else %}
 endstop_pin: {{ pins['stepper_z'].get('endstop_pin', 'TODO') if 'stepper_z' in pins else 'TODO' }}  # Endstop pin. Add or remove "!" to invert logic
 position_endstop: 0
 {%- endif %}
 position_max: {{ user.z_size }}
-{% if user.driver_type != 'None (Standard)' and user.driver_type != 'A4988' and user.driver_mode != 'Standalone' %}
-{%- set tmc = pins.get('tmc2209 stepper_z', pins.get('tmc2208 stepper_z', pins.get('tmc2130 stepper_z', pins.get('tmc5160 stepper_z', {})))) %}
-{%- set has_pins = (user.driver_mode == 'UART' and 'uart_pin' in tmc) or (user.driver_mode == 'SPI' and 'cs_pin' in tmc) %}
-{%- set prefix = '' if has_pins else '# ' %}
-{{ prefix }}[{{ user.driver_type | lower }} stepper_z]
-{%- if user.driver_mode == 'UART' %}
-{{ prefix }}uart_pin: {{ tmc.get('uart_pin', 'TODO') }}  # UART communication pin
-{%- if 'tx_pin' in tmc %}
-{{ prefix }}tx_pin: {{ tmc.get('tx_pin') }}
-{%- endif %}
-{%- elif user.driver_mode == 'SPI' %}
-{{ prefix }}cs_pin: {{ tmc.get('cs_pin', 'TODO') }}
-{%- if 'spi_software_sclk_pin' in tmc %}
-{{ prefix }}spi_software_sclk_pin: {{ tmc.get('spi_software_sclk_pin') }}
-{%- endif %}
-{%- if 'spi_software_mosi_pin' in tmc %}
-{{ prefix }}spi_software_mosi_pin: {{ tmc.get('spi_software_mosi_pin') }}
-{%- endif %}
-{%- if 'spi_software_miso_pin' in tmc %}
-{{ prefix }}spi_software_miso_pin: {{ tmc.get('spi_software_miso_pin') }}
-{%- endif %}
-{%- if 'spi_bus' in tmc %}
-{{ prefix }}spi_bus: {{ tmc.get('spi_bus') }}
-{%- endif %}
-{%- endif %}
-{{ prefix }}run_current: 0.650
-{{ prefix }}hold_current: 0.400
-{{ prefix }}stealthchop_threshold: 999999  # Set to 0 to use spreadCycle mode
-{% endif %}
 
-{% if user.z_motors == '2' %}
+{%- if user.z_motors == '2' %}
 
 [stepper_z1]
 {%- set z1_pins = pins.get('stepper_z1', pins.get('extruder_1', pins.get('extruder1', {}))) %}
@@ -163,7 +86,155 @@ enable_pin: TODO  # Enable pin for the stepper driver
 {%- endif %}
 microsteps: 16
 rotation_distance: 8
-{% if user.driver_type != 'None (Standard)' and user.driver_type != 'A4988' and user.driver_mode != 'Standalone' %}
+{%- endif %}
+
+[extruder]
+{%- if 'extruder' in pins %}
+step_pin: {{ pins['extruder'].get('step_pin', 'TODO') }}
+dir_pin: {{ pins['extruder'].get('dir_pin', 'TODO') }}
+enable_pin: {{ pins['extruder'].get('enable_pin', 'TODO') }}
+heater_pin: {{ pins['extruder'].get('heater_pin', 'TODO') }}
+sensor_pin: {{ pins['extruder'].get('sensor_pin', 'TODO') }}
+{%- endif %}
+microsteps: 16
+rotation_distance: 33.500
+nozzle_diameter: 0.400
+filament_diameter: 1.750
+sensor_type: EPCOS 100K B57560G104F
+control: pid
+pid_Kp: 22.2
+pid_Ki: 1.08
+pid_Kd: 114
+min_temp: 0
+max_temp: 250
+
+# --------------------------------------------------
+# Probe
+# --------------------------------------------------
+{%- if user.probe != 'None' %}
+[{{ user.probe | lower }}]
+{%- set probe_sec = pins.get('bltouch', pins.get('probe', {})) %}
+sensor_pin: {{ probe_sec.get('sensor_pin', '^TODO') }}
+{%- if user.probe | lower == 'bltouch' or 'control_pin' in probe_sec %}
+control_pin: {{ probe_sec.get('control_pin', 'TODO') }}
+{%- endif %}
+x_offset: 0  # Offset relative to the nozzle. Must be measured for your specific printer
+y_offset: 0
+z_offset: 0  # Z offset should be calibrated using PROBE_CALIBRATE
+
+[safe_z_home]
+home_xy_position: {{ user.x_size | int / 2 }}, {{ user.y_size | int / 2 }}
+speed: 50
+z_hop: 10
+z_hop_speed: 5
+{%- endif %}
+
+# --------------------------------------------------
+# Heated Bed
+# --------------------------------------------------
+[heater_bed]
+{%- if 'heater_bed' in pins %}
+heater_pin: {{ pins['heater_bed'].get('heater_pin', 'TODO') }}
+sensor_pin: {{ pins['heater_bed'].get('sensor_pin', 'TODO') }}
+{%- endif %}
+sensor_type: EPCOS 100K B57560G104F
+control: pid
+pid_Kp: 54.027
+pid_Ki: 0.770
+pid_Kd: 948.182
+min_temp: 0
+max_temp: 130
+
+# --------------------------------------------------
+# TMC Drivers
+# --------------------------------------------------
+{%- if user.driver_type != 'None (Standard)' and user.driver_type != 'A4988' and user.driver_mode != 'Standalone' %}
+
+{%- set tmc_x = pins.get('tmc2209 stepper_x', pins.get('tmc2208 stepper_x', pins.get('tmc2130 stepper_x', pins.get('tmc5160 stepper_x', {})))) %}
+{%- set has_pins_x = (user.driver_mode == 'UART' and 'uart_pin' in tmc_x) or (user.driver_mode == 'SPI' and 'cs_pin' in tmc_x) %}
+{%- set prefix_x = '' if has_pins_x else '# ' %}
+{{ prefix_x }}[{{ user.driver_type | lower }} stepper_x]
+{%- if user.driver_mode == 'UART' %}
+{{ prefix_x }}uart_pin: {{ tmc_x.get('uart_pin', 'TODO') }}  # UART communication pin
+{%- if 'tx_pin' in tmc_x %}
+{{ prefix_x }}tx_pin: {{ tmc_x.get('tx_pin') }}
+{%- endif %}
+{%- elif user.driver_mode == 'SPI' %}
+{{ prefix_x }}cs_pin: {{ tmc_x.get('cs_pin', 'TODO') }}
+{%- if 'spi_software_sclk_pin' in tmc_x %}
+{{ prefix_x }}spi_software_sclk_pin: {{ tmc_x.get('spi_software_sclk_pin') }}
+{%- endif %}
+{%- if 'spi_software_mosi_pin' in tmc_x %}
+{{ prefix_x }}spi_software_mosi_pin: {{ tmc_x.get('spi_software_mosi_pin') }}
+{%- endif %}
+{%- if 'spi_software_miso_pin' in tmc_x %}
+{{ prefix_x }}spi_software_miso_pin: {{ tmc_x.get('spi_software_miso_pin') }}
+{%- endif %}
+{%- if 'spi_bus' in tmc_x %}
+{{ prefix_x }}spi_bus: {{ tmc_x.get('spi_bus') }}
+{%- endif %}
+{%- endif %}
+{{ prefix_x }}run_current: 0.800
+{{ prefix_x }}hold_current: 0.400
+{{ prefix_x }}stealthchop_threshold: 999999  # Set to 0 to use spreadCycle mode
+
+{%- set tmc_y = pins.get('tmc2209 stepper_y', pins.get('tmc2208 stepper_y', pins.get('tmc2130 stepper_y', pins.get('tmc5160 stepper_y', {})))) %}
+{%- set has_pins_y = (user.driver_mode == 'UART' and 'uart_pin' in tmc_y) or (user.driver_mode == 'SPI' and 'cs_pin' in tmc_y) %}
+{%- set prefix_y = '' if has_pins_y else '# ' %}
+{{ prefix_y }}[{{ user.driver_type | lower }} stepper_y]
+{%- if user.driver_mode == 'UART' %}
+{{ prefix_y }}uart_pin: {{ tmc_y.get('uart_pin', 'TODO') }}  # UART communication pin
+{%- if 'tx_pin' in tmc_y %}
+{{ prefix_y }}tx_pin: {{ tmc_y.get('tx_pin') }}
+{%- endif %}
+{%- elif user.driver_mode == 'SPI' %}
+{{ prefix_y }}cs_pin: {{ tmc_y.get('cs_pin', 'TODO') }}
+{%- if 'spi_software_sclk_pin' in tmc_y %}
+{{ prefix_y }}spi_software_sclk_pin: {{ tmc_y.get('spi_software_sclk_pin') }}
+{%- endif %}
+{%- if 'spi_software_mosi_pin' in tmc_y %}
+{{ prefix_y }}spi_software_mosi_pin: {{ tmc_y.get('spi_software_mosi_pin') }}
+{%- endif %}
+{%- if 'spi_software_miso_pin' in tmc_y %}
+{{ prefix_y }}spi_software_miso_pin: {{ tmc_y.get('spi_software_miso_pin') }}
+{%- endif %}
+{%- if 'spi_bus' in tmc_y %}
+{{ prefix_y }}spi_bus: {{ tmc_y.get('spi_bus') }}
+{%- endif %}
+{%- endif %}
+{{ prefix_y }}run_current: 0.800
+{{ prefix_y }}hold_current: 0.400
+{{ prefix_y }}stealthchop_threshold: 999999  # Set to 0 to use spreadCycle mode
+
+{%- set tmc_z = pins.get('tmc2209 stepper_z', pins.get('tmc2208 stepper_z', pins.get('tmc2130 stepper_z', pins.get('tmc5160 stepper_z', {})))) %}
+{%- set has_pins_z = (user.driver_mode == 'UART' and 'uart_pin' in tmc_z) or (user.driver_mode == 'SPI' and 'cs_pin' in tmc_z) %}
+{%- set prefix_z = '' if has_pins_z else '# ' %}
+{{ prefix_z }}[{{ user.driver_type | lower }} stepper_z]
+{%- if user.driver_mode == 'UART' %}
+{{ prefix_z }}uart_pin: {{ tmc_z.get('uart_pin', 'TODO') }}  # UART communication pin
+{%- if 'tx_pin' in tmc_z %}
+{{ prefix_z }}tx_pin: {{ tmc_z.get('tx_pin') }}
+{%- endif %}
+{%- elif user.driver_mode == 'SPI' %}
+{{ prefix_z }}cs_pin: {{ tmc_z.get('cs_pin', 'TODO') }}
+{%- if 'spi_software_sclk_pin' in tmc_z %}
+{{ prefix_z }}spi_software_sclk_pin: {{ tmc_z.get('spi_software_sclk_pin') }}
+{%- endif %}
+{%- if 'spi_software_mosi_pin' in tmc_z %}
+{{ prefix_z }}spi_software_mosi_pin: {{ tmc_z.get('spi_software_mosi_pin') }}
+{%- endif %}
+{%- if 'spi_software_miso_pin' in tmc_z %}
+{{ prefix_z }}spi_software_miso_pin: {{ tmc_z.get('spi_software_miso_pin') }}
+{%- endif %}
+{%- if 'spi_bus' in tmc_z %}
+{{ prefix_z }}spi_bus: {{ tmc_z.get('spi_bus') }}
+{%- endif %}
+{%- endif %}
+{{ prefix_z }}run_current: 0.650
+{{ prefix_z }}hold_current: 0.400
+{{ prefix_z }}stealthchop_threshold: 999999  # Set to 0 to use spreadCycle mode
+
+{%- if user.z_motors == '2' %}
 {%- set tmc_z1 = pins.get('tmc2209 stepper_z1', pins.get('tmc2208 stepper_z1', pins.get('tmc2130 stepper_z1', pins.get('tmc5160 stepper_z1', pins.get('tmc2209 extruder_1', pins.get('tmc2208 extruder_1', pins.get('tmc2130 extruder_1', pins.get('tmc5160 extruder_1', pins.get('tmc2209 extruder1', pins.get('tmc2208 extruder1', pins.get('tmc2130 extruder1', pins.get('tmc5160 extruder1', {})))))))))))) %}
 {%- set has_pins_z1 = (user.driver_mode == 'UART' and 'uart_pin' in tmc_z1) or (user.driver_mode == 'SPI' and 'cs_pin' in tmc_z1) %}
 {%- set prefix_z1 = '' if has_pins_z1 else '# ' %}
@@ -191,86 +262,55 @@ rotation_distance: 8
 {{ prefix_z1 }}run_current: 0.650
 {{ prefix_z1 }}hold_current: 0.400
 {{ prefix_z1 }}stealthchop_threshold: 999999  # Set to 0 to use spreadCycle mode
-{% endif %}
-{% endif %}
-
-{% if user.probe != 'None' %}
-[{{ user.probe | lower }}]
-{%- set probe_sec = pins.get('bltouch', pins.get('probe', {})) %}
-sensor_pin: {{ probe_sec.get('sensor_pin', '^TODO') }}
-{%- if user.probe | lower == 'bltouch' or 'control_pin' in probe_sec %}
-control_pin: {{ probe_sec.get('control_pin', 'TODO') }}
-{%- endif %}
-x_offset: 0  # Offset relative to the nozzle. Must be measured for your specific printer
-y_offset: 0
-z_offset: 0  # Z offset should be calibrated using PROBE_CALIBRATE
-
-[safe_z_home]
-home_xy_position: {{ user.x_size | int / 2 }}, {{ user.y_size | int / 2 }}
-speed: 50
-z_hop: 10
-z_hop_speed: 5
 {%- endif %}
 
-[extruder]
-{%- if 'extruder' in pins %}
-step_pin: {{ pins['extruder'].get('step_pin', 'TODO') }}
-dir_pin: {{ pins['extruder'].get('dir_pin', 'TODO') }}
-enable_pin: {{ pins['extruder'].get('enable_pin', 'TODO') }}
-heater_pin: {{ pins['extruder'].get('heater_pin', 'TODO') }}
-sensor_pin: {{ pins['extruder'].get('sensor_pin', 'TODO') }}
-{%- endif %}
-microsteps: 16
-rotation_distance: 33.500
-nozzle_diameter: 0.400
-filament_diameter: 1.750
-sensor_type: EPCOS 100K B57560G104F
-control: pid
-pid_Kp: 22.2
-pid_Ki: 1.08
-pid_Kd: 114
-min_temp: 0
-max_temp: 250
-{% if user.driver_type != 'None (Standard)' and user.driver_type != 'A4988' and user.driver_mode != 'Standalone' %}
-{%- set tmc = pins.get('tmc2209 extruder', pins.get('tmc2208 extruder', pins.get('tmc2130 extruder', pins.get('tmc5160 extruder', {})))) %}
-{%- set has_pins = (user.driver_mode == 'UART' and 'uart_pin' in tmc) or (user.driver_mode == 'SPI' and 'cs_pin' in tmc) %}
-{%- set prefix = '' if has_pins else '# ' %}
-{{ prefix }}[{{ user.driver_type | lower }} extruder]
+{%- set tmc_e = pins.get('tmc2209 extruder', pins.get('tmc2208 extruder', pins.get('tmc2130 extruder', pins.get('tmc5160 extruder', {})))) %}
+{%- set has_pins_e = (user.driver_mode == 'UART' and 'uart_pin' in tmc_e) or (user.driver_mode == 'SPI' and 'cs_pin' in tmc_e) %}
+{%- set prefix_e = '' if has_pins_e else '# ' %}
+{{ prefix_e }}[{{ user.driver_type | lower }} extruder]
 {%- if user.driver_mode == 'UART' %}
-{{ prefix }}uart_pin: {{ tmc.get('uart_pin', 'TODO') }}  # UART communication pin
-{%- if 'tx_pin' in tmc %}
-{{ prefix }}tx_pin: {{ tmc.get('tx_pin') }}
+{{ prefix_e }}uart_pin: {{ tmc_e.get('uart_pin', 'TODO') }}  # UART communication pin
+{%- if 'tx_pin' in tmc_e %}
+{{ prefix_e }}tx_pin: {{ tmc_e.get('tx_pin') }}
 {%- endif %}
 {%- elif user.driver_mode == 'SPI' %}
-{{ prefix }}cs_pin: {{ tmc.get('cs_pin', 'TODO') }}
-{%- if 'spi_software_sclk_pin' in tmc %}
-{{ prefix }}spi_software_sclk_pin: {{ tmc.get('spi_software_sclk_pin') }}
+{{ prefix_e }}cs_pin: {{ tmc_e.get('cs_pin', 'TODO') }}
+{%- if 'spi_software_sclk_pin' in tmc_e %}
+{{ prefix_e }}spi_software_sclk_pin: {{ tmc_e.get('spi_software_sclk_pin') }}
 {%- endif %}
-{%- if 'spi_software_mosi_pin' in tmc %}
-{{ prefix }}spi_software_mosi_pin: {{ tmc.get('spi_software_mosi_pin') }}
+{%- if 'spi_software_mosi_pin' in tmc_e %}
+{{ prefix_e }}spi_software_mosi_pin: {{ tmc_e.get('spi_software_mosi_pin') }}
 {%- endif %}
-{%- if 'spi_software_miso_pin' in tmc %}
-{{ prefix }}spi_software_miso_pin: {{ tmc.get('spi_software_miso_pin') }}
+{%- if 'spi_software_miso_pin' in tmc_e %}
+{{ prefix_e }}spi_software_miso_pin: {{ tmc_e.get('spi_software_miso_pin') }}
 {%- endif %}
-{%- if 'spi_bus' in tmc %}
-{{ prefix }}spi_bus: {{ tmc.get('spi_bus') }}
+{%- if 'spi_bus' in tmc_e %}
+{{ prefix_e }}spi_bus: {{ tmc_e.get('spi_bus') }}
 {%- endif %}
 {%- endif %}
-{{ prefix }}run_current: 0.650
-{{ prefix }}hold_current: 0.400
-{{ prefix }}stealthchop_threshold: 999999  # Set to 0 to use spreadCycle mode
+{{ prefix_e }}run_current: 0.650
+{{ prefix_e }}hold_current: 0.400
+{{ prefix_e }}stealthchop_threshold: 999999  # Set to 0 to use spreadCycle mode
+
 {%- endif %}
 
-[heater_bed]
-{%- if 'heater_bed' in pins %}
-heater_pin: {{ pins['heater_bed'].get('heater_pin', 'TODO') }}
-sensor_pin: {{ pins['heater_bed'].get('sensor_pin', 'TODO') }}
+# --------------------------------------------------
+# EXP1 / EXP2 Pinout
+# --------------------------------------------------
+{%- if 'board_pins' in pins %}
+[board_pins]
+aliases:
+    # EXP1 header
+    {{ pins['board_pins'].get('aliases', 'EXP1_1=TODO, EXP1_2=TODO') | replace('
+', '
+    ') }}
+{%- else %}
+# [board_pins]
+# aliases:
+#     # EXP1 header
+#     EXP1_1=TODO, EXP1_3=TODO, EXP1_5=TODO, EXP1_7=TODO, EXP1_9=<GND>,
+#     EXP1_2=TODO, EXP1_4=TODO, EXP1_6=TODO, EXP1_8=TODO, EXP1_10=<5V>,
+#     # EXP2 header
+#     EXP2_1=TODO, EXP2_3=TODO, EXP2_5=TODO, EXP2_7=TODO, EXP2_9=<GND>,
+#     EXP2_2=TODO, EXP2_4=TODO, EXP2_6=TODO, EXP2_8=TODO, EXP2_10=<5V>
 {%- endif %}
-sensor_type: EPCOS 100K B57560G104F
-control: pid
-pid_Kp: 54.027
-pid_Ki: 0.770
-pid_Kd: 948.182
-min_temp: 0
-max_temp: 130
-
