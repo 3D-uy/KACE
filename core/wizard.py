@@ -149,6 +149,28 @@ def run_wizard():
         choices=["Mainsail", "Fluidd", "None"],
         style=custom_style
     ).ask()
+
+    deploy_method = questionary.select(
+        "Deployment Method:",
+        choices=["Generate only", "Local (This Pi)", "SSH (Remote Pi)"],
+        style=custom_style
+    ).ask()
+
+    deploy_data = {"method": deploy_method}
+    if deploy_method == "Local (This Pi)":
+        deploy_data["config_path"] = questionary.text(
+            "Enter Klipper config path:",
+            default=os.path.expanduser("~/printer_data/config"),
+            style=custom_style
+        ).ask()
+    elif deploy_method == "SSH (Remote Pi)":
+        deploy_data["host"] = questionary.text("Enter Pi IP address:", style=custom_style).ask()
+        deploy_data["user"] = questionary.text("Enter SSH username:", default="pi", style=custom_style).ask()
+        deploy_data["config_path"] = questionary.text(
+            "Enter Klipper config path on remote:",
+            default="/home/pi/printer_data/config",
+            style=custom_style
+        ).ask()
     
     return {
         "mcu_path": mcu_path,
@@ -161,5 +183,6 @@ def run_wizard():
         "web_interface": web_interface,
         "probe": probe,
         "driver_type": driver_type,
-        "driver_mode": driver_mode
+        "driver_mode": driver_mode,
+        "deploy": deploy_data
     }
