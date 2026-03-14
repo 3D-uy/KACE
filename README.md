@@ -9,8 +9,10 @@
 
 [Español (ES)](README_ES.md) | [Português (BR)](README_BR.md)
 
+
 ### KACE automatically generates a working Klipper printer.cfg
 ### by detecting your hardware and guiding you through configuration.
+
 
 ## 🟢 Why KACE?
 
