@@ -59,7 +59,7 @@ def run_wizard():
             profile_choices.append(readable)
             name_map[readable] = p
             
-        profile_choices = sorted(profile_choices) + ["Custom printer"]
+        profile_choices = ["Custom printer"] + sorted(profile_choices)
         
         selected_profile_name = questionary.select(
             "Select printer profile:",
