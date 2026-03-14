@@ -3,7 +3,7 @@ import re
 import os
 import questionary
 from questionary import Style
-from .scraper import fetch_config_list
+from .scraper import fetch_config_list, fetch_raw_config, parse_printer_profile
 
 MCU_SEARCH_TERMS = {
     "lpc1769": ["skr-v1.4", "skr-v1.3", "sgen-l"],
@@ -44,8 +44,34 @@ def run_wizard():
     print("\033[96m>>> Starting Hardware Discovery...\033[0m")
     mcu_path = discover_mcu()
     
-    print("\033[96m>>> Fetching board database...\033[0m")
-    boards = fetch_config_list()
+    print("\033[96m>>> Fetching board and printer database...\033[0m")
+    generic_boards, printer_profiles = fetch_config_list()
+    
+    # Printer Profile Selection
+    profile_data = {}
+    if printer_profiles:
+        # Convert filenames to readable names
+        profile_choices = []
+        name_map = {}
+        for p in printer_profiles:
+            # printer-creality-ender3.cfg -> Creality Ender 3
+            readable = p.replace('printer-', '').replace('.cfg', '').replace('-', ' ').title()
+            profile_choices.append(readable)
+            name_map[readable] = p
+            
+        profile_choices = sorted(profile_choices) + ["Custom printer"]
+        
+        selected_profile_name = questionary.select(
+            "Select printer profile:",
+            choices=profile_choices,
+            style=custom_style
+        ).ask()
+        
+        if selected_profile_name != "Custom printer":
+            filename = name_map[selected_profile_name]
+            print(f"\033[96m>>> Loading profile for {selected_profile_name}...\033[0m")
+            raw_profile = fetch_raw_config(filename)
+            profile_data = parse_printer_profile(raw_profile)
     
     board = None
     match = re.search(r'usb-Klipper_([a-zA-Z0-9]+)_', mcu_path)
@@ -55,7 +81,7 @@ def run_wizard():
         if mcu in MCU_SEARCH_TERMS:
             search_terms = MCU_SEARCH_TERMS[mcu]
             suggested_configs = []
-            for b in boards:
+            for b in generic_boards:
                 if any(term in b.lower() for term in search_terms):
                     suggested_configs.append(b)
             
@@ -75,23 +101,25 @@ def run_wizard():
     if not board:
         board = questionary.autocomplete(
             "Select your board (type to search):",
-            choices=boards,
+            choices=generic_boards,
             style=custom_style
         ).ask()
     
     kinematics = questionary.select(
         "Select Kinematics:",
         choices=["cartesian", "corexy", "delta"],
+        default=profile_data.get("kinematics", "cartesian"),
         style=custom_style
     ).ask()
     
-    x_size = questionary.text("Enter X build volume (mm):", default="235", style=custom_style).ask()
-    y_size = questionary.text("Enter Y build volume (mm):", default="235", style=custom_style).ask()
-    z_size = questionary.text("Enter Z build volume (mm):", default="250", style=custom_style).ask()
+    x_size = questionary.text("Enter X build volume (mm):", default=profile_data.get("x_size", "235"), style=custom_style).ask()
+    y_size = questionary.text("Enter Y build volume (mm):", default=profile_data.get("y_size", "235"), style=custom_style).ask()
+    z_size = questionary.text("Enter Z build volume (mm):", default=profile_data.get("z_size", "250"), style=custom_style).ask()
     
     probe = questionary.select(
         "Select Probe Type:",
         choices=["None", "BLTouch", "Inductive", "CR-Touch"],
+        default=profile_data.get("probe", "None"),
         style=custom_style
     ).ask()
 
@@ -112,6 +140,7 @@ def run_wizard():
     z_motors = questionary.select(
         "How many Z motors are you using?",
         choices=["1", "2"],
+        default=profile_data.get("z_motors", "1"),
         style=custom_style
     ).ask()
 
