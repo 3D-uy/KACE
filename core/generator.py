@@ -29,8 +29,7 @@ def generate_config(parsed_data, user_data):
             # Regular line or full-line comment
             aligned_lines.append(line)
     
-    final_output = "
-".join(aligned_lines)
+    final_output = "\n".join(aligned_lines)
     
     # Write to printer.cfg
     with open('printer.cfg', 'w') as f:
