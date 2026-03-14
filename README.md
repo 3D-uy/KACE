@@ -1,4 +1,6 @@
-
+<p align="center">
+  <img src="assets/kace_banner2.png" width="500">
+</p>
 
 # 🚀 KACE: Klipper Automated Configuration Ecosystem
 
@@ -6,6 +8,9 @@
 ![Python](https://img.shields.io/badge/Python-3.9+-blue?style=for-the-badge&logo=python)
 
 [Español (ES)](README_ES.md) | [Português (BR)](README_BR.md)
+
+### KACE automatically generates a working Klipper printer.cfg
+### by detecting your hardware and guiding you through configuration.
 
 ## 🟢 Why KACE?
 
