@@ -41,10 +41,10 @@ def discover_mcu():
 
 def run_wizard():
     """Runs the interactive CLI wizard to gather user preferences."""
-    print("\033[95m>>> Starting Hardware Discovery...\033[0m")
+    print("\033[96m>>> Starting Hardware Discovery...\033[0m")
     mcu_path = discover_mcu()
     
-    print("\033[95m>>> Fetching board database...\033[0m")
+    print("\033[96m>>> Fetching board database...\033[0m")
     boards = fetch_config_list()
     
     board = None
@@ -136,9 +136,20 @@ def run_wizard():
                 default_host = parts[2]
                 
         ssh_data['host'] = questionary.text("SSH Host (IP or hostname):", default=default_host, style=custom_style).ask()
-        ssh_data['user'] = questionary.text("SSH Username:", default="pi", style=custom_style).ask()
-        ssh_data['password'] = questionary.password("SSH Password:", style=custom_style).ask()
-        ssh_data['dest_path'] = questionary.text("Destination path on host:", default="~/printer_data/config/printer.cfg", style=custom_style).ask()
+        
+        # Detect if trying to SSH into self
+        is_local = False
+        if ssh_data['host'] in ['localhost', '127.0.0.1', default_host]:
+            is_local = True
+            
+        if is_local:
+            print("\n\033[93m[!] NOTE: You are running KACE on the target host.\033[0m")
+            print("\033[93m[!] Switching to 'Local Copy' for better stability and to prevent connection drops.\033[0m\n")
+            deploy_choice = "Copy to Klipper config directory (~/printer_data/config/)"
+        else:
+            ssh_data['user'] = questionary.text("SSH Username:", default="pi", style=custom_style).ask()
+            ssh_data['password'] = questionary.password("SSH Password:", style=custom_style).ask()
+            ssh_data['dest_path'] = questionary.text("Destination path on host:", default="~/printer_data/config/printer.cfg", style=custom_style).ask()
 
     return {
         "mcu_path": mcu_path,
