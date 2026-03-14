@@ -8,7 +8,11 @@
 # --------------------------------------------------
 # Includes
 # --------------------------------------------------
+{% if user.web_interface == 'Mainsail' -%}
 [include mainsail.cfg]
+{% elif user.web_interface == 'Fluidd' -%}
+[include fluidd.cfg]
+{%- endif %}
 
 # --------------------------------------------------
 # MCU

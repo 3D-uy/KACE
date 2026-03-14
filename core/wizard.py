@@ -114,6 +114,12 @@ def run_wizard():
         choices=["1", "2"],
         style=custom_style
     ).ask()
+
+    web_interface = questionary.select(
+        "Select your Web Interface (for includes):",
+        choices=["Mainsail", "Fluidd", "None"],
+        style=custom_style
+    ).ask()
     
     deploy_choice = questionary.select(
         "What would you like to do with the generated printer.cfg?",
@@ -159,6 +165,7 @@ def run_wizard():
         "y_size": y_size,
         "z_size": z_size,
         "z_motors": z_motors,
+        "web_interface": web_interface,
         "probe": probe,
         "driver_type": driver_type,
         "driver_mode": driver_mode,

@@ -66,6 +66,11 @@ def main():
         shutil.copy("printer.cfg", dest)
         time.sleep(0.5)
         print(f"Copied printer.cfg to {dest}...")
+        
+        # Local restart
+        print("Attempting to restart Klipper service locally...")
+        os.system("sudo systemctl restart klipper")
+        
         print("\033[92m[3/3]\033[0m Copying to Klipper config directory... Done!")
         print("\033[92mDeployment successful!\033[0m")
         print("\033[93mPlease restart Klipper via your web interface to apply the new configuration.\033[0m")
