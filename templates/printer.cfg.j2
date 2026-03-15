@@ -19,6 +19,14 @@
 # --------------------------------------------------
 [mcu]
 serial: {{ user.mcu_path | default('/dev/serial/by-id/TODO') }} # Serial connection to the printer controller board. Auto-detected by KACE. Verify in /dev/serial/by-id/ if connection fails.
+{%- if 'mcu' in pins %}
+{%- if 'restart_method' in pins['mcu'] %}
+restart_method: {{ pins['mcu']['restart_method'] }} # Recommended reset method for this board
+{%- endif %}
+{%- if 'baud' in pins['mcu'] %}
+baud: {{ pins['mcu']['baud'] }} # Baud rate for serial connection
+{%- endif %}
+{%- endif %}
 
 # --------------------------------------------------
 # Printer
