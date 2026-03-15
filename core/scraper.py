@@ -1,27 +1,93 @@
 import urllib.request
 import json
 import re
+import os
+import time
 
 def fetch_config_list():
     """Fetches the list of generic and printer configs from Klipper GitHub."""
+    cache_file = os.path.expanduser("~/.kace_boards_cache.json")
+    
+    # 1. Check persistent cache first (valid for 3 days)
+    try:
+        if os.path.exists(cache_file):
+            if time.time() - os.path.getmtime(cache_file) < 3 * 24 * 3600:
+                with open(cache_file, 'r', encoding='utf-8') as f:
+                    configs = json.load(f)
+                    if configs:
+                        return configs
+    except Exception:
+        pass
+
+    # 2. Try GitHub API
     url = "https://api.github.com/repos/Klipper3d/klipper/contents/config"
     req = urllib.request.Request(url, headers={'User-Agent': 'KACE-App'})
     try:
         with urllib.request.urlopen(req) as response:
             data = json.loads(response.read().decode())
             configs = [item['name'] for item in data if item['name'].startswith('generic-') or item['name'].startswith('printer-')]
+<<<<<<< HEAD
+            
+            try:
+                with open(cache_file, 'w', encoding='utf-8') as f:
+                    json.dump(configs, f)
+            except Exception: pass
+            
+            return configs
+    except Exception as api_err:
+        # 3. API Limit hit, fallback to scraping GitHub HTML tree
+        try:
+            tree_url = "https://github.com/Klipper3d/klipper/tree/master/config"
+            req_html = urllib.request.Request(tree_url, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) KACE-App'})
+            with urllib.request.urlopen(req_html) as response:
+                html = response.read().decode('utf-8', errors='ignore')
+                
+                # Extract from React JSON payload or standard hrefs
+                matches = re.findall(r'"name":"((?:generic|printer)-[^"]+\.cfg)"', html)
+                matches_url = re.findall(r'href="/Klipper3d/klipper/blob/[^/]+/config/((?:generic|printer)-.*?\.cfg)"', html)
+                configs = list(set(matches + matches_url))
+                
+                if configs:
+                    configs = sorted(configs)
+                    try:
+                        with open(cache_file, 'w', encoding='utf-8') as f:
+                            json.dump(configs, f)
+                    except Exception: pass
+                    return configs
+        except Exception:
+            pass
+            
+        # 4. Try expired cache as last resort
+        try:
+            if os.path.exists(cache_file):
+                with open(cache_file, 'r', encoding='utf-8') as f:
+                    configs = json.load(f)
+                    if configs:
+                        return configs
+        except Exception:
+            pass
+
+        print(f"\n\033[93mWarning: Error fetching config list from GitHub ({api_err}). Falling back to manual entry.\033[0m")
+=======
             return configs
     except Exception as e:
         print(f"Error fetching config list: {e}")
         # Fallback to a hardcoded list if API fails (e.g., rate limit)
+>>>>>>> 6971fd3a80c63ef5a930fc622ca88b4a0bb2de92
         return ["generic-bigtreetech-skr-v1.4.cfg", "generic-creality-v4.2.2.cfg"]
 
 def fetch_raw_config(filename):
     """Fetches the raw content of a specific config file."""
     url = f"https://raw.githubusercontent.com/Klipper3d/klipper/master/config/{filename}"
+<<<<<<< HEAD
+    req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 KACE-App'})
+    with urllib.request.urlopen(req) as response:
+        return response.read().decode('utf-8', errors='ignore')
+=======
     req = urllib.request.Request(url, headers={'User-Agent': 'KACE-App'})
     with urllib.request.urlopen(req) as response:
         return response.read().decode()
+>>>>>>> 6971fd3a80c63ef5a930fc622ca88b4a0bb2de92
 
 def parse_config(raw_cfg, filename=""):
     """
