@@ -11,24 +11,21 @@ def deploy_config(user_data):
         ssh.connect(
             user_data['host'], 
             username=user_data['user'], 
-            password=user_data['password'],
-            timeout=10
+            password=user_data['password']
         )
         
-        with ssh.open_sftp() as sftp:
-            # Expand user path (e.g., ~) if necessary
-            dest = user_data['dest_path']
-            if dest.startswith('~/'):
-                # Simple expansion for common Klipper setups
-                dest = dest.replace('~/', f"/home/{user_data['user']}/")
-                
-            print(f"Uploading printer.cfg to {dest}...")
-            sftp.put('printer.cfg', dest)
+        sftp = ssh.open_sftp()
         
-        # Attempt to restart Klipper service
-        print("Attempting to restart Klipper service...")
-        ssh.exec_command("sudo systemctl restart klipper")
+        # Expand user path (e.g., ~) if necessary
+        dest = user_data['dest_path']
+        if dest.startswith('~/'):
+            # Simple expansion for common Klipper setups
+            dest = dest.replace('~/', f"/home/{user_data['user']}/")
+            
+        print(f"Uploading printer.cfg to {dest}...")
+        sftp.put('printer.cfg', dest)
         
+        sftp.close()
         ssh.close()
     except Exception as e:
         print(f"\033[91mDeployment failed: {e}\033[0m")

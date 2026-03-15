@@ -3,7 +3,7 @@ import re
 import os
 import questionary
 from questionary import Style
-from .scraper import fetch_config_list, fetch_raw_config, parse_printer_profile
+from .scraper import fetch_config_list
 
 MCU_SEARCH_TERMS = {
     "lpc1769": ["skr-v1.4", "skr-v1.3", "sgen-l"],
@@ -41,37 +41,11 @@ def discover_mcu():
 
 def run_wizard():
     """Runs the interactive CLI wizard to gather user preferences."""
-    print("\033[96m>>> Starting Hardware Discovery...\033[0m")
+    print("\033[95m>>> Starting Hardware Discovery...\033[0m")
     mcu_path = discover_mcu()
     
-    print("\033[96m>>> Fetching board and printer database...\033[0m")
-    generic_boards, printer_profiles = fetch_config_list()
-    
-    # Printer Profile Selection
-    profile_data = {}
-    if printer_profiles:
-        # Convert filenames to readable names
-        profile_choices = []
-        name_map = {}
-        for p in printer_profiles:
-            # printer-creality-ender3.cfg -> Creality Ender 3
-            readable = p.replace('printer-', '').replace('.cfg', '').replace('-', ' ').title()
-            profile_choices.append(readable)
-            name_map[readable] = p
-            
-        profile_choices = ["Custom printer"] + sorted(profile_choices)
-        
-        selected_profile_name = questionary.select(
-            "Select printer profile:",
-            choices=profile_choices,
-            style=custom_style
-        ).ask()
-        
-        if selected_profile_name != "Custom printer":
-            filename = name_map[selected_profile_name]
-            print(f"\033[96m>>> Loading profile for {selected_profile_name}...\033[0m")
-            raw_profile = fetch_raw_config(filename)
-            profile_data = parse_printer_profile(raw_profile)
+    print("\033[95m>>> Fetching board database...\033[0m")
+    boards = fetch_config_list()
     
     board = None
     match = re.search(r'usb-Klipper_([a-zA-Z0-9]+)_', mcu_path)
@@ -81,7 +55,7 @@ def run_wizard():
         if mcu in MCU_SEARCH_TERMS:
             search_terms = MCU_SEARCH_TERMS[mcu]
             suggested_configs = []
-            for b in generic_boards:
+            for b in boards:
                 if any(term in b.lower() for term in search_terms):
                     suggested_configs.append(b)
             
@@ -101,25 +75,23 @@ def run_wizard():
     if not board:
         board = questionary.autocomplete(
             "Select your board (type to search):",
-            choices=generic_boards,
+            choices=boards,
             style=custom_style
         ).ask()
     
     kinematics = questionary.select(
         "Select Kinematics:",
         choices=["cartesian", "corexy", "delta"],
-        default=profile_data.get("kinematics", "cartesian"),
         style=custom_style
     ).ask()
     
-    x_size = questionary.text("Enter X build volume (mm):", default=profile_data.get("x_size", "235"), style=custom_style).ask()
-    y_size = questionary.text("Enter Y build volume (mm):", default=profile_data.get("y_size", "235"), style=custom_style).ask()
-    z_size = questionary.text("Enter Z build volume (mm):", default=profile_data.get("z_size", "250"), style=custom_style).ask()
+    x_size = questionary.text("Enter X build volume (mm):", default="235", style=custom_style).ask()
+    y_size = questionary.text("Enter Y build volume (mm):", default="235", style=custom_style).ask()
+    z_size = questionary.text("Enter Z build volume (mm):", default="250", style=custom_style).ask()
     
     probe = questionary.select(
         "Select Probe Type:",
         choices=["None", "BLTouch", "Inductive", "CR-Touch"],
-        default=profile_data.get("probe", "None"),
         style=custom_style
     ).ask()
 
@@ -140,38 +112,34 @@ def run_wizard():
     z_motors = questionary.select(
         "How many Z motors are you using?",
         choices=["1", "2"],
-        default=profile_data.get("z_motors", "1"),
         style=custom_style
     ).ask()
-
-    web_interface = questionary.select(
-        "Select your Web Interface (for includes):",
-        choices=["Mainsail", "Fluidd", "None"],
-        style=custom_style
-    ).ask()
-
-    deploy_method = questionary.select(
-        "Deployment Method:",
-        choices=["Generate only", "Local (This Pi)", "SSH (Remote Pi)"],
-        style=custom_style
-    ).ask()
-
-    deploy_data = {"method": deploy_method}
-    if deploy_method == "Local (This Pi)":
-        deploy_data["config_path"] = questionary.text(
-            "Enter Klipper config path:",
-            default=os.path.expanduser("~/printer_data/config"),
-            style=custom_style
-        ).ask()
-    elif deploy_method == "SSH (Remote Pi)":
-        deploy_data["host"] = questionary.text("Enter Pi IP address:", style=custom_style).ask()
-        deploy_data["user"] = questionary.text("Enter SSH username:", default="pi", style=custom_style).ask()
-        deploy_data["config_path"] = questionary.text(
-            "Enter Klipper config path on remote:",
-            default="/home/pi/printer_data/config",
-            style=custom_style
-        ).ask()
     
+    deploy_choice = questionary.select(
+        "What would you like to do with the generated printer.cfg?",
+        choices=[
+            "Save locally (current directory)",
+            "Copy to Klipper config directory (~/printer_data/config/)",
+            "Deploy to Klipper host via SSH",
+            "Start a temporary web server to download to PC"
+        ],
+        style=custom_style
+    ).ask()
+    
+    ssh_data = {}
+    if deploy_choice == "Deploy to Klipper host via SSH":
+        default_host = "192.168.1.100"
+        ssh_conn = os.environ.get('SSH_CONNECTION')
+        if ssh_conn:
+            parts = ssh_conn.split()
+            if len(parts) >= 3:
+                default_host = parts[2]
+                
+        ssh_data['host'] = questionary.text("SSH Host (IP or hostname):", default=default_host, style=custom_style).ask()
+        ssh_data['user'] = questionary.text("SSH Username:", default="pi", style=custom_style).ask()
+        ssh_data['password'] = questionary.password("SSH Password:", style=custom_style).ask()
+        ssh_data['dest_path'] = questionary.text("Destination path on host:", default="~/printer_data/config/printer.cfg", style=custom_style).ask()
+
     return {
         "mcu_path": mcu_path,
         "board": board,
@@ -180,9 +148,9 @@ def run_wizard():
         "y_size": y_size,
         "z_size": z_size,
         "z_motors": z_motors,
-        "web_interface": web_interface,
         "probe": probe,
         "driver_type": driver_type,
         "driver_mode": driver_mode,
-        "deploy": deploy_data
+        "deploy_choice": deploy_choice,
+        **ssh_data
     }

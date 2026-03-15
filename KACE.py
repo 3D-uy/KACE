@@ -1,95 +1,19 @@
 import os
 import sys
-import time
-import shutil
-import subprocess
-import questionary
 from core.scraper import fetch_config_list, fetch_raw_config, parse_config
 from core.wizard import run_wizard
 from core.generator import generate_config
+from core.deployer import deploy_config
 
 def print_header():
-    # ANSI Escape Codes
-    G = "\033[92m"  # Green
-    Y = "\033[93m"  # Yellow
-    C = "\033[96m"  # Cyan
-    B = "\033[1m"   # Bold
-    R = "\033[0m"   # Reset
-
-    logo = [
-        f"{G}██{Y}╗{G}  ██{Y}╗{G} █████{Y}╗{G}  ██████{Y}╗{G}███████{Y}╗",
-        f"{G}██{Y}║{G} ██{Y}╔╝{G}██{Y}╔══{G}██{Y}╗{G}██{Y}╔════╝{G}██{Y}╔════╝",
-        f"{G}█████{Y}╔╝{G} ███████{Y}║{G}██{Y}║{G}     █████{Y}╗",
-        f"{G}██{Y}╔═{G}██{Y}╗{G} ██{Y}╔══{G}██{Y}║{G}██{Y}║{G}     ██{Y}╔══╝",
-        f"{G}██{Y}║{G}  ██{Y}╗{G}██{Y}║{G}  ██{Y}║{Y}╚{G}██████{Y}╗{G}███████{Y}╗",
-        f"{Y}╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚══════╝"
-    ]
-
-    print("")
-    for line in logo:
-        print(f"  {line}")
-    
-    print(f"  {C}──────────────────────────────────────────{R}")
-    print(f"  {B}{C}Klipper Automated Configuration Ecosystem{R}")
-    print("")
-
-def deploy_local(config_path):
-    """Deploys the generated config to the local Klipper directory."""
-    target = os.path.join(config_path, "printer.cfg")
-    backup = os.path.join(config_path, f"printer.cfg.kace.{int(time.time())}.bak")
-    
-    try:
-        if os.path.exists(target):
-            shutil.copy2(target, backup)
-            print(f"\033[94m>>> Backup created: {backup}\033[0m")
-        
-        shutil.copy2("printer.cfg", target)
-        print(f"\033[92m>>> Configuration deployed to {target}\033[0m")
-        
-        if questionary.confirm("Would you like to restart Klipper now?", default=True).ask():
-            print("\033[96m>>> Restarting Klipper...\033[0m")
-            subprocess.run(["sudo", "systemctl", "restart", "klipper"], check=False)
-            print("\033[92m>>> Klipper restart command sent!\033[0m")
-        else:
-            print("\033[93m>>> Manual restart required in your web interface.\033[0m")
-    except Exception as e:
-        print(f"\033[91mERROR during local deployment: {e}\033[0m")
-
-def deploy_ssh(deploy_data):
-    """Deploys via SSH."""
-    try:
-        import paramiko
-        print(f"\033[96m>>> Connecting to {deploy_data['host']}...\033[0m")
-        ssh = paramiko.SSHClient()
-        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        
-        # We don't ask for password here for security, assume SSH keys or prompt
-        try:
-            ssh.connect(deploy_data['host'], username=deploy_data['user'], timeout=10)
-        except paramiko.AuthenticationException:
-            password = questionary.password(f"Enter SSH password for {deploy_data['user']}:").ask()
-            ssh.connect(deploy_data['host'], username=deploy_data['user'], password=password)
-
-        sftp = ssh.open_sftp()
-        remote_path = os.path.join(deploy_data['config_path'], "printer.cfg")
-        
-        print("\033[96m>>> Uploading printer.cfg...\033[0m")
-        sftp.put("printer.cfg", remote_path)
-        sftp.close()
-        
-        if questionary.confirm("Would you like to restart Klipper now?", default=True).ask():
-            print("\033[96m>>> Restarting Klipper...\033[0m")
-            ssh.exec_command("sudo systemctl restart klipper")
-            print("\033[92m>>> Klipper restart command sent!\033[0m")
-        else:
-            print("\033[93m>>> Manual restart required in your web interface.\033[0m")
-            
-        ssh.close()
-        print("\033[92m>>> Deployment successful!\033[0m")
-    except ImportError:
-        print("\033[91mERROR: 'paramiko' library not found. Install it with: pip install paramiko\033[0m")
-    except Exception as e:
-        print(f"\033[91mERROR during SSH deployment: {e}\033[0m")
+    print("\033[94m" + "="*60 + "\033[0m")
+    print("\033[96m" + "    __ __  ___   ______  ______" + "\033[0m")
+    print("\033[96m" + "   / //_/ /   | / ____/ / ____/" + "\033[0m")
+    print("\033[92m" + "  / ,<   / /| |/ /     / __/   " + "\033[0m")
+    print("\033[92m" + " / /| | / ___ / /___  / /___   " + "\033[0m")
+    print("\033[93m" + "/_/ |_|/_/  |_\____/ /_____/   " + "\033[0m")
+    print("\033[97m\033[1m" + "  Klipper Automated Configuration Ecosystem" + "\033[0m")
+    print("\033[94m" + "="*60 + "\033[0m")
 
 def main():
     print_header()
@@ -101,30 +25,46 @@ def main():
     print(f"\n\033[91m[1/3]\033[0m Fetching configuration for \033[93m{user_data['board']}\033[0m...", end="", flush=True)
     raw_cfg = fetch_raw_config(user_data['board'])
     parsed_data = parse_config(raw_cfg, user_data['board'])
-    time.sleep(0.5)
     print(f"\r\033[92m[1/3]\033[0m Fetching configuration for \033[93m{user_data['board']}\033[0m... Done!")
     
     # Milestone 2: The Template Generator
     print("\033[91m[2/3]\033[0m Generating printer.cfg...", end="", flush=True)
     generate_config(parsed_data, user_data)
-    time.sleep(0.5)
     print("\r\033[92m[2/3]\033[0m Generating printer.cfg... Done!")
     
-    print(f"\n\033[92mSUCCESS:\033[0m printer.cfg generated successfully at \033[93m{os.path.abspath('printer.cfg')}\033[0m")
-
-    # Deployment Phase
-    deploy = user_data.get("deploy", {})
-    if deploy.get("method") == "Local (This Pi)":
-        print("\n\033[91m[3/3]\033[0m Deploying locally...")
-        deploy_local(deploy["config_path"])
-    elif deploy.get("method") == "SSH (Remote Pi)":
-        print("\n\033[91m[3/3]\033[0m Deploying via SSH...")
-        deploy_ssh(deploy)
+    # SSH Deployment
+    if user_data.get('deploy_choice') == "Deploy to Klipper host via SSH":
+        print("\033[91m[3/3]\033[0m Deploying to Klipper host via SSH...")
+        deploy_config(user_data)
+        print("\033[92m[3/3]\033[0m Deploying to Klipper host via SSH... Done!")
+        print("\033[92mDeployment successful!\033[0m")
+        print("\033[93mPlease restart Klipper via your web interface to apply the new configuration.\033[0m")
+    elif user_data.get('deploy_choice') == "Copy to Klipper config directory (~/printer_data/config/)":
+        print("\033[91m[3/3]\033[0m Copying to Klipper config directory...")
+        import shutil
+        dest = os.path.expanduser("~/printer_data/config/printer.cfg")
+        os.makedirs(os.path.dirname(dest), exist_ok=True)
+        shutil.copy("printer.cfg", dest)
+        print(f"Copied printer.cfg to {dest}...")
+        print("\033[92m[3/3]\033[0m Copying to Klipper config directory... Done!")
+        print("\033[92mDeployment successful!\033[0m")
+        print("\033[93mPlease restart Klipper via your web interface to apply the new configuration.\033[0m")
+    elif user_data.get('deploy_choice') == "Start a temporary web server to download to PC":
+        print("\n\033[92mSUCCESS:\033[0m printer.cfg generated successfully!")
+        print("\033[96m[3/3]\033[0m Starting temporary web server...")
+        import http.server
+        import socketserver
+        PORT = 8080
+        Handler = http.server.SimpleHTTPRequestHandler
+        with socketserver.TCPServer(("", PORT), Handler) as httpd:
+            print(f"\033[93mDownload your file at: http://<raspberry-pi-ip>:{PORT}/printer.cfg\033[0m")
+            print("Press Ctrl+C to stop the server and exit.")
+            try:
+                httpd.serve_forever()
+            except KeyboardInterrupt:
+                print("\nServer stopped.")
     else:
-        print("\n\033[93m[3/3]\033[0m Generation complete. Manual upload required.")
-
-    time.sleep(0.5)
-    sys.exit(0)
+        print(f"\n\033[92mSUCCESS:\033[0m printer.cfg generated successfully at \033[93m{os.path.abspath('printer.cfg')}\033[0m")
 
 if __name__ == "__main__":
     main()
