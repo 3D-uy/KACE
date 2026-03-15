@@ -118,13 +118,18 @@ def parse_config(raw_cfg, filename=""):
     if "bltouch" not in data:
         data["bltouch"] = {}
         
+    if "mcu" not in data:
+        data["mcu"] = {}
+
     fname = filename.lower()
     if "skr-v1.4" in fname:
         if "sensor_pin" not in data["bltouch"]: data["bltouch"]["sensor_pin"] = "^P0.10"
         if "control_pin" not in data["bltouch"]: data["bltouch"]["control_pin"] = "P2.0"
+        data["mcu"]["restart_method"] = "command"
     elif "skr-v1.3" in fname:
         if "sensor_pin" not in data["bltouch"]: data["bltouch"]["sensor_pin"] = "^P1.27"
         if "control_pin" not in data["bltouch"]: data["bltouch"]["control_pin"] = "P2.0"
+        data["mcu"]["restart_method"] = "command"
     elif "skr-mini-e3-v2.0" in fname:
         if "sensor_pin" not in data["bltouch"]: data["bltouch"]["sensor_pin"] = "^PC14"
         if "control_pin" not in data["bltouch"]: data["bltouch"]["control_pin"] = "PA1"
@@ -140,6 +145,7 @@ def parse_config(raw_cfg, filename=""):
     elif "mks-sgen-l" in fname:
         if "sensor_pin" not in data["bltouch"]: data["bltouch"]["sensor_pin"] = "^P1.27"
         if "control_pin" not in data["bltouch"]: data["bltouch"]["control_pin"] = "P2.0"
+        data["mcu"]["restart_method"] = "command"
     elif "mks-robin-nano" in fname:
         if "sensor_pin" not in data["bltouch"]: data["bltouch"]["sensor_pin"] = "^PA11"
         if "control_pin" not in data["bltouch"]: data["bltouch"]["control_pin"] = "PA8"
