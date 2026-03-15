@@ -41,10 +41,10 @@ def discover_mcu():
 
 def run_wizard():
     """Runs the interactive CLI wizard to gather user preferences."""
-    print("\033[95m>>> Starting Hardware Discovery...\033[0m")
+    print("\033[96m>>> Starting Hardware Discovery...\033[0m")
     mcu_path = discover_mcu()
     
-    print("\033[95m>>> Fetching board database...\033[0m")
+    print("\033[96m>>> Fetching board database...\033[0m")
     boards = fetch_config_list()
     
     board = None
@@ -114,32 +114,13 @@ def run_wizard():
         choices=["1", "2"],
         style=custom_style
     ).ask()
-    
-    deploy_choice = questionary.select(
-        "What would you like to do with the generated printer.cfg?",
-        choices=[
-            "Save locally (current directory)",
-            "Copy to Klipper config directory (~/printer_data/config/)",
-            "Deploy to Klipper host via SSH",
-            "Start a temporary web server to download to PC"
-        ],
+
+    web_interface = questionary.select(
+        "Select your Web Interface (for includes):",
+        choices=["Mainsail", "Fluidd", "None"],
         style=custom_style
     ).ask()
     
-    ssh_data = {}
-    if deploy_choice == "Deploy to Klipper host via SSH":
-        default_host = "192.168.1.100"
-        ssh_conn = os.environ.get('SSH_CONNECTION')
-        if ssh_conn:
-            parts = ssh_conn.split()
-            if len(parts) >= 3:
-                default_host = parts[2]
-                
-        ssh_data['host'] = questionary.text("SSH Host (IP or hostname):", default=default_host, style=custom_style).ask()
-        ssh_data['user'] = questionary.text("SSH Username:", default="pi", style=custom_style).ask()
-        ssh_data['password'] = questionary.password("SSH Password:", style=custom_style).ask()
-        ssh_data['dest_path'] = questionary.text("Destination path on host:", default="~/printer_data/config/printer.cfg", style=custom_style).ask()
-
     return {
         "mcu_path": mcu_path,
         "board": board,
@@ -148,9 +129,8 @@ def run_wizard():
         "y_size": y_size,
         "z_size": z_size,
         "z_motors": z_motors,
+        "web_interface": web_interface,
         "probe": probe,
         "driver_type": driver_type,
-        "driver_mode": driver_mode,
-        "deploy_choice": deploy_choice,
-        **ssh_data
+        "driver_mode": driver_mode
     }

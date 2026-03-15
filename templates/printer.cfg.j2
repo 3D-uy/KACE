@@ -8,105 +8,109 @@
 # --------------------------------------------------
 # Includes
 # --------------------------------------------------
+{% if user.web_interface == 'Mainsail' -%}
 [include mainsail.cfg]
+{% elif user.web_interface == 'Fluidd' -%}
+[include fluidd.cfg]
+{%- endif %}
 
 # --------------------------------------------------
 # MCU
 # --------------------------------------------------
 [mcu]
-serial: {{ user.mcu_path }}                               # Serial connection to the printer controller board. Auto-detected by KACE. Verify in /dev/serial/by-id/ if connection fails.
+serial: {{ user.mcu_path | default('/dev/serial/by-id/TODO') }} # Serial connection to the printer controller board. Auto-detected by KACE. Verify in /dev/serial/by-id/ if connection fails.
 
 # --------------------------------------------------
 # Printer
 # --------------------------------------------------
 [printer]
-kinematics: {{ user.kinematics }}                               # Printer kinematics type (cartesian, corexy, delta)
-max_velocity: 300                               # Maximum velocity (in mm/s) of the toolhead
-max_accel: 3000                               # Maximum acceleration (in mm/s^2) of the toolhead
-max_z_velocity: 5                               # Maximum velocity (in mm/s) of movement along the z axis
-max_z_accel: 100                               # Maximum acceleration (in mm/s^2) of movement along the z axis
+kinematics: {{ user.kinematics }} # Printer kinematics type (cartesian, corexy, delta)
+max_velocity: 300 # Maximum velocity (in mm/s) of the toolhead
+max_accel: 3000 # Maximum acceleration (in mm/s^2) of the toolhead
+max_z_velocity: 5 # Maximum velocity (in mm/s) of movement along the z axis
+max_z_accel: 100 # Maximum acceleration (in mm/s^2) of movement along the z axis
 
 # --------------------------------------------------
 # Steppers
 # --------------------------------------------------
 [stepper_x]
 {%- if 'stepper_x' in pins %}
-step_pin: {{ pins['stepper_x'].get('step_pin', 'TODO') }}                               # Step pin for the X stepper driver
-dir_pin: {{ pins['stepper_x'].get('dir_pin', 'TODO') }}                               # Direction pin. Add or remove "!" to invert motor direction
-enable_pin: {{ pins['stepper_x'].get('enable_pin', 'TODO') }}                               # Enable pin for the stepper driver
+step_pin: {{ pins['stepper_x'].get('step_pin', 'TODO') }} # Step pin for the X stepper driver
+dir_pin: {{ pins['stepper_x'].get('dir_pin', 'TODO') }} # Direction pin. Add or remove "!" to invert motor direction
+enable_pin: {{ pins['stepper_x'].get('enable_pin', 'TODO') }} # Enable pin for the stepper driver
 {%- endif %}
-microsteps: 16                               # Number of microsteps per full step
-rotation_distance: 40                               # Distance in mm the axis travels per full rotation of the motor
-endstop_pin: {{ pins['stepper_x'].get('endstop_pin', 'TODO') if 'stepper_x' in pins else 'TODO' }}                               # Endstop pin. Add or remove "!" to invert logic
-position_endstop: 0                               # Location of the endstop (usually 0)
-position_max: {{ user.x_size }}                               # Maximum valid X position
-homing_speed: 50                               # Maximum velocity (in mm/s) of the stepper when homing
+microsteps: 16 # Number of microsteps per full step
+rotation_distance: 40 # Distance in mm the axis travels per full rotation of the motor
+endstop_pin: {{ pins['stepper_x'].get('endstop_pin', 'TODO') if 'stepper_x' in pins else 'TODO' }} # Endstop pin. Add or remove "!" to invert logic
+position_endstop: 0 # Location of the endstop (usually 0)
+position_max: {{ user.x_size }} # Maximum valid X position
+homing_speed: 50 # Maximum velocity (in mm/s) of the stepper when homing
 
 [stepper_y]
 {%- if 'stepper_y' in pins %}
-step_pin: {{ pins['stepper_y'].get('step_pin', 'TODO') }}                               # Step pin for the Y stepper driver
-dir_pin: {{ pins['stepper_y'].get('dir_pin', 'TODO') }}                               # Direction pin. Add or remove "!" to invert motor direction
-enable_pin: {{ pins['stepper_y'].get('enable_pin', 'TODO') }}                               # Enable pin for the stepper driver
+step_pin: {{ pins['stepper_y'].get('step_pin', 'TODO') }} # Step pin for the Y stepper driver
+dir_pin: {{ pins['stepper_y'].get('dir_pin', 'TODO') }} # Direction pin. Add or remove "!" to invert motor direction
+enable_pin: {{ pins['stepper_y'].get('enable_pin', 'TODO') }} # Enable pin for the stepper driver
 {%- endif %}
-microsteps: 16                               # Number of microsteps per full step
-rotation_distance: 40                               # Distance in mm the axis travels per full rotation of the motor
-endstop_pin: {{ pins['stepper_y'].get('endstop_pin', 'TODO') if 'stepper_y' in pins else 'TODO' }}                               # Endstop pin. Add or remove "!" to invert logic
-position_endstop: 0                               # Location of the endstop (usually 0)
-position_max: {{ user.y_size }}                               # Maximum valid Y position
-homing_speed: 50                               # Maximum velocity (in mm/s) of the stepper when homing
+microsteps: 16 # Number of microsteps per full step
+rotation_distance: 40 # Distance in mm the axis travels per full rotation of the motor
+endstop_pin: {{ pins['stepper_y'].get('endstop_pin', 'TODO') if 'stepper_y' in pins else 'TODO' }} # Endstop pin. Add or remove "!" to invert logic
+position_endstop: 0 # Location of the endstop (usually 0)
+position_max: {{ user.y_size }} # Maximum valid Y position
+homing_speed: 50 # Maximum velocity (in mm/s) of the stepper when homing
 
 [stepper_z]
 {%- if 'stepper_z' in pins %}
-step_pin: {{ pins['stepper_z'].get('step_pin', 'TODO') }}                               # Step pin for the Z stepper driver
-dir_pin: {{ pins['stepper_z'].get('dir_pin', 'TODO') }}                               # Direction pin. Add or remove "!" to invert motor direction
-enable_pin: {{ pins['stepper_z'].get('enable_pin', 'TODO') }}                               # Enable pin for the stepper driver
+step_pin: {{ pins['stepper_z'].get('step_pin', 'TODO') }} # Step pin for the Z stepper driver
+dir_pin: {{ pins['stepper_z'].get('dir_pin', 'TODO') }} # Direction pin. Add or remove "!" to invert motor direction
+enable_pin: {{ pins['stepper_z'].get('enable_pin', 'TODO') }} # Enable pin for the stepper driver
 {%- endif %}
-microsteps: 16                               # Number of microsteps per full step
-rotation_distance: 8                               # Distance in mm the axis travels per full rotation of the motor
+microsteps: 16 # Number of microsteps per full step
+rotation_distance: 8 # Distance in mm the axis travels per full rotation of the motor
 {%- if user.probe != 'None' %}
-endstop_pin: probe:z_virtual_endstop                               # Endstop pin. Add or remove "!" to invert logic
+endstop_pin: probe:z_virtual_endstop # Endstop pin. Add or remove "!" to invert logic
 {%- else %}
-endstop_pin: {{ pins['stepper_z'].get('endstop_pin', 'TODO') if 'stepper_z' in pins else 'TODO' }}                               # Endstop pin. Add or remove "!" to invert logic
-position_endstop: 0                               # Location of the endstop (usually 0)
+endstop_pin: {{ pins['stepper_z'].get('endstop_pin', 'TODO') if 'stepper_z' in pins else 'TODO' }} # Endstop pin. Add or remove "!" to invert logic
+position_endstop: 0 # Location of the endstop (usually 0)
 {%- endif %}
-position_max: {{ user.z_size }}                               # Maximum valid Z position
+position_max: {{ user.z_size }} # Maximum valid Z position
 
 {%- if user.z_motors == '2' %}
 
 [stepper_z1]
 {%- set z1_pins = pins.get('stepper_z1', pins.get('extruder_1', pins.get('extruder1', {}))) %}
 {%- if z1_pins %}
-step_pin: {{ z1_pins.get('step_pin', 'TODO') }}                               # Step pin for the Z1 stepper driver
-dir_pin: {{ z1_pins.get('dir_pin', 'TODO') }}                               # Direction pin. Add or remove "!" to invert motor direction
-enable_pin: {{ z1_pins.get('enable_pin', 'TODO') }}                               # Enable pin for the stepper driver
+step_pin: {{ z1_pins.get('step_pin', 'TODO') }} # Step pin for the Z1 stepper driver
+dir_pin: {{ z1_pins.get('dir_pin', 'TODO') }} # Direction pin. Add or remove "!" to invert motor direction
+enable_pin: {{ z1_pins.get('enable_pin', 'TODO') }} # Enable pin for the stepper driver
 {%- else %}
-step_pin: TODO                               # Step pin for the Z1 stepper driver
-dir_pin: TODO                               # Direction pin. Add or remove "!" to invert motor direction
-enable_pin: TODO                               # Enable pin for the stepper driver
+step_pin: TODO # Step pin for the Z1 stepper driver
+dir_pin: TODO # Direction pin. Add or remove "!" to invert motor direction
+enable_pin: TODO # Enable pin for the stepper driver
 {%- endif %}
-microsteps: 16                               # Number of microsteps per full step
-rotation_distance: 8                               # Distance in mm the axis travels per full rotation of the motor
+microsteps: 16 # Number of microsteps per full step
+rotation_distance: 8 # Distance in mm the axis travels per full rotation of the motor
 {%- endif %}
 
 [extruder]
 {%- if 'extruder' in pins %}
-step_pin: {{ pins['extruder'].get('step_pin', 'TODO') }}                               # Step pin for the extruder driver
-dir_pin: {{ pins['extruder'].get('dir_pin', 'TODO') }}                               # Direction pin. Add or remove "!" to invert motor direction
-enable_pin: {{ pins['extruder'].get('enable_pin', 'TODO') }}                               # Enable pin for the stepper driver
-heater_pin: {{ pins['extruder'].get('heater_pin', 'TODO') }}                               # Pin connected to the hotend heater cartridge
-sensor_pin: {{ pins['extruder'].get('sensor_pin', 'TODO') }}                               # Pin connected to the hotend thermistor
+step_pin: {{ pins['extruder'].get('step_pin', 'TODO') }} # Step pin for the extruder driver
+dir_pin: {{ pins['extruder'].get('dir_pin', 'TODO') }} # Direction pin. Add or remove "!" to invert motor direction
+enable_pin: {{ pins['extruder'].get('enable_pin', 'TODO') }} # Enable pin for the stepper driver
+heater_pin: {{ pins['extruder'].get('heater_pin', 'TODO') }} # Pin connected to the hotend heater cartridge
+sensor_pin: {{ pins['extruder'].get('sensor_pin', 'TODO') }} # Pin connected to the hotend thermistor
 {%- endif %}
-microsteps: 16                               # Number of microsteps per full step
-rotation_distance: 33.500                               # Distance in mm the filament travels per full rotation of the motor
-nozzle_diameter: 0.400                               # Diameter of the installed nozzle in mm
-filament_diameter: 1.750                               # Diameter of the filament being used
-sensor_type: EPCOS 100K B57560G104F                               # Type of thermistor used for the hotend
-control: pid                               # Temperature control algorithm
-pid_Kp: 22.2                               # PID proportional gain
-pid_Ki: 1.08                               # PID integral gain
-pid_Kd: 114                               # PID derivative gain
-min_temp: 0                               # Minimum safe temperature
-max_temp: 250                               # Maximum safe temperature
+microsteps: 16 # Number of microsteps per full step
+rotation_distance: 33.500 # Distance in mm the filament travels per full rotation of the motor
+nozzle_diameter: 0.400 # Diameter of the installed nozzle in mm
+filament_diameter: 1.750 # Diameter of the filament being used
+sensor_type: EPCOS 100K B57560G104F # Type of thermistor used for the hotend
+control: pid # Temperature control algorithm
+pid_Kp: 22.2 # PID proportional gain
+pid_Ki: 1.08 # PID integral gain
+pid_Kd: 114 # PID derivative gain
+min_temp: 0 # Minimum safe temperature
+max_temp: 250 # Maximum safe temperature
 
 # --------------------------------------------------
 # Probe
@@ -114,19 +118,19 @@ max_temp: 250                               # Maximum safe temperature
 {%- if user.probe != 'None' %}
 [{{ user.probe | lower }}]
 {%- set probe_sec = pins.get('bltouch', pins.get('probe', {})) %}
-sensor_pin: {{ probe_sec.get('sensor_pin', '^TODO') }}                               # Pin connected to the probe sensor
+sensor_pin: {{ probe_sec.get('sensor_pin', '^TODO') }} # Pin connected to the probe sensor
 {%- if user.probe | lower == 'bltouch' or 'control_pin' in probe_sec %}
-control_pin: {{ probe_sec.get('control_pin', 'TODO') }}                               # Pin connected to the probe control
+control_pin: {{ probe_sec.get('control_pin', 'TODO') }} # Pin connected to the probe control
 {%- endif %}
-x_offset: 0                               # Offset relative to the nozzle. Must be measured for your specific printer
-y_offset: 0                               # Offset relative to the nozzle. Must be measured for your specific printer
-z_offset: 0                               # Z offset should be calibrated using PROBE_CALIBRATE
+x_offset: 0 # Offset relative to the nozzle. Must be measured for your specific printer
+y_offset: 0 # Offset relative to the nozzle. Must be measured for your specific printer
+z_offset: 0 # Z offset should be calibrated using PROBE_CALIBRATE
 
 [safe_z_home]
-home_xy_position: {{ user.x_size | int / 2 }}, {{ user.y_size | int / 2 }}                               # XY position to move to before homing Z
-speed: 50                               # Speed at which the toolhead is moved to the safe Z home coordinate
-z_hop: 10                               # Distance (in mm) to lift the Z axis prior to homing
-z_hop_speed: 5                               # Speed (in mm/s) at which the Z axis is lifted prior to homing
+home_xy_position: {{ user.x_size | int / 2 }}, {{ user.y_size | int / 2 }} # XY position to move to before homing Z
+speed: 50 # Speed at which the toolhead is moved to the safe Z home coordinate
+z_hop: 10 # Distance (in mm) to lift the Z axis prior to homing
+z_hop_speed: 5 # Speed (in mm/s) at which the Z axis is lifted prior to homing
 {%- endif %}
 
 # --------------------------------------------------
@@ -134,16 +138,16 @@ z_hop_speed: 5                               # Speed (in mm/s) at which the Z ax
 # --------------------------------------------------
 [heater_bed]
 {%- if 'heater_bed' in pins %}
-heater_pin: {{ pins['heater_bed'].get('heater_pin', 'TODO') }}                               # Pin connected to the heated bed solid state relay or MOSFET
-sensor_pin: {{ pins['heater_bed'].get('sensor_pin', 'TODO') }}                               # Pin connected to the heated bed thermistor
+heater_pin: {{ pins['heater_bed'].get('heater_pin', 'TODO') }} # Pin connected to the heated bed solid state relay or MOSFET
+sensor_pin: {{ pins['heater_bed'].get('sensor_pin', 'TODO') }} # Pin connected to the heated bed thermistor
 {%- endif %}
-sensor_type: EPCOS 100K B57560G104F                               # Type of thermistor used for the heated bed
-control: pid                               # Temperature control algorithm
-pid_Kp: 54.027                               # PID proportional gain
-pid_Ki: 0.770                               # PID integral gain
-pid_Kd: 948.182                               # PID derivative gain
-min_temp: 0                               # Minimum safe temperature
-max_temp: 130                               # Maximum safe temperature
+sensor_type: EPCOS 100K B57560G104F # Type of thermistor used for the heated bed
+control: pid # Temperature control algorithm
+pid_Kp: 54.027 # PID proportional gain
+pid_Ki: 0.770 # PID integral gain
+pid_Kd: 948.182 # PID derivative gain
+min_temp: 0 # Minimum safe temperature
+max_temp: 130 # Maximum safe temperature
 
 # --------------------------------------------------
 # TMC Drivers
@@ -155,84 +159,84 @@ max_temp: 130                               # Maximum safe temperature
 {%- set prefix_x = '' if has_pins_x else '# ' %}
 {{ prefix_x }}[{{ user.driver_type | lower }} stepper_x]
 {%- if user.driver_mode == 'UART' %}
-{{ prefix_x }}uart_pin: {{ tmc_x.get('uart_pin', 'TODO') }}                               # UART communication pin
+{{ prefix_x }}uart_pin: {{ tmc_x.get('uart_pin', 'TODO') }} # UART communication pin
 {%- if 'tx_pin' in tmc_x %}
-{{ prefix_x }}tx_pin: {{ tmc_x.get('tx_pin') }}                               # UART TX pin
+{{ prefix_x }}tx_pin: {{ tmc_x.get('tx_pin') }} # UART TX pin
 {%- endif %}
 {%- elif user.driver_mode == 'SPI' %}
-{{ prefix_x }}cs_pin: {{ tmc_x.get('cs_pin', 'TODO') }}                               # SPI chip select pin
+{{ prefix_x }}cs_pin: {{ tmc_x.get('cs_pin', 'TODO') }} # SPI chip select pin
 {%- if 'spi_software_sclk_pin' in tmc_x %}
-{{ prefix_x }}spi_software_sclk_pin: {{ tmc_x.get('spi_software_sclk_pin') }}                               # SPI clock pin
+{{ prefix_x }}spi_software_sclk_pin: {{ tmc_x.get('spi_software_sclk_pin') }} # SPI clock pin
 {%- endif %}
 {%- if 'spi_software_mosi_pin' in tmc_x %}
-{{ prefix_x }}spi_software_mosi_pin: {{ tmc_x.get('spi_software_mosi_pin') }}                               # SPI MOSI pin
+{{ prefix_x }}spi_software_mosi_pin: {{ tmc_x.get('spi_software_mosi_pin') }} # SPI MOSI pin
 {%- endif %}
 {%- if 'spi_software_miso_pin' in tmc_x %}
-{{ prefix_x }}spi_software_miso_pin: {{ tmc_x.get('spi_software_miso_pin') }}                               # SPI MISO pin
+{{ prefix_x }}spi_software_miso_pin: {{ tmc_x.get('spi_software_miso_pin') }} # SPI MISO pin
 {%- endif %}
 {%- if 'spi_bus' in tmc_x %}
-{{ prefix_x }}spi_bus: {{ tmc_x.get('spi_bus') }}                               # SPI bus name
+{{ prefix_x }}spi_bus: {{ tmc_x.get('spi_bus') }} # SPI bus name
 {%- endif %}
 {%- endif %}
-{{ prefix_x }}run_current: 0.800                               # Motor run current in amps
-{{ prefix_x }}hold_current: 0.400                               # Motor hold current in amps
-{{ prefix_x }}stealthchop_threshold: 999999                               # Set to 0 to use spreadCycle mode
+{{ prefix_x }}run_current: 0.800 # Motor run current in amps
+{{ prefix_x }}hold_current: 0.400 # Motor hold current in amps
+{{ prefix_x }}stealthchop_threshold: 999999 # Set to 0 to use spreadCycle mode
 
 {% set tmc_y = pins.get('tmc2209 stepper_y', pins.get('tmc2208 stepper_y', pins.get('tmc2130 stepper_y', pins.get('tmc5160 stepper_y', {})))) %}
 {% set has_pins_y = (user.driver_mode == 'UART' and 'uart_pin' in tmc_y) or (user.driver_mode == 'SPI' and 'cs_pin' in tmc_y) %}
 {% set prefix_y = '' if has_pins_y else '# ' %}
 {{ prefix_y }}[{{ user.driver_type | lower }} stepper_y]
 {%- if user.driver_mode == 'UART' %}
-{{ prefix_y }}uart_pin: {{ tmc_y.get('uart_pin', 'TODO') }}                               # UART communication pin
+{{ prefix_y }}uart_pin: {{ tmc_y.get('uart_pin', 'TODO') }} # UART communication pin
 {%- if 'tx_pin' in tmc_y %}
-{{ prefix_y }}tx_pin: {{ tmc_y.get('tx_pin') }}                               # UART TX pin
+{{ prefix_y }}tx_pin: {{ tmc_y.get('tx_pin') }} # UART TX pin
 {%- endif %}
 {%- elif user.driver_mode == 'SPI' %}
-{{ prefix_y }}cs_pin: {{ tmc_y.get('cs_pin', 'TODO') }}                               # SPI chip select pin
+{{ prefix_y }}cs_pin: {{ tmc_y.get('cs_pin', 'TODO') }} # SPI chip select pin
 {%- if 'spi_software_sclk_pin' in tmc_y %}
-{{ prefix_y }}spi_software_sclk_pin: {{ tmc_y.get('spi_software_sclk_pin') }}                               # SPI clock pin
+{{ prefix_y }}spi_software_sclk_pin: {{ tmc_y.get('spi_software_sclk_pin') }} # SPI clock pin
 {%- endif %}
 {%- if 'spi_software_mosi_pin' in tmc_y %}
-{{ prefix_y }}spi_software_mosi_pin: {{ tmc_y.get('spi_software_mosi_pin') }}                               # SPI MOSI pin
+{{ prefix_y }}spi_software_mosi_pin: {{ tmc_y.get('spi_software_mosi_pin') }} # SPI MOSI pin
 {%- endif %}
 {%- if 'spi_software_miso_pin' in tmc_y %}
-{{ prefix_y }}spi_software_miso_pin: {{ tmc_y.get('spi_software_miso_pin') }}                               # SPI MISO pin
+{{ prefix_y }}spi_software_miso_pin: {{ tmc_y.get('spi_software_miso_pin') }} # SPI MISO pin
 {%- endif %}
 {%- if 'spi_bus' in tmc_y %}
-{{ prefix_y }}spi_bus: {{ tmc_y.get('spi_bus') }}                               # SPI bus name
+{{ prefix_y }}spi_bus: {{ tmc_y.get('spi_bus') }} # SPI bus name
 {%- endif %}
 {%- endif %}
-{{ prefix_y }}run_current: 0.800                               # Motor run current in amps
-{{ prefix_y }}hold_current: 0.400                               # Motor hold current in amps
-{{ prefix_y }}stealthchop_threshold: 999999                               # Set to 0 to use spreadCycle mode
+{{ prefix_y }}run_current: 0.800 # Motor run current in amps
+{{ prefix_y }}hold_current: 0.400 # Motor hold current in amps
+{{ prefix_y }}stealthchop_threshold: 999999 # Set to 0 to use spreadCycle mode
 
 {% set tmc_z = pins.get('tmc2209 stepper_z', pins.get('tmc2208 stepper_z', pins.get('tmc2130 stepper_z', pins.get('tmc5160 stepper_z', {})))) %}
 {% set has_pins_z = (user.driver_mode == 'UART' and 'uart_pin' in tmc_z) or (user.driver_mode == 'SPI' and 'cs_pin' in tmc_z) %}
 {% set prefix_z = '' if has_pins_z else '# ' %}
 {{ prefix_z }}[{{ user.driver_type | lower }} stepper_z]
 {%- if user.driver_mode == 'UART' %}
-{{ prefix_z }}uart_pin: {{ tmc_z.get('uart_pin', 'TODO') }}                               # UART communication pin
+{{ prefix_z }}uart_pin: {{ tmc_z.get('uart_pin', 'TODO') }} # UART communication pin
 {%- if 'tx_pin' in tmc_z %}
-{{ prefix_z }}tx_pin: {{ tmc_z.get('tx_pin') }}                               # UART TX pin
+{{ prefix_z }}tx_pin: {{ tmc_z.get('tx_pin') }} # UART TX pin
 {%- endif %}
 {%- elif user.driver_mode == 'SPI' %}
-{{ prefix_z }}cs_pin: {{ tmc_z.get('cs_pin', 'TODO') }}                               # SPI chip select pin
+{{ prefix_z }}cs_pin: {{ tmc_z.get('cs_pin', 'TODO') }} # SPI chip select pin
 {%- if 'spi_software_sclk_pin' in tmc_z %}
-{{ prefix_z }}spi_software_sclk_pin: {{ tmc_z.get('spi_software_sclk_pin') }}                               # SPI clock pin
+{{ prefix_z }}spi_software_sclk_pin: {{ tmc_z.get('spi_software_sclk_pin') }} # SPI clock pin
 {%- endif %}
 {%- if 'spi_software_mosi_pin' in tmc_z %}
-{{ prefix_z }}spi_software_mosi_pin: {{ tmc_z.get('spi_software_mosi_pin') }}                               # SPI MOSI pin
+{{ prefix_z }}spi_software_mosi_pin: {{ tmc_z.get('spi_software_mosi_pin') }} # SPI MOSI pin
 {%- endif %}
 {%- if 'spi_software_miso_pin' in tmc_z %}
-{{ prefix_z }}spi_software_miso_pin: {{ tmc_z.get('spi_software_miso_pin') }}                               # SPI MISO pin
+{{ prefix_z }}spi_software_miso_pin: {{ tmc_z.get('spi_software_miso_pin') }} # SPI MISO pin
 {%- endif %}
 {%- if 'spi_bus' in tmc_z %}
-{{ prefix_z }}spi_bus: {{ tmc_z.get('spi_bus') }}                               # SPI bus name
+{{ prefix_z }}spi_bus: {{ tmc_z.get('spi_bus') }} # SPI bus name
 {%- endif %}
 {%- endif %}
-{{ prefix_z }}run_current: 0.650                               # Motor run current in amps
-{{ prefix_z }}hold_current: 0.400                               # Motor hold current in amps
-{{ prefix_z }}stealthchop_threshold: 999999                               # Set to 0 to use spreadCycle mode
+{{ prefix_z }}run_current: 0.650 # Motor run current in amps
+{{ prefix_z }}hold_current: 0.400 # Motor hold current in amps
+{{ prefix_z }}stealthchop_threshold: 999999 # Set to 0 to use spreadCycle mode
 
 {%- if user.z_motors == '2' %}
 
@@ -241,28 +245,28 @@ max_temp: 130                               # Maximum safe temperature
 {% set prefix_z1 = '' if has_pins_z1 else '# ' %}
 {{ prefix_z1 }}[{{ user.driver_type | lower }} stepper_z1]
 {%- if user.driver_mode == 'UART' %}
-{{ prefix_z1 }}uart_pin: {{ tmc_z1.get('uart_pin', 'TODO') }}                               # UART communication pin
+{{ prefix_z1 }}uart_pin: {{ tmc_z1.get('uart_pin', 'TODO') }} # UART communication pin
 {%- if 'tx_pin' in tmc_z1 %}
-{{ prefix_z1 }}tx_pin: {{ tmc_z1.get('tx_pin') }}                               # UART TX pin
+{{ prefix_z1 }}tx_pin: {{ tmc_z1.get('tx_pin') }} # UART TX pin
 {%- endif %}
 {%- elif user.driver_mode == 'SPI' %}
-{{ prefix_z1 }}cs_pin: {{ tmc_z1.get('cs_pin', 'TODO') }}                               # SPI chip select pin
+{{ prefix_z1 }}cs_pin: {{ tmc_z1.get('cs_pin', 'TODO') }} # SPI chip select pin
 {%- if 'spi_software_sclk_pin' in tmc_z1 %}
-{{ prefix_z1 }}spi_software_sclk_pin: {{ tmc_z1.get('spi_software_sclk_pin') }}                               # SPI clock pin
+{{ prefix_z1 }}spi_software_sclk_pin: {{ tmc_z1.get('spi_software_sclk_pin') }} # SPI clock pin
 {%- endif %}
 {%- if 'spi_software_mosi_pin' in tmc_z1 %}
-{{ prefix_z1 }}spi_software_mosi_pin: {{ tmc_z1.get('spi_software_mosi_pin') }}                               # SPI MOSI pin
+{{ prefix_z1 }}spi_software_mosi_pin: {{ tmc_z1.get('spi_software_mosi_pin') }} # SPI MOSI pin
 {%- endif %}
 {%- if 'spi_software_miso_pin' in tmc_z1 %}
-{{ prefix_z1 }}spi_software_miso_pin: {{ tmc_z1.get('spi_software_miso_pin') }}                               # SPI MISO pin
+{{ prefix_z1 }}spi_software_miso_pin: {{ tmc_z1.get('spi_software_miso_pin') }} # SPI MISO pin
 {%- endif %}
 {%- if 'spi_bus' in tmc_z1 %}
-{{ prefix_z1 }}spi_bus: {{ tmc_z1.get('spi_bus') }}                               # SPI bus name
+{{ prefix_z1 }}spi_bus: {{ tmc_z1.get('spi_bus') }} # SPI bus name
 {%- endif %}
 {%- endif %}
-{{ prefix_z1 }}run_current: 0.650                               # Motor run current in amps
-{{ prefix_z1 }}hold_current: 0.400                               # Motor hold current in amps
-{{ prefix_z1 }}stealthchop_threshold: 999999                               # Set to 0 to use spreadCycle mode
+{{ prefix_z1 }}run_current: 0.650 # Motor run current in amps
+{{ prefix_z1 }}hold_current: 0.400 # Motor hold current in amps
+{{ prefix_z1 }}stealthchop_threshold: 999999 # Set to 0 to use spreadCycle mode
 {%- endif %}
 
 {% set tmc_e = pins.get('tmc2209 extruder', pins.get('tmc2208 extruder', pins.get('tmc2130 extruder', pins.get('tmc5160 extruder', {})))) %}
@@ -270,28 +274,28 @@ max_temp: 130                               # Maximum safe temperature
 {% set prefix_e = '' if has_pins_e else '# ' %}
 {{ prefix_e }}[{{ user.driver_type | lower }} extruder]
 {%- if user.driver_mode == 'UART' %}
-{{ prefix_e }}uart_pin: {{ tmc_e.get('uart_pin', 'TODO') }}                               # UART communication pin
+{{ prefix_e }}uart_pin: {{ tmc_e.get('uart_pin', 'TODO') }} # UART communication pin
 {%- if 'tx_pin' in tmc_e %}
-{{ prefix_e }}tx_pin: {{ tmc_e.get('tx_pin') }}                               # UART TX pin
+{{ prefix_e }}tx_pin: {{ tmc_e.get('tx_pin') }} # UART TX pin
 {%- endif %}
 {%- elif user.driver_mode == 'SPI' %}
-{{ prefix_e }}cs_pin: {{ tmc_e.get('cs_pin', 'TODO') }}                               # SPI chip select pin
+{{ prefix_e }}cs_pin: {{ tmc_e.get('cs_pin', 'TODO') }} # SPI chip select pin
 {%- if 'spi_software_sclk_pin' in tmc_e %}
-{{ prefix_e }}spi_software_sclk_pin: {{ tmc_e.get('spi_software_sclk_pin') }}                               # SPI clock pin
+{{ prefix_e }}spi_software_sclk_pin: {{ tmc_e.get('spi_software_sclk_pin') }} # SPI clock pin
 {%- endif %}
 {%- if 'spi_software_mosi_pin' in tmc_e %}
-{{ prefix_e }}spi_software_mosi_pin: {{ tmc_e.get('spi_software_mosi_pin') }}                               # SPI MOSI pin
+{{ prefix_e }}spi_software_mosi_pin: {{ tmc_e.get('spi_software_mosi_pin') }} # SPI MOSI pin
 {%- endif %}
 {%- if 'spi_software_miso_pin' in tmc_e %}
-{{ prefix_e }}spi_software_miso_pin: {{ tmc_e.get('spi_software_miso_pin') }}                               # SPI MISO pin
+{{ prefix_e }}spi_software_miso_pin: {{ tmc_e.get('spi_software_miso_pin') }} # SPI MISO pin
 {%- endif %}
 {%- if 'spi_bus' in tmc_e %}
-{{ prefix_e }}spi_bus: {{ tmc_e.get('spi_bus') }}                               # SPI bus name
+{{ prefix_e }}spi_bus: {{ tmc_e.get('spi_bus') }} # SPI bus name
 {%- endif %}
 {%- endif %}
-{{ prefix_e }}run_current: 0.650                               # Motor run current in amps
-{{ prefix_e }}hold_current: 0.400                               # Motor hold current in amps
-{{ prefix_e }}stealthchop_threshold: 999999                               # Set to 0 to use spreadCycle mode
+{{ prefix_e }}run_current: 0.650 # Motor run current in amps
+{{ prefix_e }}hold_current: 0.400 # Motor hold current in amps
+{{ prefix_e }}stealthchop_threshold: 999999 # Set to 0 to use spreadCycle mode
 
 {%- endif %}
 
@@ -300,8 +304,7 @@ max_temp: 130                               # Maximum safe temperature
 # --------------------------------------------------
 {%- if 'board_pins' in pins %}
 [board_pins]
-aliases: {{ pins['board_pins'].get('aliases', '
-    EXP1_1=TODO, EXP1_2=TODO') }}                               # Define aliases for board pins (e.g., EXP1 and EXP2 headers)
+aliases: {{ pins['board_pins'].get('aliases', '\\n    EXP1_1=TODO, EXP1_2=TODO') }} # Define aliases for board pins (e.g., EXP1 and EXP2 headers)
 {%- else %}
 # [board_pins]
 # aliases:
