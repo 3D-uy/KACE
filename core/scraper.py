@@ -9,67 +9,19 @@ def fetch_config_list():
     try:
         with urllib.request.urlopen(req) as response:
             data = json.loads(response.read().decode())
-            generic_configs = [item['name'] for item in data if item['name'].startswith('generic-')]
-            printer_configs = [item['name'] for item in data if item['name'].startswith('printer-')]
-            return generic_configs, printer_configs
+            configs = [item['name'] for item in data if item['name'].startswith('generic-') or item['name'].startswith('printer-')]
+            return configs
     except Exception as e:
         print(f"Error fetching config list: {e}")
         # Fallback to a hardcoded list if API fails (e.g., rate limit)
-        return ["generic-bigtreetech-skr-v1.4.cfg", "generic-creality-v4.2.2.cfg"], []
+        return ["generic-bigtreetech-skr-v1.4.cfg", "generic-creality-v4.2.2.cfg"]
 
 def fetch_raw_config(filename):
     """Fetches the raw content of a specific config file."""
     url = f"https://raw.githubusercontent.com/Klipper3d/klipper/master/config/{filename}"
     req = urllib.request.Request(url, headers={'User-Agent': 'KACE-App'})
-    try:
-        with urllib.request.urlopen(req) as response:
-            return response.read().decode()
-    except Exception as e:
-        print(f"Error fetching raw config: {e}")
-        return ""
-
-def parse_printer_profile(raw_cfg):
-    """
-    Parses a printer profile to extract baseline parameters.
-    """
-    params = {
-        "kinematics": "cartesian",
-        "x_size": "235",
-        "y_size": "235",
-        "z_size": "250",
-        "z_motors": "1",
-        "probe": "None"
-    }
-    
-    # Extract kinematics
-    kin_match = re.search(r'kinematics\s*:\s*(\w+)', raw_cfg)
-    if kin_match:
-        params["kinematics"] = kin_match.group(1).lower()
-        
-    # Extract bed size (often found in position_max of steppers)
-    x_match = re.search(r'\[stepper_x\].*?position_max\s*:\s*(\d+)', raw_cfg, re.DOTALL)
-    if x_match:
-        params["x_size"] = x_match.group(1)
-        
-    y_match = re.search(r'\[stepper_y\].*?position_max\s*:\s*(\d+)', raw_cfg, re.DOTALL)
-    if y_match:
-        params["y_size"] = y_match.group(1)
-        
-    z_match = re.search(r'\[stepper_z\].*?position_max\s*:\s*(\d+)', raw_cfg, re.DOTALL)
-    if z_match:
-        params["z_size"] = z_match.group(1)
-        
-    # Detect Z motors
-    if "[stepper_z1]" in raw_cfg:
-        params["z_motors"] = "2"
-        
-    # Detect Probe
-    if "[bltouch]" in raw_cfg:
-        params["probe"] = "BLTouch"
-    elif "[probe]" in raw_cfg:
-        params["probe"] = "Inductive"
-        
-    return params
+    with urllib.request.urlopen(req) as response:
+        return response.read().decode()
 
 def parse_config(raw_cfg, filename=""):
     """
@@ -118,18 +70,13 @@ def parse_config(raw_cfg, filename=""):
     if "bltouch" not in data:
         data["bltouch"] = {}
         
-    if "mcu" not in data:
-        data["mcu"] = {}
-
     fname = filename.lower()
     if "skr-v1.4" in fname:
         if "sensor_pin" not in data["bltouch"]: data["bltouch"]["sensor_pin"] = "^P0.10"
         if "control_pin" not in data["bltouch"]: data["bltouch"]["control_pin"] = "P2.0"
-        data["mcu"]["restart_method"] = "command"
     elif "skr-v1.3" in fname:
         if "sensor_pin" not in data["bltouch"]: data["bltouch"]["sensor_pin"] = "^P1.27"
         if "control_pin" not in data["bltouch"]: data["bltouch"]["control_pin"] = "P2.0"
-        data["mcu"]["restart_method"] = "command"
     elif "skr-mini-e3-v2.0" in fname:
         if "sensor_pin" not in data["bltouch"]: data["bltouch"]["sensor_pin"] = "^PC14"
         if "control_pin" not in data["bltouch"]: data["bltouch"]["control_pin"] = "PA1"
@@ -145,7 +92,6 @@ def parse_config(raw_cfg, filename=""):
     elif "mks-sgen-l" in fname:
         if "sensor_pin" not in data["bltouch"]: data["bltouch"]["sensor_pin"] = "^P1.27"
         if "control_pin" not in data["bltouch"]: data["bltouch"]["control_pin"] = "P2.0"
-        data["mcu"]["restart_method"] = "command"
     elif "mks-robin-nano" in fname:
         if "sensor_pin" not in data["bltouch"]: data["bltouch"]["sensor_pin"] = "^PA11"
         if "control_pin" not in data["bltouch"]: data["bltouch"]["control_pin"] = "PA8"

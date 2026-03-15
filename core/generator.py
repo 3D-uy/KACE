@@ -32,5 +32,5 @@ def generate_config(parsed_data, user_data):
     final_output = chr(10).join(aligned_lines)
     
     # Write to printer.cfg
-    with open('printer.cfg', 'w', encoding='utf-8', newline='\n') as f:
+    with open('printer.cfg', 'w') as f:
         f.write(final_output)
