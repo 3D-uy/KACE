@@ -51,6 +51,17 @@ clear
 python3 kace.py
 ```
 
+## # 2.
+
+  -Download the printer.cfg file just created and upload it to Klipper.
+
+## # 3. 
+
+  -Restart system from SSH
+  
+```
+sudo systemctl restart klipper moonraker
+```
 ---
 
 ## 🛠️ Key Features
@@ -63,5 +74,13 @@ python3 kace.py
 | **Jinja2 Engine** | Generates clean, modular, and well-commented configurations. |
 
 ---
+
+## 🙏 Acknowledgments
+
+KACE would not exist without the incredible work of the **Klipper** and **KIAUH** communities.
+
+Their dedication, innovation, and open-source spirit have made advanced 3D printing accessible to thousands of users around the world.
+
+KACE was created to contribute back to this ecosystem by making the initial setup easier and more approachable for new Klipper users.
 
 *Developed for the Klipper Community.*
