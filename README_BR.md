@@ -34,6 +34,7 @@ Se você não o tem instalado ou não tem certeza, execute o seguinte comando:
 
 ```bash
 sudo apt-get update && sudo apt-get install git -y
+sudo apt install python3-pip -y
 ```
 
 Execute o KACE diretamente no seu host Klipper com estes comandos otimizados:
@@ -45,9 +46,9 @@ Execute o KACE diretamente no seu host Klipper com estes comandos otimizados:
 ```bash
 git clone https://github.com/3D-uy/KACE.git
 cd KACE
-pip3 install -r requirements.txt
+pip3 install -r requirements.txt --break-system-packages
 clear
-python3 KACE.py
+python3 kace.py
 ```
 
 ---
