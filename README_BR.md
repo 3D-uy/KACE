@@ -45,7 +45,7 @@ Execute o KACE diretamente no seu host Klipper com estes comandos otimizados:
 ```bash
 git clone https://github.com/3D-uy/KACE.git
 cd KACE
-pip3 install -r requirements.txt --break-system-packages
+pip3 install -r requirements.txt
 clear
 python3 KACE.py
 ```
