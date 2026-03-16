@@ -51,6 +51,18 @@ clear
 python3 kace.py
 ```
 
+## # 2.
+
+  -Baixe o arquivo printer.cfg recém-criado e envie para o Klipper.
+
+## # 3. 
+
+  -Reinicie o sistema via SSH
+  
+```
+sudo systemctl restart klipper moonraker
+```
+
 ---
 
 ## 🛠️ Principais Recursos
@@ -63,5 +75,13 @@ python3 kace.py
 | **Motor Jinja2** | Gera configurações limpas, modulares e bem comentadas. |
 
 ---
+
+## 🙏 Agradecimentos
+
+O KACE não existiria sem o incrível trabalho das comunidades do **Klipper** e **KIAUH**.
+
+Sua dedicação, inovação e espírito de código aberto tornaram a impressão 3D avançada acessível a milhares de usuários em todo o mundo.
+
+O KACE foi criado para retribuir a este ecossistema, tornando a configuração inicial mais fácil e acessível para novos usuários do Klipper.
 
 *Desenvolvido para a Comunidade Klipper.*
