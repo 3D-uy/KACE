@@ -23,7 +23,34 @@ KACE simplifica el proceso al:
 - Sugerir placas compatibles
 - Guiarte a través de la configuración
 - Generar un printer.cfg listo para usar
-- Desplegarlo directamente en tu host de impresora
+
+---
+
+## ⚠️ Aviso Legal
+
+KACE se proporciona como una herramienta de código abierto destinada a simplificar la creación de una configuración de Klipper.
+
+Al usar este software, reconoces que lo haces **bajo tu propio riesgo**.  
+El autor no asume **ninguna responsabilidad por posibles daños al hardware, configuraciones incorrectas o comportamientos inesperados** resultantes de la configuración generada.
+
+Siempre revisa y verifica el `printer.cfg` generado antes de usar tu impresora.
+
+
+## 📋 Requisitos Previos
+
+Antes de usar **KACE**, asegúrate de que los siguientes pasos ya estén completados:
+
+✔ La tarjeta SD de la Raspberry Pi ha sido flasheada usando **Raspberry Pi Imager** con **MainsailOS**
+
+✔ Klipper, Moonraker y Mainsail están corriendo en la Raspberry Pi
+
+✔ **KIAUH** ha sido instalado en la Raspberry Pi
+
+✔ El firmware de la impresora ha sido compilado usando KIAUH  
+
+✔ El firmware compilado ha sido flasheado a la placa de control de tu impresora
+
+Una vez completados estos pasos, puedes usar **KACE** para generar un `printer.cfg` limpio y estructurado.
 
 ---
 
