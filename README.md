@@ -24,6 +24,18 @@ KACE simplifies the process by:
 - Guiding you through configuration
 - Generating a ready-to-use printer.cfg
 
+---
+
+## ⚠️ Disclaimer
+
+KACE is provided as an open-source tool intended to simplify the creation of a Klipper configuration.
+
+By using this software, you acknowledge that you are doing so **at your own risk**.  
+The author assumes **no responsibility for potential hardware damage, misconfiguration, or unexpected behavior** resulting from the generated configuration.
+
+Always review and verify the generated `printer.cfg` before running your printer.
+
+
 ## 📋 Prerequisites
 
 Before using **KACE**, make sure the following steps are already completed:
@@ -35,22 +47,10 @@ Before using **KACE**, make sure the following steps are already completed:
 ✔ **KIAUH** has been installed on the Raspberry Pi
 
 ✔ The printer firmware has been compiled using KIAUH  
-   (`Advanced → Build Firmware`)
 
 ✔ The compiled firmware has been flashed to your printer control board
 
 Once these steps are completed, you can use **KACE** to generate a clean and structured `printer.cfg`.
-
----
-
-## ⚠️ Disclaimer
-
-KACE is provided as an open-source tool intended to simplify the creation of a Klipper configuration.
-
-By using this software, you acknowledge that you are doing so **at your own risk**.  
-The author assumes **no responsibility for potential hardware damage, misconfiguration, or unexpected behavior** resulting from the generated configuration.
-
-Always review and verify the generated `printer.cfg` before running your printer.
 
 ---
 
