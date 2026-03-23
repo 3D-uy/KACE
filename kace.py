@@ -1,9 +1,11 @@
 import os
 import sys
 import time
+import questionary
 from core.scraper import fetch_config_list, fetch_raw_config, parse_config
-from core.wizard import run_wizard
+from core.wizard import run_wizard, custom_style
 from core.generator import generate_config
+from core.deployer import deploy_config, deploy_usb
 
 def print_header():
     # ANSI Escape Codes
@@ -50,6 +52,23 @@ def main():
     print("\r\033[92m[2/3]\033[0m Generating printer.cfg... Done!")
     
     print(f"\n\033[92mSUCCESS:\033[0m printer.cfg generated successfully at \033[93m{os.path.abspath('printer.cfg')}\033[0m")
+
+    # Milestone 5: Deployment
+    deploy_method = questionary.select(
+        "\nSelect Deployment Method:",
+        choices=["None (Done)", "USB / SD Card", "SSH (Push to host)"],
+        style=custom_style
+    ).ask()
+
+    if deploy_method == "USB / SD Card":
+        deploy_usb(user_data)
+    elif deploy_method == "SSH (Push to host)":
+        user_data['host'] = questionary.text("Enter SSH Host (e.g. 192.168.1.100):", style=custom_style).ask()
+        user_data['user'] = questionary.text("Enter SSH User (e.g. pi):", default="pi", style=custom_style).ask()
+        user_data['password'] = questionary.password("Enter SSH Password:", style=custom_style).ask()
+        user_data['dest_path'] = questionary.text("Enter Destination Path:", default="~/printer_data/config/", style=custom_style).ask()
+        if user_data['host'] and user_data['user'] and user_data['dest_path']:
+            deploy_config(user_data)
 
     time.sleep(0.5)
     sys.exit(0)

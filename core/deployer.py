@@ -1,5 +1,6 @@
 import paramiko
 import os
+import shutil
 
 def deploy_config(user_data):
     """Deploys the generated printer.cfg to the Klipper host via SSH/SCP."""
@@ -27,5 +28,33 @@ def deploy_config(user_data):
         
         sftp.close()
         ssh.close()
+    except Exception as e:
+        print(f"\033[91mDeployment failed: {e}\033[0m")
+
+def deploy_usb(user_data):
+    """Deploys the generated printer.cfg (and firmware if exists) to a USB/SD card."""
+    try:
+        import questionary
+        from core.wizard import custom_style
+        
+        dest = questionary.text(
+            "Enter USB/SD Card mount path (e.g. D:\\ or /media/usb):",
+            style=custom_style
+        ).ask()
+        
+        if not dest or not os.path.isdir(dest):
+            print(f"\033[91mDeployment failed: Invalid path or directory does not exist: {dest}\033[0m")
+            return
+            
+        print(f"Copying printer.cfg to {dest}...")
+        shutil.copy2('printer.cfg', os.path.join(dest, 'printer.cfg'))
+        
+        # Optionally copy klipper.bin if exists
+        klipper_bin = os.path.expanduser('~/klipper/out/klipper.bin')
+        if os.path.exists(klipper_bin):
+            print(f"Found compiled firmware! Copying klipper.bin to {dest}...")
+            shutil.copy2(klipper_bin, os.path.join(dest, 'klipper.bin'))
+            
+        print("\033[92mUSB Deployment Successful!\033[0m")
     except Exception as e:
         print(f"\033[91mDeployment failed: {e}\033[0m")
