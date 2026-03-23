@@ -58,3 +58,28 @@ def deploy_usb(user_data):
         print("\033[92mUSB Deployment Successful!\033[0m")
     except Exception as e:
         print(f"\033[91mDeployment failed: {e}\033[0m")
+
+def deploy_local(user_data):
+    """Copies the generated printer.cfg to a local folder on the PC."""
+    try:
+        import questionary
+        from core.wizard import custom_style
+        
+        dest = questionary.text(
+            "Enter local destination folder path (e.g. C:\\3DPrinter or ~/Documents):",
+            style=custom_style
+        ).ask()
+        
+        if not dest:
+            return
+
+        dest = os.path.expanduser(dest)
+        
+        if not os.path.exists(dest):
+            os.makedirs(dest, exist_ok=True)
+            
+        print(f"Copying printer.cfg to {dest}...")
+        shutil.copy2('printer.cfg', os.path.join(dest, 'printer.cfg'))
+        print(f"\033[92mSuccessfully saved to {dest}!\033[0m")
+    except Exception as e:
+        print(f"\033[91mSave failed: {e}\033[0m")

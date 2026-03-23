@@ -5,7 +5,7 @@ import questionary
 from core.scraper import fetch_config_list, fetch_raw_config, parse_config
 from core.wizard import run_wizard, custom_style
 from core.generator import generate_config
-from core.deployer import deploy_config, deploy_usb
+from core.deployer import deploy_config, deploy_usb, deploy_local
 
 def print_header():
     # ANSI Escape Codes
@@ -56,12 +56,14 @@ def main():
     # Milestone 5: Deployment
     deploy_method = questionary.select(
         "\nSelect Deployment Method:",
-        choices=["None (Done)", "USB / SD Card", "SSH (Push to host)"],
+        choices=["None (Done)", "Local Folder (PC)", "USB / SD Card", "SSH (Push to host)"],
         style=custom_style
     ).ask()
 
     if deploy_method == "USB / SD Card":
         deploy_usb(user_data)
+    elif deploy_method == "Local Folder (PC)":
+        deploy_local(user_data)
     elif deploy_method == "SSH (Push to host)":
         user_data['host'] = questionary.text("Enter SSH Host (e.g. 192.168.1.100):", style=custom_style).ask()
         user_data['user'] = questionary.text("Enter SSH User (e.g. pi):", default="pi", style=custom_style).ask()
