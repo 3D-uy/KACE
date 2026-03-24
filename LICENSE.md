@@ -24,7 +24,7 @@ Example attribution:
 
 ```
 Powered by KACE (Klipper Automated Configuration Ecosystem)
-[https://github.com/3D-uy/KACE](https://github.com/3D-uy/KACE)
+[https://github.com/3D-uy/kace](https://github.com/3D-uy/kace)
 ```
 
 ## Commercial Use
