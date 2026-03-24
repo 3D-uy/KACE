@@ -87,7 +87,7 @@ python3 kace.py
   -Reinicia el sistema desde SSH
   
 ```
-sudo systemctl restart klipper moonraker
+sudo reboot
 ```
 
 ---
