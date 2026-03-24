@@ -80,11 +80,11 @@ python3 kace.py
 
 ## # 2.
 
-  -Baixe o arquivo printer.cfg recém-criado e envie para o Klipper.
+  - Baixe o arquivo printer.cfg recém-criado e envie para o Klipper.
 
 ## # 3. 
 
-  -Reinicie o sistema via SSH
+  - Reinicie o sistema via SSH
   
 ```
 sudo systemctl restart klipper moonraker
