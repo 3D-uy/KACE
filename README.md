@@ -2,7 +2,8 @@
   <img src="assets/kace_banner2.png" width="1000">
 </p>
 
-# 🚀 KACE: Klipper Automated Configuration Ecosystem
+# 🚀 KACE:   Klipper Automated Configuration Ecosystem
+
 
 ![Klipper](https://img.shields.io/badge/Klipper-Automation-orange?style=for-the-badge&logo=klipper)
 ![Python](https://img.shields.io/badge/Python-3.9+-blue?style=for-the-badge&logo=python)
@@ -10,8 +11,7 @@
 [Español (ES)](README_ES.md) | [Português (BR)](README_BR.md)
 
 
-### KACE automatically generates a working Klipper printer.cfg
-### by detecting your hardware and guiding you through configuration.
+### KACE automatically generates a working Klipper printer.cfg by detecting your hardware and guiding you through configuration.
 
 
 ## 🟢 Why KACE?
