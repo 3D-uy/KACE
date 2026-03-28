@@ -2,8 +2,9 @@
   <img src="assets/kace_banner2.png" width="1000">
 </p>
 
-# 🚀 KACE: Klipper Automated Configuration Ecosystem
+#   Klipper Automated Configuration Ecosystem
 
+# 🚀 KACE:
 ![Klipper](https://img.shields.io/badge/Klipper-Automation-orange?style=for-the-badge&logo=klipper)
 ![Python](https://img.shields.io/badge/Python-3.9+-blue?style=for-the-badge&logo=python)
 
