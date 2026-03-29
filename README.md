@@ -1,28 +1,34 @@
 <p align="center">
-  <img src="assets/kace_banner.png" width="1000">
+  <img src="docs/assets/kace_banner.png" width="1000">
 </p>
 
-# 🚀 KACE:   Klipper Automated Configuration Ecosystem
+# 🚀 KACE — Klipper Automated Configuration Ecosystem
 
+<p align="center">
 
-![Klipper](https://img.shields.io/badge/Klipper-Automation-orange?style=for-the-badge&logo=klipper)
-![Python](https://img.shields.io/badge/Python-3.9+-blue?style=for-the-badge&logo=python)
+🌐 **Language**  
+🇺🇸 English | 🇪🇸 <a href="docs/es/README.md">Español</a> | 🇧🇷 <a href="docs/pt/README.md">Português</a>
 
-[Español (ES)](README_ES.md) | [Português (BR)](README_BR.md)
+</p>
 
+---
 
-### KACE automatically generates a working Klipper printer.cfg by detecting your hardware and guiding you through configuration.
+### ⚡ Install Klipper the easy way — just copy, paste, and go.
 
+KACE automatically generates a fully functional **Klipper `printer.cfg`** by detecting your hardware and guiding you through a smart configuration process.
 
-## 🟢 Why KACE?
+---
 
-Configuring Klipper can be complex for new users.
+## 🎯 Why KACE?
 
-KACE simplifies the process by:
-- Detecting your MCU automatically
-- Suggesting compatible boards
-- Guiding you through configuration
-- Generating a ready-to-use printer.cfg
+Setting up Klipper can be complex and time-consuming, especially for new users.
+
+**KACE simplifies everything:**
+
+- 🔍 Automatically detects your MCU  
+- 🧠 Suggests compatible boards  
+- 🧭 Guides you step-by-step  
+- ⚙️ Generates a ready-to-use `printer.cfg`  
 
 ---
 
@@ -33,43 +39,37 @@ KACE is provided as an open-source tool intended to simplify the creation of a K
 By using this software, you acknowledge that you are doing so **at your own risk**.  
 The author assumes **no responsibility for potential hardware damage, misconfiguration, or unexpected behavior** resulting from the generated configuration.
 
-Always review and verify the generated `printer.cfg` before running your printer.
+👉 Always review and verify the generated `printer.cfg` before running your printer.
 
+---
 
 ## 📋 Prerequisites
 
-Before using **KACE**, make sure the following steps are already completed:
+Before using **KACE**, make sure the following steps are completed:
 
-✔ The Raspberry Pi SD card has been flashed using **Raspberry Pi Imager** with **MainsailOS**
+✔ Raspberry Pi SD card flashed using **Raspberry Pi Imager** with **Mainsail OS**  
+✔ Klipper, Moonraker, and Mainsail are running  
+✔ **KIAUH** is installed  
+✔ Firmware compiled using KIAUH  
+✔ Firmware flashed to your printer control board  
 
-✔ Klipper, Moonraker and Mainsail are running on the Raspberry Pi
-
-✔ **KIAUH** has been installed on the Raspberry Pi
-
-✔ The printer firmware has been compiled using KIAUH  
-
-✔ The compiled firmware has been flashed to your printer control board
-
-Once these steps are completed, you can use **KACE** to generate a clean and structured `printer.cfg`.
+Once ready, KACE will handle the rest.
 
 ---
 
 ## ⚡ Quick Start (via SSH)
 
-To download this script, it is necessary to have **git** installed.  
-If you do not have it installed or are not sure, run the following command:
+Make sure `git` is installed:
 
 ```bash
 sudo apt-get update && sudo apt-get install git -y
 sudo apt install python3-pip -y
-```
+````
 
-Run KACE directly on your Klipper host with these optimized commands:
+---
 
-## # 1. 
-  - Clone the repository
-  - Install dependencies (with modern OS bypass)
-  - Launch the Ecosystem
+### 🚀 Run KACE
+
 ```bash
 git clone https://github.com/3D-uy/KACE.git
 cd KACE
@@ -78,15 +78,15 @@ clear
 python3 kace.py
 ```
 
-## # 2.
+---
 
-  - Download the newly created printer.cfg file and upload it to Klipper.
+### 📥 Next Steps
 
-## # 3. 
+1. Download the generated `printer.cfg`
+2. Upload it to your Klipper interface
+3. Restart services:
 
-  - Restart the system from SSH
-  
-```
+```bash
 sudo systemctl restart klipper moonraker
 ```
 
@@ -94,12 +94,34 @@ sudo systemctl restart klipper moonraker
 
 ## 🛠️ Key Features
 
-| Feature | Description |
-| :--- | :--- |
-| **GitHub Scraper** | Fetches real-time pinouts directly from the official Klipper source. |
-| **Smart Wizard** | Auto-detects MCU serial IDs and guides you through hardware selection. |
-| **SSH Deployer** | Automatically push your generated config to the host via secure SSH. |
-| **Jinja2 Engine** | Generates clean, modular, and well-commented configurations. |
+| Feature               | Description                                             |
+| :-------------------- | :------------------------------------------------------ |
+| 🔎 **GitHub Scraper** | Fetches real-time pinouts from official Klipper sources |
+| 🧠 **Smart Wizard**   | Detects MCU and guides hardware selection               |
+| 🔐 **SSH Deployer**   | Pushes configs directly to your host                    |
+| ⚙️ **Jinja2 Engine**  | Generates clean, modular, and readable configs          |
+
+---
+
+## 🎬 Full Installation Guide
+
+👉 Step-by-step guides:
+
+* 🇺🇸 English: *(this page)*
+* 🇪🇸 Español: `docs/es/README.md`
+* 🇧🇷 Português: `docs/pt/README.md`
+
+---
+
+## 🙌 Contribute & Feedback
+
+KACE is evolving, and your feedback is key.
+
+* 🐛 Report issues
+* 💡 Suggest improvements
+* 🤝 Contribute ideas
+
+👉 Every bit of feedback helps improve the project.
 
 ---
 
@@ -107,8 +129,18 @@ sudo systemctl restart klipper moonraker
 
 KACE would not exist without the incredible work of the **Klipper** and **KIAUH** communities.
 
-Their dedication, innovation, and open-source spirit have made advanced 3D printing accessible to thousands of users around the world.
+Their dedication and open-source spirit made advanced 3D printing accessible to thousands of users.
 
-KACE was created to contribute back to this ecosystem by making the initial setup easier and more approachable for new Klipper users.
+KACE is built to give something back — making Klipper easier for everyone.
 
-*Developed for the Klipper Community.*
+---
+
+<p align="center">
+
+⭐ If you like this project, consider giving it a star
+🚀 Built for the Klipper community
+
+</p>
+```
+
+
