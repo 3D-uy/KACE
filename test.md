@@ -7,7 +7,7 @@
 <p align="center">
 
 🌐 **Language**  
-🇺🇸 English | 🇪🇸 <a href="Español/README_es.md">Español</a> | 🇧🇷 <a href="Portugues/README_pt.md">Português</a>
+🇺🇸 English | 🇪🇸 <a href="installs/es/README.md">Español</a> | 🇧🇷 <a href="installs/pt/README.md">Português</a>
 
 </p>
 
