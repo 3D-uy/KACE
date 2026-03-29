@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="/docs/assets/kace_banner.png" width="1000">
+  <img src="docs/assets/kace_banner.png" width="1000">
 </p>
 
 # 🚀 KACE — Klipper Automated Configuration Ecosystem
@@ -25,10 +25,10 @@ Setting up Klipper can be complex and time-consuming, especially for new users.
 
 **KACE simplifies everything:**
 
-- 🔍 Automatically detects your MCU
-- 🧠 Suggests compatible boards
-- 🧭 Guides you step-by-step
-- ⚙️ Generates a ready-to-use `printer.cfg`
+- 🔍 Automatically detects your MCU  
+- 🧠 Suggests compatible boards  
+- 🧭 Guides you step-by-step  
+- ⚙️ Generates a ready-to-use `printer.cfg`  
 
 ---
 
@@ -87,7 +87,7 @@ python3 kace.py
 3. Restart services:
 
 ```bash
-sudo reboot
+sudo systemctl restart klipper moonraker
 ```
 
 ---
@@ -105,11 +105,11 @@ sudo reboot
 
 ## 🎬 Full Installation Guide
 
-👉 Step-by-step guide available here:
+👉 Step-by-step guides:
 
-* 🇺🇸 English: *(coming soon / or add link)*
-* 🇪🇸 Español: `Klipper Install/Klipper_install_es.md`
-* 🇧🇷 Português: *(add when ready)*
+* 🇺🇸 English: *(this page)*
+* 🇪🇸 Español: `docs/es/README.md`
+* 🇧🇷 Português: `docs/pt/README.md`
 
 ---
 
