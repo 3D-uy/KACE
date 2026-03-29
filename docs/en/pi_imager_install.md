@@ -4,13 +4,38 @@
   <img src="../assets/pi_imager/pi_imager_logo.png" width="300">
 </p>
 
+<p align="center">
+
+🌐 **Language**  
+🇺🇸 English | 🇪🇸 <a href="../es/pi_imager.md">Español</a> | 🇧🇷 <a href="../pt/pi_imager.md">Português</a>
+
+</p>
+
 ---
 
-Follow this step-by-step guide to install **Mainsail OS** on your Raspberry Pi using Raspberry Pi Imager.
+## 📦 Overview
+
+This guide walks you through installing **Mainsail OS** on your Raspberry Pi using Raspberry Pi Imager.
+
+👉 This is the **first step** before using KACE.
+
+---
+
+## ⚠️ Before you start
+
+Make sure you have:
+
+- A Raspberry Pi  
+- A microSD card (recommended: 16GB or more)  
+- A stable internet connection  
+
+💡 *All configuration will be done during the flashing process — no extra setup needed later.*
 
 ---
 
 ### 🔹 Step 1 — Open Raspberry Pi Imager
+Launch the Raspberry Pi Imager application.
+
 <p align="center">
   <img src="../assets/pi_imager/pi_imager_1.png" width="500">
 </p>
@@ -19,6 +44,7 @@ Follow this step-by-step guide to install **Mainsail OS** on your Raspberry Pi u
 
 ### 🔹 Step 2 — Select your device
 Choose your Raspberry Pi model.
+
 <p align="center">
   <img src="../assets/pi_imager/pi_imager_2.png" width="500">
 </p>
@@ -27,7 +53,9 @@ Choose your Raspberry Pi model.
 
 ### 🔹 Step 3 — Choose OS
 Select:
+
 **Other specific-purpose OS**
+
 <p align="center">
   <img src="../assets/pi_imager/pi_imager_3.png" width="500">
 </p>
@@ -36,7 +64,9 @@ Select:
 
 ### 🔹 Step 4 — 3D Printing category
 Select:
+
 **3D Printing**
+
 <p align="center">
   <img src="../assets/pi_imager/pi_imager_4.png" width="500">
 </p>
@@ -44,6 +74,8 @@ Select:
 ---
 
 ### 🔹 Step 5 — Select Mainsail OS
+Choose **Mainsail OS** from the list.
+
 <p align="center">
   <img src="../assets/pi_imager/pi_imager_5.png" width="500">
 </p>
@@ -52,7 +84,9 @@ Select:
 
 ### 🔹 Step 6 — Choose version
 Select:
+
 **Mainsail OS 2.x.x (Raspberry Pi)**
+
 <p align="center">
   <img src="../assets/pi_imager/pi_imager_6.png" width="500">
 </p>
@@ -61,6 +95,9 @@ Select:
 
 ### 🔹 Step 7 — Select storage
 Choose your SD card.
+
+⚠️ *Make sure you select the correct device — all data will be erased.*
+
 <p align="center">
   <img src="../assets/pi_imager/pi_imager_7.png" width="500">
 </p>
@@ -68,8 +105,15 @@ Choose your SD card.
 ---
 
 ### 🔹 Step 8 — Hostname
-Set your device name  
-Example: `klipper`
+Set your device name.
+
+Example:
+```bash
+klipper
+````
+
+💡 *You will use this later to connect via network.*
+
 <p align="center">
   <img src="../assets/pi_imager/pi_imager_8.png" width="500">
 </p>
@@ -77,10 +121,13 @@ Example: `klipper`
 ---
 
 ### 🔹 Step 9 — Localization
+
 Configure:
-- Timezone  
-- Region  
-- Keyboard layout  
+
+* Timezone
+* Region
+* Keyboard layout
+
 <p align="center">
   <img src="../assets/pi_imager/pi_imager_9.png" width="500">
 </p>
@@ -88,9 +135,14 @@ Configure:
 ---
 
 ### 🔹 Step 10 — User credentials
+
 Set:
-- Username  
-- Password  
+
+* Username
+* Password
+
+💡 *Remember these credentials — you will need them for SSH.*
+
 <p align="center">
   <img src="../assets/pi_imager/pi_imager_010.png" width="500">
 </p>
@@ -98,9 +150,14 @@ Set:
 ---
 
 ### 🔹 Step 11 — WiFi setup
+
 Enter:
-- Network name (SSID)  
-- Password  
+
+* Network name (SSID)
+* Password
+
+💡 *Make sure it’s your correct network.*
+
 <p align="center">
   <img src="../assets/pi_imager/pi_imager_011.png" width="500">
 </p>
@@ -108,7 +165,11 @@ Enter:
 ---
 
 ### 🔹 Step 12 — Enable SSH
-Enable SSH authentication for remote access.
+
+Enable SSH authentication.
+
+👉 This step is **critical** to access your Raspberry Pi remotely.
+
 <p align="center">
   <img src="../assets/pi_imager/pi_imager_012.png" width="500">
 </p>
@@ -116,7 +177,9 @@ Enable SSH authentication for remote access.
 ---
 
 ### 🔹 Step 13 — Write image
+
 Start the flashing process.
+
 <p align="center">
   <img src="../assets/pi_imager/pi_imager_013.png" width="500">
 </p>
@@ -124,7 +187,9 @@ Start the flashing process.
 ---
 
 ### ⚠️ Step 14 — Warning
-Confirm the warning to continue.
+
+Confirm the warning to proceed.
+
 <p align="center">
   <img src="../assets/pi_imager/pi_imager_014.png" width="500">
 </p>
@@ -132,7 +197,14 @@ Confirm the warning to continue.
 ---
 
 ### 🔹 Step 15 — Download & flashing
-The system will download and write the image to the SD card.
+
+The system will:
+
+* Download the OS
+* Write it to the SD card
+
+⏳ *This may take several minutes.*
+
 <p align="center">
   <img src="../assets/pi_imager/pi_imager_015.png" width="500">
 </p>
@@ -140,7 +212,9 @@ The system will download and write the image to the SD card.
 ---
 
 ### ✅ Step 16 — Completed
+
 Flashing finished successfully.
+
 <p align="center">
   <img src="../assets/pi_imager/pi_imager_016.png" width="500">
 </p>
@@ -151,12 +225,19 @@ Flashing finished successfully.
 
 Now you can:
 
-1. Insert the SD card into your Raspberry Pi  
-2. Power it on  
-3. Connect via SSH using tools like **MobaXterm**  
-   or directly from your browser  
+1. Insert the SD card into your Raspberry Pi
+2. Power it on
+3. Connect via SSH using tools like **MobaXterm**
+   or directly from your browser
 
 Use the hostname you configured:
 
 ```bash
 klipper.local
+```
+
+---
+
+💡 **Tip:**
+If `klipper.local` doesn’t work, find the IP address from your router.
+
