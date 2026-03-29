@@ -7,7 +7,7 @@
 <p align="center">
 
 🌐 **Idioma**  
-🇺🇸 <a href="../../README.md">English</a> | 🇪🇸 Español | 🇧🇷 <a href="../pt/README.md">Português</a>
+🇺🇸 <a href="README.md">English</a> | 🇪🇸 Español | 🇧🇷 <a href="docs/pt/README.md">Português</a>
 
 </p>
 
