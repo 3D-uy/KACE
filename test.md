@@ -1,6 +1,3 @@
-Dale… te lo dejo en **modo pro total**, más claro, más atractivo y pensado para que convierta (⭐ + uso real) 😏🔥
-
-````md
 <p align="center">
   <img src="assets/kace_banner.png" width="1000">
 </p>
@@ -90,7 +87,7 @@ python3 kace.py
 3. Restart services:
 
 ```bash
-sudo systemctl restart klipper moonraker
+sudo reboot
 ```
 
 ---
@@ -144,5 +141,5 @@ KACE is built to give something back — making Klipper easier for everyone.
 🚀 Built for the Klipper community
 
 </p>
-```
+
 
