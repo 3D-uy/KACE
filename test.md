@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/kace_banner.png" width="1000">
+  <img src="/docs/assets/kace_banner.png" width="1000">
 </p>
 
 # 🚀 KACE — Klipper Automated Configuration Ecosystem
@@ -7,7 +7,7 @@
 <p align="center">
 
 🌐 **Language**  
-🇺🇸 English | 🇪🇸 <a href="installs/es/README.md">Español</a> | 🇧🇷 <a href="installs/pt/README.md">Português</a>
+🇺🇸 English | 🇪🇸 <a href="docs/es/README.md">Español</a> | 🇧🇷 <a href="docs/pt/README.md">Português</a>
 
 </p>
 
