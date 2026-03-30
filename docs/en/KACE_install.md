@@ -134,7 +134,7 @@ You can now:
 
 - Access your printer interface  
 - Start configuring your machine  
-- Upload your printer profiles  
+- Upload your printer profiles
 - Enjoy automated Klipper setup with **KACE**
 
 ---
@@ -144,15 +144,4 @@ Access your interface via:
 
 ```bash
 http://klipper.local
-
-or using your Raspberry Pi IP address.
-
----
-
-Si querés llevar esto a otro nivel todavía (y acá se pone interesante 😏):
-
-- podemos hacer que los comandos reales aparezcan en cada step  
-- o convertir esto en **guía copy-paste automática tipo script KACE**  
-- o incluso hacerlo interactivo para tu README principal
-
-Decime y lo dejamos *nivel proyecto que la rompe en GitHub* 🚀
+```
