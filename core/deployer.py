@@ -36,7 +36,7 @@ def deploy_usb(user_data):
     """Deploys the generated printer.cfg (and firmware if exists) to a USB/SD card."""
     try:
         import questionary
-        from core.wizard import custom_style
+        from core.style import custom_style
         
         dest = questionary.text(
             "Enter USB/SD Card mount path (e.g. D:\\ or /media/usb):",
@@ -66,7 +66,7 @@ def deploy_local(user_data):
     """Copies the generated printer.cfg to a local folder on the PC."""
     try:
         import questionary
-        from core.wizard import custom_style
+        from core.style import custom_style
         
         dest = questionary.text(
             "Enter local destination folder path (e.g. C:\\3DPrinter or ~/Documents):",

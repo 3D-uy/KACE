@@ -3,7 +3,8 @@ import sys
 import time
 import questionary
 from core.scraper import fetch_config_list, fetch_raw_config, parse_config
-from core.wizard import run_wizard, custom_style
+from core.wizard import run_wizard
+from core.style import custom_style
 from core.generator import generate_config
 from core.deployer import deploy_config, deploy_usb, deploy_local
 

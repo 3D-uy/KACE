@@ -1,7 +1,7 @@
 import glob
 import re
 import questionary
-from core.wizard import custom_style
+from core.style import custom_style
 
 def discover_mcu_hardware():
     """

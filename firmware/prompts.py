@@ -1,5 +1,5 @@
 import questionary
-from core.wizard import custom_style
+from core.style import custom_style
 
 def prompt_communication_interface(mcu):
     """
