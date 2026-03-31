@@ -5,6 +5,7 @@ import sys
 import questionary
 from questionary import Style
 from .scraper import fetch_config_list
+from firmware.detector import discover_mcu_hardware
 
 MCU_SEARCH_TERMS = {
     "lpc1769": ["skr-v1.4", "skr-v1.3", "sgen-l"],
@@ -32,37 +33,36 @@ custom_style = Style([
 
 def discover_mcu():
     """Milestone 3: Auto-Discovery of MCU"""
-    ports = glob.glob('/dev/serial/by-id/*')
-    if not ports:
-        return questionary.text("No serial devices found. Enter MCU path manually (e.g., /dev/ttyUSB0):", style=custom_style).ask()
-    
-    choices = ports + ["Enter manually..."]
-    choice = questionary.select("Select MCU serial port:", choices=choices, style=custom_style).ask()
-    if choice == "Enter manually...":
-        return questionary.text("Enter MCU path manually:", style=custom_style).ask()
-    return choice
+    return discover_mcu_hardware()
 
 def run_wizard():
     """Runs the interactive CLI wizard to gather user preferences."""
     print("\033[96m>>> Starting Hardware Discovery...\033[0m")
-    mcu_path = discover_mcu()
+    mcu_context = discover_mcu()
+    mcu_path = mcu_context.get("mcu_path")
+    detected_mcu = mcu_context.get("derived_mcu")
+    mcu_hint = mcu_context.get("hint")
     
     print("\033[96m>>> Fetching board database...\033[0m")
     boards = fetch_config_list()
     
     suggested_configs = []
-    match = re.search(r'usb-Klipper_([a-zA-Z0-9]+)_', mcu_path)
-    if match:
-        mcu = match.group(1).lower()
-        print(f"\nDetected MCU: {mcu.upper()}\n")
-        if mcu in MCU_SEARCH_TERMS:
-            search_terms = MCU_SEARCH_TERMS[mcu]
+    if detected_mcu:
+        print(f"\nDetected MCU: {detected_mcu.upper()}\n")
+        if detected_mcu in MCU_SEARCH_TERMS:
+            search_terms = MCU_SEARCH_TERMS[detected_mcu]
             for b in boards:
                 if any(term in b.lower() for term in search_terms):
                     suggested_configs.append(b)
 
+    # Prompt user for manual config board finding if not completely derived
+    if mcu_hint == "manual" and not detected_mcu:
+        print(f"\nUsing manual MCU. You will have a chance to enter the compiler configuration later.")
+
     user_data = {
         "mcu_path": mcu_path,
+        "mcu_type": detected_mcu,
+        "mcu_hint": mcu_hint,
         "language": "English",
         "board": None,
         "kinematics": None,

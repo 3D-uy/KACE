@@ -51,7 +51,34 @@ def main():
     time.sleep(0.5)
     print("\r\033[92m[2/3]\033[0m Generating printer.cfg... Done!")
     
-    print(f"\n\033[92mSUCCESS:\033[0m printer.cfg generated successfully at \033[93m{os.path.abspath('printer.cfg')}\033[0m")
+    cfg_path = os.path.expanduser('~/kace/printer.cfg')
+    print(f"\n\033[92mSUCCESS:\033[0m printer.cfg generated successfully at \033[93m{cfg_path}\033[0m")
+
+    # Milestone 3: Firmware Compilation
+    mcu = user_data.get('mcu_type')
+    hint = user_data.get('mcu_hint')
+    if mcu or hint == "manual":
+        # If MCU was skipped completely or the user hit enter manually, ask what the target is
+        prompt_mcu = mcu if mcu else "manually selected board"
+        ans = questionary.confirm(f"Do you want to automatically compile Klipper firmware for your {prompt_mcu}?").ask()
+        if ans:
+            from firmware.builder import build_firmware_orchestrator
+            print("\n\033[91m[3/3]\033[0m Rebuilding Klipper firmware for your controller...", flush=True)
+            result = build_firmware_orchestrator(
+                mcu_path=user_data.get('mcu_path'),
+                derived_mcu=mcu,
+                hint=hint,
+                output_dir="~/kace"
+            )
+            
+            if result.get("status") == "success":
+                print(f"\033[92mSUCCESS:\033[0m Firmware built locally at {result.get('path')}")
+                # Save actual MCU used to user_data for deployment references
+                user_data['mcu_type'] = result.get('mcu')
+            else:
+                print(f"\n\033[91mERROR:\033[0m {result.get('message')}")
+    else:
+        print("\n\033[93mSkipping firmware compilation (no MCU designated).\033[0m")
 
     # Milestone 5: Deployment
     deploy_method = questionary.select(

@@ -44,5 +44,9 @@ def generate_config(parsed_data, user_data):
     final_output = chr(10).join(aligned_lines)
     
     # Write to printer.cfg
-    with open('printer.cfg', 'w') as f:
+    output_path = os.path.expanduser('~/kace')
+    os.makedirs(output_path, exist_ok=True)
+    
+    cfg_file = os.path.join(output_path, 'printer.cfg')
+    with open(cfg_file, 'w') as f:
         f.write(final_output)

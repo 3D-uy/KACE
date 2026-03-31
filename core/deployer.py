@@ -24,7 +24,8 @@ def deploy_config(user_data):
             dest = dest.replace('~/', f"/home/{user_data['user']}/")
             
         print(f"Uploading printer.cfg to {dest}...")
-        sftp.put('printer.cfg', dest)
+        cfg_path = os.path.expanduser('~/kace/printer.cfg')
+        sftp.put(cfg_path, dest)
         
         sftp.close()
         ssh.close()
@@ -47,13 +48,15 @@ def deploy_usb(user_data):
             return
             
         print(f"Copying printer.cfg to {dest}...")
-        shutil.copy2('printer.cfg', os.path.join(dest, 'printer.cfg'))
+        cfg_path = os.path.expanduser('~/kace/printer.cfg')
+        shutil.copy2(cfg_path, os.path.join(dest, 'printer.cfg'))
         
-        # Optionally copy klipper.bin if exists
-        klipper_bin = os.path.expanduser('~/klipper/out/klipper.bin')
-        if os.path.exists(klipper_bin):
-            print(f"Found compiled firmware! Copying klipper.bin to {dest}...")
-            shutil.copy2(klipper_bin, os.path.join(dest, 'klipper.bin'))
+        # Optionally copy firmware if exists
+        for ext in ['klipper.bin', 'klipper.uf2', 'klipper.elf.hex']:
+            firmware_bin = os.path.expanduser(f'~/kace/{ext}')
+            if os.path.exists(firmware_bin):
+                print(f"Found compiled firmware! Copying {ext} to {dest}...")
+                shutil.copy2(firmware_bin, os.path.join(dest, ext))
             
         print("\033[92mUSB Deployment Successful!\033[0m")
     except Exception as e:
@@ -79,7 +82,16 @@ def deploy_local(user_data):
             os.makedirs(dest, exist_ok=True)
             
         print(f"Copying printer.cfg to {dest}...")
-        shutil.copy2('printer.cfg', os.path.join(dest, 'printer.cfg'))
+        cfg_path = os.path.expanduser('~/kace/printer.cfg')
+        shutil.copy2(cfg_path, os.path.join(dest, 'printer.cfg'))
+        
+        # Optionally copy firmware to local folder too
+        for ext in ['klipper.bin', 'klipper.uf2', 'klipper.elf.hex']:
+            firmware_bin = os.path.expanduser(f'~/kace/{ext}')
+            if os.path.exists(firmware_bin):
+                print(f"Found compiled firmware! Copying {ext} to {dest}...")
+                shutil.copy2(firmware_bin, os.path.join(dest, ext))
+                
         print(f"\033[92mSuccessfully saved to {dest}!\033[0m")
     except Exception as e:
         print(f"\033[91mSave failed: {e}\033[0m")
