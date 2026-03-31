@@ -32,14 +32,17 @@ def deploy_config(user_data):
     except Exception as e:
         print(f"\033[91mDeployment failed: {e}\033[0m")
 
-def deploy_usb(user_data):
-    """Deploys the generated printer.cfg (and firmware if exists) to a USB/SD card."""
+def deploy_usb(user_data, artifact_type="all"):
+    """Deploys the generated artifact(s) to a USB/SD card."""
     try:
         import questionary
         from core.style import custom_style
         
+        name_prompt = "Configuration (printer.cfg)" if artifact_type == "config" else \
+                      "Firmware (klipper.bin/.uf2)" if artifact_type == "firmware" else "Configuration and Firmware"
+                      
         dest = questionary.text(
-            "Enter USB/SD Card mount path (e.g. D:\\ or /media/usb):",
+            f"Enter USB/SD Card mount path for {name_prompt} (e.g. D:\\ or /media/usb):",
             style=custom_style
         ).ask()
         
@@ -47,29 +50,42 @@ def deploy_usb(user_data):
             print(f"\033[91mDeployment failed: Invalid path or directory does not exist: {dest}\033[0m")
             return
             
-        print(f"Copying printer.cfg to {dest}...")
-        cfg_path = os.path.expanduser('~/kace/printer.cfg')
-        shutil.copy2(cfg_path, os.path.join(dest, 'printer.cfg'))
+        success = False
         
-        # Optionally copy firmware if exists
-        for ext in ['klipper.bin', 'klipper.uf2', 'klipper.elf.hex']:
-            firmware_bin = os.path.expanduser(f'~/kace/{ext}')
-            if os.path.exists(firmware_bin):
-                print(f"Found compiled firmware! Copying {ext} to {dest}...")
-                shutil.copy2(firmware_bin, os.path.join(dest, ext))
+        if artifact_type in ["config", "all"]:
+            cfg_path = os.path.expanduser('~/kace/printer.cfg')
+            if os.path.exists(cfg_path):
+                print(f"Copying printer.cfg to {dest}...")
+                shutil.copy2(cfg_path, os.path.join(dest, 'printer.cfg'))
+                success = True
+        
+        if artifact_type in ["firmware", "all"]:
+            for ext in ['klipper.bin', 'klipper.uf2', 'klipper.elf.hex']:
+                firmware_bin = os.path.expanduser(f'~/kace/{ext}')
+                if os.path.exists(firmware_bin):
+                    print(f"Copying firmware {ext} to {dest}...")
+                    shutil.copy2(firmware_bin, os.path.join(dest, ext))
+                    success = True
+                    
+        if success:
+            print("\033[92mUSB Deployment Successful!\033[0m")
+        else:
+            print("\033[93mNo requested artifacts found to copy.\033[0m")
             
-        print("\033[92mUSB Deployment Successful!\033[0m")
     except Exception as e:
         print(f"\033[91mDeployment failed: {e}\033[0m")
 
-def deploy_local(user_data):
-    """Copies the generated printer.cfg to a local folder on the PC."""
+def deploy_local(user_data, artifact_type="all"):
+    """Copies the requested artifact(s) to a local folder on the PC."""
     try:
         import questionary
         from core.style import custom_style
         
+        name_prompt = "Configuration (printer.cfg)" if artifact_type == "config" else \
+                      "Firmware (klipper.bin/.uf2)" if artifact_type == "firmware" else "Configuration and Firmware"
+                      
         dest = questionary.text(
-            "Enter local destination folder path (e.g. C:\\3DPrinter or ~/Documents):",
+            f"Enter local destination folder path for {name_prompt} (e.g. C:\\3DPrinter or ~/Documents):",
             style=custom_style
         ).ask()
         
@@ -81,17 +97,27 @@ def deploy_local(user_data):
         if not os.path.exists(dest):
             os.makedirs(dest, exist_ok=True)
             
-        print(f"Copying printer.cfg to {dest}...")
-        cfg_path = os.path.expanduser('~/kace/printer.cfg')
-        shutil.copy2(cfg_path, os.path.join(dest, 'printer.cfg'))
+        success = False
         
-        # Optionally copy firmware to local folder too
-        for ext in ['klipper.bin', 'klipper.uf2', 'klipper.elf.hex']:
-            firmware_bin = os.path.expanduser(f'~/kace/{ext}')
-            if os.path.exists(firmware_bin):
-                print(f"Found compiled firmware! Copying {ext} to {dest}...")
-                shutil.copy2(firmware_bin, os.path.join(dest, ext))
-                
-        print(f"\033[92mSuccessfully saved to {dest}!\033[0m")
+        if artifact_type in ["config", "all"]:
+            cfg_path = os.path.expanduser('~/kace/printer.cfg')
+            if os.path.exists(cfg_path):
+                print(f"Copying printer.cfg to {dest}...")
+                shutil.copy2(cfg_path, os.path.join(dest, 'printer.cfg'))
+                success = True
+        
+        if artifact_type in ["firmware", "all"]:
+            for ext in ['klipper.bin', 'klipper.uf2', 'klipper.elf.hex']:
+                firmware_bin = os.path.expanduser(f'~/kace/{ext}')
+                if os.path.exists(firmware_bin):
+                    print(f"Copying firmware {ext} to {dest}...")
+                    shutil.copy2(firmware_bin, os.path.join(dest, ext))
+                    success = True
+                    
+        if success:
+            print(f"\033[92mSuccessfully saved to {dest}!\033[0m")
+        else:
+            print("\033[93mNo requested artifacts found to copy.\033[0m")
+            
     except Exception as e:
         print(f"\033[91mSave failed: {e}\033[0m")
