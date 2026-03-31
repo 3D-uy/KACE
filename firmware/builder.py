@@ -19,6 +19,38 @@ def build_firmware_orchestrator(mcu_path=None, derived_mcu=None, hint=None, klip
     except Exception as e:
         return {"status": "error", "message": f"Configuration derivation failed: {str(e)}"}
         
+    # --- Summary & Confirmation Segment ---
+    import questionary
+    from core.style import custom_style
+
+    arch = config_dict.get("CONFIG_MCU", "Unknown").replace('"', '')
+    model = derived_mcu if derived_mcu else "Unknown"
+    flash = config_dict.get("CONFIG_FLASH_START", "0x0")
+    comm = "USB" if config_dict.get("CONFIG_USB") == "y" else \
+           "CAN" if config_dict.get("CONFIG_CANBUS") == "y" else \
+           "UART" if config_dict.get("CONFIG_SERIAL") == "y" else \
+           "SPI" if config_dict.get("CONFIG_SPI") == "y" else "Unknown"
+           
+    print("\n\033[96m=================================================\033[0m")
+    print("\033[1m Klipper Firmware Target Summary\033[0m")
+    print("\033[96m=================================================\033[0m")
+    print(f" Architecture            : \033[93m{arch.upper()}\033[0m")
+    print(f" Processor Model         : \033[93m{model.upper()}\033[0m")
+    print(f" Bootloader Offset       : \033[93m{flash}\033[0m")
+    print(f" Communication Interface : \033[93m{comm}\033[0m")
+    
+    clock = config_dict.get("CONFIG_CLOCK_FREQ")
+    if clock:
+        print(f" Clock Frequency         : \033[93m{int(clock)//1000000} MHz\033[0m")
+        
+    print(f" USB IDs / Serial Path   : \033[93m{mcu_path if mcu_path else 'Not Detected'}\033[0m")
+    print("\033[96m=================================================\033[0m\n")
+    
+    ans = questionary.confirm("Does this firmware configuration look correct?", style=custom_style).ask()
+    if not ans:
+         return {"status": "error", "message": "Compilation aborted by user."}
+    # --------------------------------------
+        
     # 2. Generate minimal .config
     success, msg = generate_firmware_config(config_dict, klipper_path)
     if not success:

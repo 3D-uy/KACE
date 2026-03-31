@@ -71,8 +71,8 @@ sudo apt install python3-pip -y
 ### 🚀 Ejecutar KACE
 
 ```bash
-git clone https://github.com/3D-uy/KACE.git
-cd KACE
+git clone https://github.com/3D-uy/KACE.git kace
+cd kace
 pip3 install -r requirements.txt --break-system-packages
 clear
 python3 kace.py
