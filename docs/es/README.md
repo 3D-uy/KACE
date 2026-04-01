@@ -76,9 +76,9 @@ Antes de usar KACE:
 ✔ Conexión SSH a tu Raspberry  
 
 ❌ Ya NO necesitas:
-
-- KIAUH  
+  
 - Compilar firmware manualmente  
+- Crear el archivo printer.cfg
 
 ---
 
@@ -165,9 +165,22 @@ KACE utiliza un sistema híbrido:
 
 👉 Documentación completa:
 
-* 🇺🇸 English: `../../README.md`
+* 🇺🇸 English: `../en/README.md`
 * 🇪🇸 Español: *(esta página)*
 * 🇧🇷 Português: `../pt/README.md`
+
+👉 Instalación Pi Imager:
+
+* 🇺🇸 English: `../en/pi_imager.md`
+* 🇪🇸 Español: *(esta página)*
+* 🇧🇷 Português: `../pt/pi_imager.md`
+
+👉 Instalación Klipper Completa:
+
+
+* 🇺🇸 English: `../en/klipper_install.md`
+* 🇪🇸 Español: *(esta página)*
+* 🇧🇷 Português: `../pt/klipper_install.md`
 
 ---
 
