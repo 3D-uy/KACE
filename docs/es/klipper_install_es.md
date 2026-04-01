@@ -6,6 +6,14 @@
 ![Interface](https://img.shields.io/badge/UI-Mainsail-purple)
 ![Guide](https://img.shields.io/badge/Guía-Instalación%20simple-success)
 
+<p align="center">
+
+🌐 **Idioma**  
+🇺🇸 <a href="../../klipper_install.md">English</a> | 🇪🇸 Español | 🇧🇷 <a href="../pt/klipper_install.md">Português</a>
+
+</p>
+
+
 # 🧠 La guía definitiva para instalar Klipper
 
 Este tutorial está diseñado para seguirse junto con el video.  
@@ -37,6 +45,8 @@ Usaremos **Raspberry Pi Imager**, la herramienta oficial.
 📥 Descargar aquí  
 
   Sitio oficial https://www.raspberrypi.com/software/
+  Guia para instalar **Raspberry Pi Imager** pi_imager.md
+  <a href="pi_imager.md" a>
 
   Instalar y abrir el programa.
 
@@ -163,112 +173,36 @@ raspberry
 
 ---
 
-# 🧰 PARTE 5 — Instalación de KIAUH
+Tal cual… bien visto 😏👌
+Ahí KACE se está robando todo el show, no tiene sentido separarlo.
 
-## Instalación de KIAUH
-Sitio oficial: ([https://github.com/dw-0/kiauh](https://github.com/dw-0/kiauh))
-
-## Paso 1
-Para descargar este script es necesario tener **git** instalado.  
-Si no lo tienes instalado o no estás seguro, ejecuta el siguiente comando:
-
-```
-sudo apt-get update && sudo apt-get install git -y
-```
-
-## Paso 2
-Una vez que **git** esté instalado, usa el siguiente comando para descargar KIAUH en tu directorio *home*:
-
-```
-cd ~ && git clone https://github.com/dw-0/kiauh.git
-```
-
-## Paso 3
-Finalmente, inicia KIAUH ejecutando el siguiente comando:
-
-```
-./kiauh/kiauh.sh
-```
+Te dejo la versión ajustada, más limpia y directa 👇
 
 ---
 
-# ⚙️ PARTE 6 — Compilar firmware usando KIAUH
+# ⚡ PARTE 5 — Instalar y usar KACE (TODO en uno)
 
-En el menú seleccionar:
+KACE simplifica TODO el proceso:
 
-  ## 4 → Advanced
-  ## 1 → Build
-
-Seleccionar la opción para configurar:
-
-## Micro-controller Architecture:
-  ### LPC176x
-#----------------------------------------------------------#
-
-## Processor model:
-  ### LPC1768 (SKR 1.4)
-  ### LPC1769 (SKR 1.4 TURBO)
-#----------------------------------------------------------#
-
-## Bootloader offset:
-  ### 16KiB bootloader
-#----------------------------------------------------------#
-
-## Communication interface:
-  ### USB
-#----------------------------------------------------------#
-
-### Pulsa **Q** para salir y te preguntará si quieres guardar.
-### Presiona **Y** para aceptar y continuar con la creación del firmware.
-#----------------------------------------------------------#
-
-El firmware se generará en:
-/home/pi/klipper/out/klipper.bin
+* 🔧 Compila el firmware
+* ⚙️ Genera el `printer.cfg`
+* 🚀 Deja Klipper listo para usar
 
 ---
 
-# 💾 PARTE 7 — Flashear la SKR En MobaXterm:
+## ⚡ Instalación rápida (vía SSH)
 
-1. Ir a:
-```
-/home/pi/klipper/out/
-```
-2. Descargar klipper.bin
-3. Renombrarlo a:
-
-  ## firmware.bin (para placas SKR)
-
-4. Copiar el archivo firmware.bin a la SD de la SKR.
-5. Insertar SD en la SKR.
-6. Encender impresora.
-
-## Si el archivo en la SD cambia a FIRMWARE.CUR → se flasheó correctamente.
-
----
-
-# 🧠 PARTE 8 — Instalar KACE 
-(https://github.com/3D-uy/kace)
-
-### Conectar USB entre Raspberry y SKR.
-### Encender impresora.
-
-En terminal:
-## ⚡ Inicio Rápido (vía SSH)
-
-Para descargar este script, es necesario tener **git** instalado.  
-Si no lo tienes instalado o no estás seguro, ejecuta el siguiente comando:
+En MobaXterm, copiar y pegar:
 
 ```bash
 sudo apt-get update && sudo apt-get install git -y
 sudo apt install python3-pip -y
 ```
 
-Ejecuta KACE directamente en tu host Klipper con estos comandos optimizados:
+---
 
-## # 1. 
-  - Clonar el repositorio
-  - Instalar dependencias (con bypass para SO modernos)
-  - Iniciar el Ecosistema
+## 🚀 Ejecutar KACE
+
 ```bash
 git clone https://github.com/3D-uy/KACE.git kace
 cd kace
@@ -277,21 +211,62 @@ clear
 python3 kace.py
 ```
 
-## # 2.
+---
 
-  -Descarga el archivo printer.cfg recién creado y súbelo a Klipper.
+## 🧠 Dentro de KACE
 
-## # 3. 
+1. Selecciona tu placa (ej: SKR 1.4 / Turbo)
+2. KACE se encarga del resto automáticamente
 
-  -Reinicia el sistema desde SSH
-  
+✔ Firmware listo para flashear
+✔ `printer.cfg` generado
+✔ Configuración optimizada
+
+---
+
+# 💾 PARTE 6 — Flashear la SKR
+
+1. Ir a:
+
 ```
+/home/pi/klipper/out/
+```
+
+2. Descargar:
+
+```
+klipper.bin
+```
+
+3. Renombrar a:
+
+```
+firmware.bin
+```
+
+4. Copiar a la SD de la SKR
+5. Insertar en la impresora
+6. Encender
+
+## ✔ Si cambia a FIRMWARE.CUR → perfecto
+
+---
+
+# 🧠 PARTE 7 — Aplicar configuración
+
+1. Descargar el `printer.cfg` generado por KACE
+2. Subirlo a Mainsail (**Machine**)
+3. Reemplazar si es necesario
+
+---
+
+# 🔄 PARTE 8 — Reiniciar sistema
+
+```bash
 sudo reboot
 ```
-## Reinicia la impresora y la raspberry.
-### Ya Mainsailos deberia de estar corriendo en tu raspberry y el archivo 
-### printer.cfg deberias encontrarlo en el apartado de MACHINE.
 
-# 🎉 HAPPY PRINTING!
+Reiniciar también la impresora.
 
-Tu impresora ahora debería estar corriendo Klipper y estás listo para hacer los ajustes necesarios y comenzar con las macros.
+---
+
