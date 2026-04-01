@@ -46,7 +46,7 @@ Usaremos **Raspberry Pi Imager**, la herramienta oficial.
 
   Sitio oficial https://www.raspberrypi.com/software/
   Guia para instalar **Raspberry Pi Imager** pi_imager.md
-  <a href="pi_imager.md" a>
+  <a href="pi_imager.md">
 
   Instalar y abrir el programa.
 
