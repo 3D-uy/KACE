@@ -1,3 +1,4 @@
+````md
 <p align="center">
   <img src="../assets/kace_banner.png" width="1000">
 </p>
@@ -13,99 +14,160 @@
 
 ---
 
-### ⚡ Instala Klipper de forma fácil — copiar, pegar y listo.
+## ⚡ Instala Klipper sin dolores de cabeza
 
-KACE genera automáticamente un **`printer.cfg` funcional para Klipper**, detectando tu hardware y guiándote a través de un proceso de configuración inteligente.
+KACE automatiza todo el proceso de configuración de **Klipper**, desde la detección de hardware hasta la generación de firmware y configuración lista para usar.
+
+👉 Menos errores  
+👉 Menos tiempo  
+👉 Más impresión
+
+---
+
+## 🧠 ¿Qué es KACE realmente?
+
+KACE no es solo un generador de `printer.cfg`.
+
+Es un **motor inteligente de configuración y firmware** que:
+
+- 🔍 Detecta automáticamente tu hardware (MCU)
+- 🧠 Interpreta tu sistema sin configuraciones manuales
+- ⚙️ Genera `printer.cfg` listo para usar
+- 🔥 Compila automáticamente el firmware (`klipper.bin`)
+- 🧭 Te guía solo cuando es necesario
 
 ---
 
 ## 🎯 ¿Por qué KACE?
 
-Configurar Klipper puede ser complejo y llevar mucho tiempo, especialmente para usuarios nuevos.
+Configurar Klipper manualmente implica:
 
-**KACE simplifica todo:**
+- errores en firmware  
+- configs incompatibles  
+- pasos complejos y confusos  
 
-- 🔍 Detecta automáticamente tu MCU  
-- 🧠 Sugiere placas compatibles  
-- 🧭 Te guía paso a paso  
-- ⚙️ Genera un `printer.cfg` listo para usar  
+**KACE elimina todo eso:**
+
+- ✅ Automatiza decisiones técnicas complejas  
+- ✅ Reduce errores críticos  
+- ✅ Funciona con configuraciones reales de Klipper  
+- ✅ Minimiza interacción del usuario  
 
 ---
 
 ## ⚠️ Aviso
 
-KACE se proporciona como una herramienta de código abierto destinada a simplificar la creación de configuraciones para Klipper.
+KACE es una herramienta open-source diseñada para simplificar la configuración de Klipper.
 
-Al utilizar este software, reconoces que lo haces **bajo tu propia responsabilidad**.  
-El autor no asume **ninguna responsabilidad por posibles daños de hardware, configuraciones incorrectas o comportamientos inesperados** derivados del uso de la configuración generada.
+El uso del software es **bajo tu propia responsabilidad**.
 
-👉 Siempre revisa y verifica el archivo `printer.cfg` antes de usar tu impresora.
+👉 Siempre revisa el `printer.cfg` generado  
+👉 Verifica el firmware antes de flashear  
 
----
-
-## 📋 Requisitos previos
-
-Antes de usar **KACE**, asegúrate de haber completado lo siguiente:
-
-✔ Tarjeta SD de Raspberry Pi grabada con **Raspberry Pi Imager** usando **Mainsail OS**  
-✔ Klipper, Moonraker y Mainsail en funcionamiento  
-✔ **KIAUH** instalado en la Raspberry Pi  
-✔ Firmware compilado usando KIAUH  
-✔ Firmware cargado en la placa controladora de la impresora  
-
-Una vez completado, KACE se encarga del resto.
+El autor no se responsabiliza por daños de hardware o configuraciones incorrectas.
 
 ---
 
-## ⚡ Inicio rápido (vía SSH)
+## 📋 Requisitos (actualizado)
 
-Asegúrate de tener `git` instalado:
+Antes de usar KACE:
 
+✔ Raspberry Pi Imager; Ya incluye **Klipper** **Moonraker** **Mainsail OS** (recomendado)  
+   Sitio oficial https://www.raspberrypi.com/software/
+✔ Conexión SSH a tu Raspberry  
+   Sitio oficial https://mobaxterm.mobatek.net/download.html
+
+❌ Ya NO necesitas:
+
+- Compilar firmware manualmente  
+- Configurar desde cero el archivo `printer.cfg`
+
+---
+
+## ⚡ Inicio rápido
+  ### PASO #1
 ```bash
 sudo apt-get update && sudo apt-get install git -y
 sudo apt install python3-pip -y
 ````
-
----
-
-### 🚀 Ejecutar KACE
-
-```bash
+  ### PASO #2
+````
 git clone https://github.com/3D-uy/KACE.git kace
 cd kace
 pip3 install -r requirements.txt --break-system-packages
-clear
 python3 kace.py
+````
+
+---
+
+## 🧭 Flujo de uso
+
+KACE automatiza todo el proceso:
+
+1. 🔍 Detecta tu MCU automáticamente
+2. 📦 Busca configuraciones oficiales en Klipper
+3. 🧠 Sugiere opciones compatibles
+4. ⚙️ Genera `printer.cfg` optimizado
+5. 🔥 Compila firmware automáticamente
+6. 📁 Guarda todo en `~/kace/`
+
+---
+
+## 📦 Resultado final
+
+Después de ejecutar KACE tendrás:
+
+```
+~/kace/
+├── printer.cfg
+├── klipper.bin / klipper.uf2 / klipper.hex
 ```
 
 ---
 
-### 📥 Siguientes pasos
+## 🚀 Siguientes pasos
 
-1. Descargar el archivo `printer.cfg` generado
-2. Subirlo a tu interfaz de Klipper
-3. Reiniciar los servicios:
+1. Flashear firmware en tu placa (SD / USB)
+2. Subir `printer.cfg` a Klipper
+3. Reiniciar servicios:
 
 ```bash
-sudo systemctl restart klipper moonraker
+sudo reboot
 ```
 
 ---
 
 ## 🛠️ Características principales
 
-| Característica               | Descripción                                          |
-| :--------------------------- | :--------------------------------------------------- |
-| 🔎 **GitHub Scraper**        | Obtiene pinouts en tiempo real desde Klipper         |
-| 🧠 **Asistente inteligente** | Detecta el MCU y guía la selección de hardware       |
-| 🔐 **Despliegue por SSH**    | Envía automáticamente la configuración al host       |
-| ⚙️ **Motor Jinja2**          | Genera configuraciones limpias, modulares y legibles |
+| Característica               | Descripción                            |
+| ---------------------------- | -------------------------------------- |
+| 🔍 **Auto-detección de MCU** | Identifica tu hardware automáticamente |
+| 🧠 **Motor inteligente**     | Deriva configuración sin templates     |
+| ⚙️ **Config Generator**      | Genera `printer.cfg` limpio            |
+| 🔥 **Firmware Builder**      | Compila firmware automáticamente       |
+| 🧪 **Validación previa**     | Evita errores antes de compilar        |
+| 🌐 **GitHub Scraper**        | Usa configs oficiales de Klipper       |
+| 💻 **CLI interactiva**       | UX simple y guiada                     |
 
 ---
 
-## 🎬 Guía completa de instalación
+## 🧠 Cómo funciona (concepto)
 
-👉 Guías paso a paso:
+KACE utiliza un sistema híbrido:
+
+* Derivación automática basada en MCU
+* Validación antes de compilar
+* Interacción solo cuando es necesario
+
+👉 Sin templates
+👉 Sin configuraciones estáticas
+👉 Sin dependencia de herramientas externas
+
+---
+
+## 🎬 Guías completas
+
+👉 Documentación completa:
 
 * 🇺🇸 English: `../../README.md`
 * 🇪🇸 Español: *(esta página)*
@@ -115,31 +177,28 @@ sudo systemctl restart klipper moonraker
 
 ## 🙌 Contribuir y feedback
 
-KACE está en constante evolución y tu feedback es clave.
+KACE evoluciona con la comunidad:
 
-* 🐛 Reportar errores
+* 🐛 Reportar bugs
 * 💡 Sugerir mejoras
-* 🤝 Aportar ideas
+* 🤝 Contribuir código
 
-👉 Cada aporte ayuda a mejorar el proyecto.
+👉 Todo aporte suma.
 
 ---
 
 ## 🙏 Agradecimientos
 
-KACE no existiría sin el increíble trabajo de las comunidades de **Klipper** y **KIAUH**.
+Este proyecto se apoya en el trabajo increíble de la comunidad de **Klipper**.
 
-Su dedicación, innovación y espíritu open-source han hecho que la impresión 3D avanzada sea accesible para miles de usuarios en todo el mundo.
-
-KACE nace como una forma de aportar a este ecosistema, haciendo la configuración inicial más simple y accesible.
+KACE busca hacer ese ecosistema más accesible para todos.
 
 ---
 
 <p align="center">
 
-⭐ Si te gusta este proyecto, considera darle una estrella
-🚀 Hecho para la comunidad de Klipper
+⭐ Si te gusta este proyecto, dale una estrella
+🚀 Hecho para simplificar Klipper
 
 </p>
-
 
