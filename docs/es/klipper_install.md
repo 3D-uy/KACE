@@ -9,7 +9,7 @@
 <p align="center">
 
 🌐 **Idioma**  
-🇺🇸 <a href="../../klipper_install.md">English</a> | 🇪🇸 Español | 🇧🇷 <a href="../pt/klipper_install.md">Português</a>
+🇺🇸 <a href="../en/klipper_install.md">English</a> | 🇪🇸 Español | 🇧🇷 <a href="../pt/klipper_install.md">Português</a>
 
 </p>
 
@@ -45,10 +45,10 @@ Usaremos **Raspberry Pi Imager**, la herramienta oficial.
 📥 Descargar aquí  
 
   Sitio oficial https://www.raspberrypi.com/software/
-  Guia para instalar **Raspberry Pi Imager**
-  <a href="pi_imager.md">pi_imager</a>
 
-  Instalar y abrir el programa.
+Guia para instalar **Raspberry Pi Imager** <a href="pi_imager.md">pi_imager</a>
+
+Instalar y abrir el programa.
 
 Luego seguir estos pasos:
 
@@ -173,13 +173,6 @@ raspberry
 
 ---
 
-Tal cual… bien visto 😏👌
-Ahí KACE se está robando todo el show, no tiene sentido separarlo.
-
-Te dejo la versión ajustada, más limpia y directa 👇
-
----
-
 # ⚡ PARTE 5 — Instalar y usar KACE (TODO en uno)
 
 KACE simplifica TODO el proceso:
@@ -267,6 +260,47 @@ sudo reboot
 ```
 
 Reiniciar también la impresora.
+
+
+---
+
+### 🎉 LISTO PARA EMPEZAR
+
+Ya tienes tu firmware compilado y tu archivo `printer.cfg` generado automáticamente.
+
+Ahora solo queda ajustarlo a tus necesidades, calibrar tu impresora y empezar a sacarle todo el potencial a Klipper.
+
+🚀 ¡Disfruta el proceso y HAPPY PRINTING!
+
+---
+
+## 🙌 Contribuir y feedback
+
+KACE evoluciona con la comunidad:
+
+* 🐛 Reportar bugs
+* 💡 Sugerir mejoras
+* 🤝 Contribuir código
+
+👉 Todo aporte suma.
+
+---
+
+## 🙏 Agradecimientos
+
+Este proyecto se apoya en el trabajo increíble de la comunidad de **Klipper**.
+
+KACE busca hacer ese ecosistema más accesible para todos.
+
+---
+
+<p align="center">
+
+⭐ Si te gusta este proyecto, dale una estrella
+🚀 Hecho para simplificar Klipper
+
+</p>
+
 
 ---
 
