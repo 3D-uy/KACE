@@ -2,7 +2,14 @@
   <img src="../assets/kace_banner.png" width="1000">
 </p>
 
-# 🚀 KACE — Klipper Automated Configuration Ecosystem
+<h1 align="center">🚀 KACE — Klipper Automated Configuration Ecosystem</h1>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/status-beta-orange?style=flat-square" alt="Status">
+  <img src="https://img.shields.io/badge/version-v0.1.0--beta-blue?style=flat-square" alt="Version">
+  <img src="https://img.shields.io/badge/platform-Linux%20%7C%20Raspberry%20Pi-green?style=flat-square" alt="Platform">
+  <img src="https://img.shields.io/github/license/3D-uy/KACE?style=flat-square" alt="License">
+</p>
 
 <p align="center">
 
@@ -82,17 +89,49 @@ Antes de usar KACE:
 
 ---
 
+## 🟡 Estado del Proyecto — Beta 1
+
+> KACE está actualmente en **beta activo**. Las funciones principales están funcionando, pero pueden aparecer problemas menores.
+
+| Funcionalidad | Estado |
+|---|---|
+| Auto-detección de MCU | ✅ Funcionando |
+| GitHub Scraper | ✅ Funcionando |
+| Generación de `printer.cfg` | ✅ Funcionando |
+| Compilación de Firmware | ✅ Funcionando |
+| Deploy via SSH | ✅ Funcionando |
+| Instalación en una línea | ✅ Funcionando |
+| Interfaz GUI / Web | 🚧 Planificado |
+
+---
+
+## ⚡ Instalación en una línea
+
+```bash
+bash <(curl -s https://raw.githubusercontent.com/3D-uy/KACE/main/install.sh)
+```
+
+> Esto instalará todas las dependencias, clonará el repositorio y configurará el comando global `kace` automáticamente.
+
+---
+
 ## ⚡ Inicio rápido
 
 ```bash
 sudo apt-get update && sudo apt-get install git -y
 sudo apt install python3-pip -y
 
-git clone https://github.com/3D-uy/KACE.git kace
-cd kace
+git clone https://github.com/3D-uy/KACE.git ~/kace
+cd ~/kace
 pip3 install -r requirements.txt --break-system-packages
-python3 kace.py
-````
+kace
+```
+
+O con el instalador:
+
+```bash
+bash <(curl -s https://raw.githubusercontent.com/3D-uy/KACE/main/install.sh) && kace
+```
 
 ---
 

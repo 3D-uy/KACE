@@ -1,6 +1,16 @@
+#!/usr/bin/env python3
+
+__version__ = "v0.1.0-beta"
+
 import os
 import sys
 import time
+
+# ── Early argument handling (no heavy imports needed) ─────────
+if len(sys.argv) > 1 and sys.argv[1] in ("--version", "-v"):
+    print(f"KACE {__version__}")
+    sys.exit(0)
+
 import questionary
 from core.scraper import fetch_config_list, fetch_raw_config, parse_config
 from core.wizard import run_wizard
@@ -31,14 +41,51 @@ def print_header():
     
     print(f"  {C}──────────────────────────────────────────{R}")
     print(f"  {B}{C}Klipper Automated Configuration Ecosystem{R}")
+    print(f"  {Y}                          {__version__}{R}")
     print("")
+
+def print_summary(user_data: dict):
+    """Print final summary with output paths and next steps."""
+    G = "\033[92m"
+    Y = "\033[93m"
+    C = "\033[96m"
+    B = "\033[1m"
+    R = "\033[0m"
+
+    fw_path = user_data.get('firmware_path', '~/kace/klipper.bin')
+    cfg_path = os.path.expanduser('~/kace/printer.cfg')
+
+    print("")
+    print(f"  {G}══════════════════════════════════════════{R}")
+    print(f"  {B}{G}  ✅ Setup Complete{R}")
+    print(f"  {G}══════════════════════════════════════════{R}")
+    print("")
+    print(f"  {B}Firmware:{R} {Y}{fw_path}{R}")
+    print(f"  {B}Config:  {R} {Y}{cfg_path}{R}")
+    print("")
+    print(f"  {B}{C}Next steps:{R}")
+    print(f"  {C}1.{R} Flash firmware to your board")
+    print(f"  {C}2.{R} Upload printer.cfg to Klipper")
+    print(f"  {C}3.{R} Restart Klipper")
+    print("")
+    print(f"  {G}──────────────────────────────────────────{R}")
+    print("")
+
 
 def main():
     print_header()
     
     # Milestone 3 & 4: Interactive Wizard
-    user_data = run_wizard()
-    
+    try:
+        user_data = run_wizard()
+    except (KeyboardInterrupt, EOFError):
+        print("\n\033[93mSetup cancelled by user.\033[0m")
+        sys.exit(0)
+    except ImportError as e:
+        print(f"\n\033[91mERROR:\033[0m Missing dependency: {e}")
+        print("\033[93mRun: pip3 install -r requirements.txt --break-system-packages\033[0m")
+        sys.exit(1)
+
     # ==========================================
     # PHASE 1: FIRMWARE COMPILATION & DEPLOYMENT
     # ==========================================
@@ -118,6 +165,7 @@ def main():
             deploy_config(user_data)
 
     time.sleep(0.5)
+    print_summary(user_data)
     sys.exit(0)
 
 if __name__ == "__main__":
