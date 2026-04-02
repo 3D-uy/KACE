@@ -2,10 +2,14 @@ import os
 from jinja2 import Environment, FileSystemLoader
 from core.translations import translate_comment
 
+# Resolve templates directory relative to this file's location, not the CWD
+_BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+_TEMPLATES_DIR = os.path.join(_BASE_DIR, 'templates')
+
 def generate_config(parsed_data, user_data):
     """Milestone 2: Jinja2 Template Rendering"""
     # Setup Jinja2 environment
-    env = Environment(loader=FileSystemLoader('templates'))
+    env = Environment(loader=FileSystemLoader(_TEMPLATES_DIR))
     template = env.get_template('printer.cfg.j2')
     
     # Render the template with parsed pins and user input
