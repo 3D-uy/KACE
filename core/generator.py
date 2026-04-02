@@ -23,9 +23,16 @@ def generate_config(parsed_data, user_data):
     comment_col = 48
     language = user_data.get('language', 'English')
     for line in output.splitlines():
-        if '#' in line and not line.lstrip().startswith('#'):
-            # This is an inline comment
-            content, comment = line.split('#', 1)
+        # Check if line is a commented setting that contains an inline comment
+        is_commented_setting = line.lstrip().startswith('#') and line.count('#') > 1 and (':' in line or ('[' in line and ']' in line))
+        if ('#' in line and not line.lstrip().startswith('#')) or is_commented_setting:
+            if not is_commented_setting:
+                content, comment = line.split('#', 1)
+            else:
+                first_hash = line.find('#')
+                second_hash = line.find('#', first_hash + 1)
+                content, comment = line[:second_hash], line[second_hash+1:]
+
             content = content.rstrip()
             comment = comment.strip()
             
@@ -36,7 +43,7 @@ def generate_config(parsed_data, user_data):
             padding = max(1, comment_col - len(content))
             aligned_lines.append(f"{content}{' ' * padding}# {comment}")
         else:
-            # Regular line or full-line comment
+            # Regular line or normal full-line comment
             if line.lstrip().startswith('#'):
                 comment = line.lstrip()[1:].strip()
                 translated = translate_comment(comment, language)

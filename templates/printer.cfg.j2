@@ -175,29 +175,46 @@ probe_count: 5,5
 {%- endif %}
 
 {%- if user.z_motors | int >= 2 and not (user.kinematics == 'corexy' and user.z_motors | int >= 3) %}
+{%- set bx = user.x_size | int %}
+{%- set by = user.y_size | int %}
 
-# [z_tilt]    # --- optional --- (use for automatic Z leveling with multiple motors)
+# [z_tilt]    # --- optional --- (automatic Z leveling for multiple motors)
 # z_positions:
-#   TODO
-#   TODO
+{%- if user.z_motors | int == 2 %}
+#   0, {{ by // 2 }}
+#   {{ bx }}, {{ by // 2 }}
+{%- elif user.z_motors | int == 3 %}
+#   0, 0
+#   {{ bx }}, 0
+#   {{ bx // 2 }}, {{ by }}
+{%- else %}
+#   0, 0
+#   {{ bx }}, 0
+#   {{ bx }}, {{ by }}
+#   0, {{ by }}
+{%- endif %}
 # points:
-#   TODO
-#   TODO
+#   10, 10
+#   {{ bx - 10 }}, 10
+#   {{ bx - 10 }}, {{ by - 10 }}
+#   10, {{ by - 10 }}
 # speed: 50
 # horizontal_move_z: 5
 {%- endif %}
 
 {%- if user.kinematics == 'corexy' and user.z_motors | int >= 3 %}
+{%- set bx = user.x_size | int %}
+{%- set by = user.y_size | int %}
 
 # [quad_gantry_level]    # --- optional --- (for CoreXY gantry leveling)
 # gantry_corners:
-#   TODO
-#   TODO
+#   -60, -10
+#   {{ bx + 60 }}, {{ by + 90 }}
 # points:
-#   TODO
-#   TODO
-#   TODO
-#   TODO
+#   10, 10
+#   {{ bx - 10 }}, 10
+#   {{ bx - 10 }}, {{ by - 10 }}
+#   10, {{ by - 10 }}
 # speed: 50
 # horizontal_move_z: 5
 {%- endif %}

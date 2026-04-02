@@ -144,23 +144,79 @@ def main():
     # --- Multi-Z Pin Verification (Before Generation) ---
     z_motors = int(user_data.get('z_motors', 1))
     if z_motors > 1:
+        available_driver_keys = sorted([k for k in parsed_data.keys() if k.startswith("extruder") and k != "extruder"])
         for i in range(2, z_motors + 1):
             motor_name = f"stepper_z{i - 1}"
-            if motor_name not in parsed_data:
-                print(f"\n\033[93mWarning:\033[0m The selected board might not support {z_motors} Z motors natively.")
-                print(f"I did not find default pins for [{motor_name}] in the generic config.")
-                ans = questionary.confirm(f"Do you want to manually assign pins for {motor_name} now?", default=True).ask()
-                if ans:
-                    step_pin = questionary.text(f"Enter step_pin for {motor_name} (e.g. PC4):").ask()
-                    dir_pin = questionary.text(f"Enter dir_pin for {motor_name} (add '!' to invert if needed):").ask()
-                    en_pin = questionary.text(f"Enter enable_pin for {motor_name} (usually starts with '!'):").ask()
-                    parsed_data[motor_name] = {
-                        "step_pin": step_pin,
-                        "dir_pin": dir_pin,
-                        "enable_pin": en_pin
-                    }
-                else:
-                    print(f"\033[91mNotice: {motor_name} will be generated with 'TODO' pins. Remember to fix them later!\033[0m")
+            
+            if motor_name in parsed_data:
+                continue
+
+            print(f"\n\033[96m>>> Mapping pins for [ {motor_name} ] ...\033[0m")
+            if not available_driver_keys:
+                print("\033[93mWarning: Your board does not have enough available stepper drivers in its config for this Z motor.\033[0m")
+            
+            driver_choices = []
+            for dk in available_driver_keys:
+                label = dk.replace("extruder", "E")
+                if dk == "extruder1":
+                    label = "E1 (recommended)"
+                driver_choices.append({"name": label, "value": dk})
+                
+            driver_choices.append({"name": "Custom pin assignment", "value": "custom"})
+            driver_choices.append({"name": "Quit setup", "value": "quit"})
+            
+            selected_driver = questionary.select(
+                f"Select driver for {motor_name.upper()}:",
+                choices=driver_choices,
+                style=custom_style
+            ).ask()
+            
+            if selected_driver == "quit" or selected_driver is None:
+                print("\n\033[91mSetup aborted. Missing pins for Z motors.\033[0m")
+                sys.exit(1)
+                
+            if selected_driver == "custom":
+                print(f"\nAssigning custom pins for {motor_name}:")
+                step_pin = questionary.text(f"Enter step_pin (e.g. PC4):", style=custom_style).ask()
+                dir_pin = questionary.text(f"Enter dir_pin (e.g. PA6):", style=custom_style).ask()
+                en_pin = questionary.text(f"Enter enable_pin (e.g. !PC5):", style=custom_style).ask()
+                
+                if not step_pin or not dir_pin or not en_pin:
+                    print("\n\033[91mError: Valid pins are required to proceed. Aborting.\033[0m")
+                    sys.exit(1)
+                    
+                parsed_data[motor_name] = {
+                    "step_pin": step_pin,
+                    "dir_pin": dir_pin,
+                    "enable_pin": en_pin
+                }
+                
+                driver_type = user_data.get("driver_type", "None (Standard)")
+                driver_mode = user_data.get("driver_mode", "")
+                if "TMC" in driver_type and driver_mode in ["UART", "SPI"]:
+                    uart_pin = questionary.text(f"Enter {driver_mode.lower()}_pin for {motor_name} (optional, press Enter to skip):", style=custom_style).ask()
+                    if uart_pin:
+                        tmc_section = f"{driver_type.lower()} {motor_name}"
+                        pin_key = "uart_pin" if driver_mode == "UART" else "cs_pin"
+                        parsed_data[tmc_section] = {pin_key: uart_pin, "run_current": "0.650"}
+            else:
+                src_data = parsed_data[selected_driver]
+                parsed_data[motor_name] = {
+                    "step_pin": src_data.get("step_pin", ""),
+                    "dir_pin": src_data.get("dir_pin", ""),
+                    "enable_pin": src_data.get("enable_pin", "")
+                }
+                
+                driver_type = user_data.get("driver_type", "None (Standard)")
+                if "TMC" in driver_type:
+                    src_tmc = f"{driver_type.lower()} {selected_driver}"
+                    dest_tmc = f"{driver_type.lower()} {motor_name}"
+                    if src_tmc in parsed_data:
+                        parsed_data[dest_tmc] = parsed_data[src_tmc].copy()
+                        del parsed_data[src_tmc]
+                
+                del parsed_data[selected_driver]
+                available_driver_keys.remove(selected_driver)
 
     print("\033[91m[*]\033[0m Generating printer.cfg...", end="", flush=True)
     generate_config(parsed_data, user_data)
