@@ -34,8 +34,6 @@ KACE automates the entire Klipper setup process — from hardware detection to f
 
 ## 🧠 What is KACE, really?
 
-KACE is no longer just a `printer.cfg` generator.
-
 It is an **intelligent configuration and firmware engine** that:
 
 - 🔍 Automatically detects your hardware (MCU)
@@ -93,34 +91,13 @@ bash <(curl -s https://raw.githubusercontent.com/3D-uy/KACE/main/install.sh)
 
 Before using KACE:
 
-✔ Raspberry Pi with **Mainsail OS** (recommended)  
-✔ Klipper installed  
-✔ SSH access to your Raspberry Pi  
+✔ Raspberry Pi Imager installed in SD card: incudes **Klipper**,**Mainsail OS**,**Moonraker** (recommended)  
+✔ SSH access to your Raspberry Pi  (Mobaxterm) 
 
 ❌ You NO LONGER need to:
 
 - Manually compile firmware
 - Create the printer.cfg file
-
----
-
-## 🚀 Quick Start
-
-```bash
-sudo apt-get update && sudo apt-get install git -y
-sudo apt install python3-pip -y
-
-git clone https://github.com/3D-uy/KACE.git ~/kace
-cd ~/kace
-pip3 install -r requirements.txt --break-system-packages
-kace
-```
-
-Or with the one-liner:
-
-```bash
-bash <(curl -s https://raw.githubusercontent.com/3D-uy/KACE/main/install.sh) && kace
-```
 
 ---
 
@@ -141,11 +118,9 @@ KACE automates the entire process:
 
 After running KACE you will have:
 
-```
 ~/kace/
 ├── printer.cfg
 ├── klipper.bin / klipper.uf2 / klipper.hex
-```
 
 ---
 
@@ -156,7 +131,7 @@ After running KACE you will have:
 3. Restart services:
 
 ```bash
-sudo systemctl restart klipper moonraker
+sudo reboot
 ```
 
 ---

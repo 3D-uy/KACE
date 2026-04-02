@@ -12,11 +12,13 @@
 </p>
 
 <p align="center">
-
-🌐 **Idioma**  
+🌐 <strong>Idioma</strong><br>
 🇺🇸 <a href="../../README.md">English</a> | 🇪🇸 Español | 🇧🇷 <a href="../pt/README.md">Português</a>
-
 </p>
+
+> [!WARNING]
+> **KACE está actualmente en Beta.** Las funciones principales están funcionando, pero pueden aparecer bugs o problemas menores.
+> Siempre revisa los archivos generados antes de usarlos. Reporta problemas usando el template [Bug Report](../../.github/ISSUE_TEMPLATE/bug_report.md).
 
 ---
 
@@ -31,8 +33,6 @@ KACE automatiza todo el proceso de configuración de **Klipper**, desde la detec
 ---
 
 ## 🧠 ¿Qué es KACE realmente?
-
-KACE ya no es solo un generador de `printer.cfg`.
 
 Es un **motor inteligente de configuración y firmware** que:
 
@@ -58,34 +58,6 @@ Configurar Klipper manualmente implica:
 - ✅ Reduce errores críticos  
 - ✅ Funciona con configuraciones reales de Klipper  
 - ✅ Minimiza interacción del usuario  
-
----
-
-## ⚠️ Aviso
-
-KACE es una herramienta open-source diseñada para simplificar la configuración de Klipper.
-
-El uso del software es **bajo tu propia responsabilidad**.
-
-👉 Siempre revisa el `printer.cfg` generado  
-👉 Verifica el firmware antes de flashear  
-
-El autor no se responsabiliza por daños de hardware o configuraciones incorrectas.
-
----
-
-## 📋 Requisitos (actualizado)
-
-Antes de usar KACE:
-
-✔ Raspberry Pi con **Mainsail OS** (recomendado)  
-✔ Klipper instalado (KACE puede integrarse en este paso en el futuro)  
-✔ Conexión SSH a tu Raspberry  
-
-❌ Ya NO necesitas:
-  
-- Compilar firmware manualmente  
-- Crear el archivo printer.cfg
 
 ---
 
@@ -115,23 +87,17 @@ bash <(curl -s https://raw.githubusercontent.com/3D-uy/KACE/main/install.sh)
 
 ---
 
-## ⚡ Inicio rápido
+## 📋 Requisitos
 
-```bash
-sudo apt-get update && sudo apt-get install git -y
-sudo apt install python3-pip -y
+Antes de usar KACE:
 
-git clone https://github.com/3D-uy/KACE.git ~/kace
-cd ~/kace
-pip3 install -r requirements.txt --break-system-packages
-kace
-```
+✔ Raspberry Pi Imager instalado en la SD: incluye **Klipper**, **Mainsail OS**, **Moonraker** (recomendado)  
+✔ Acceso SSH a tu Raspberry Pi (Mobaxterm)  
 
-O con el instalador:
+❌ Ya NO necesitas:
 
-```bash
-bash <(curl -s https://raw.githubusercontent.com/3D-uy/KACE/main/install.sh) && kace
-```
+- Compilar firmware manualmente  
+- Crear el archivo printer.cfg
 
 ---
 
@@ -167,22 +133,22 @@ Después de ejecutar KACE tendrás:
 3. Reiniciar servicios:
 
 ```bash
-sudo systemctl restart klipper moonraker
+sudo reboot
 ```
 
 ---
 
 ## 🛠️ Características principales
 
-| Característica               | Descripción                            |
-| ---------------------------- | -------------------------------------- |
+| Característica | Descripción |
+| --- | --- |
 | 🔍 **Auto-detección de MCU** | Identifica tu hardware automáticamente |
-| 🧠 **Motor inteligente**     | Deriva configuración sin templates     |
-| ⚙️ **Config Generator**      | Genera `printer.cfg` limpio            |
-| 🔥 **Firmware Builder**      | Compila firmware automáticamente       |
-| 🧪 **Validación previa**     | Evita errores antes de compilar        |
-| 🌐 **GitHub Scraper**        | Usa configs oficiales de Klipper       |
-| 💻 **CLI interactiva**       | UX simple y guiada                     |
+| 🧠 **Motor inteligente** | Deriva configuración sin templates |
+| ⚙️ **Config Generator** | Genera `printer.cfg` limpio |
+| 🔥 **Firmware Builder** | Compila firmware automáticamente |
+| 🧪 **Validación previa** | Evita errores antes de compilar |
+| 🌐 **GitHub Scraper** | Usa configs oficiales de Klipper |
+| 💻 **CLI interactiva** | UX simple y guiada |
 
 ---
 
@@ -190,13 +156,42 @@ sudo systemctl restart klipper moonraker
 
 KACE utiliza un sistema híbrido:
 
-* Derivación automática basada en MCU
-* Validación antes de compilar
-* Interacción solo cuando es necesario
+- Derivación automática basada en MCU
+- Validación antes de compilar
+- Interacción solo cuando es necesario
 
-👉 Sin templates
-👉 Sin configuraciones estáticas
+👉 Sin templates  
+👉 Sin configuraciones estáticas  
 👉 Sin dependencia de herramientas externas
+
+---
+
+## ⚠️ Aviso
+
+KACE es una herramienta open-source diseñada para simplificar la configuración de Klipper.
+
+El uso del software es **bajo tu propia responsabilidad**.  
+El autor no se responsabiliza por **daños de hardware, configuraciones incorrectas o comportamientos inesperados** resultantes de la configuración generada.
+
+👉 Siempre revisa el `printer.cfg` generado antes de usar tu impresora.  
+👉 Verifica el firmware antes de flashear.
+
+---
+
+## 🗑️ Desinstalar
+
+Para eliminar KACE de tu sistema:
+
+```bash
+# Eliminar el symlink del comando global
+sudo rm -f /usr/local/bin/kace
+
+# O si se instaló sin sudo (fallback)
+rm -f ~/.local/bin/kace
+
+# Eliminar el directorio de KACE
+rm -rf ~/kace
+```
 
 ---
 
@@ -204,21 +199,18 @@ KACE utiliza un sistema híbrido:
 
 👉 Documentación completa:
 
-* 🇺🇸 English: `../en/README.md`
+* 🇺🇸 English: `../../README.md`
 * 🇪🇸 Español: *(esta página)*
 * 🇧🇷 Português: `../pt/README.md`
 
 👉 Instalación Pi Imager:
-
-* 🇺🇸 English: `../en/pi_imager.md`
-* 🇪🇸 Español: *(esta página)*
+* 🇺🇸 English: `../../docs/en/pi_imager_install.md`
+* 🇪🇸 Español: `pi_imager.md`
 * 🇧🇷 Português: `../pt/pi_imager.md`
 
 👉 Instalación Klipper Completa:
-
-
-* 🇺🇸 English: `../en/klipper_install.md`
-* 🇪🇸 Español: *(esta página)*
+* 🇺🇸 English: `../../docs/en/Klipper_install.md`
+* 🇪🇸 Español: `klipper_install.md`
 * 🇧🇷 Português: `../pt/klipper_install.md`
 
 ---
@@ -245,11 +237,7 @@ KACE busca hacer ese ecosistema más accesible para todos.
 
 <p align="center">
 
-⭐ Si te gusta este proyecto, dale una estrella
+⭐ Si te gusta este proyecto, dale una estrella  
 🚀 Hecho para simplificar Klipper
 
 </p>
-
-
----
-

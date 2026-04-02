@@ -16,6 +16,10 @@
 🇺🇸 <a href="../../README.md">English</a> | 🇪🇸 <a href="../es/README.md">Español</a> | 🇧🇷 Português
 </p>
 
+> [!WARNING]
+> **KACE está atualmente em Beta.** As funcionalidades principais estão funcionando, mas você pode encontrar bugs ou irregularidades.
+> Sempre revise os arquivos gerados antes de usá-los. Reporte problemas usando o template [Bug Report](../../.github/ISSUE_TEMPLATE/bug_report.md).
+
 ---
 
 ## ⚡ Instale o Klipper sem dor de cabeça
@@ -29,8 +33,6 @@ O KACE automatiza todo o processo de configuração do **Klipper**, desde a dete
 ---
 
 ## 🧠 O que é KACE de verdade?
-
-O KACE não é mais apenas um gerador de `printer.cfg`.
 
 É um **motor inteligente de configuração e firmware** que:
 
@@ -89,34 +91,13 @@ bash <(curl -s https://raw.githubusercontent.com/3D-uy/KACE/main/install.sh)
 
 Antes de usar o KACE:
 
-✔ Raspberry Pi com **Mainsail OS** (recomendado)  
-✔ Klipper instalado  
-✔ Acesso SSH à sua Raspberry Pi  
+✔ Raspberry Pi Imager instalado no cartão SD: inclui **Klipper**, **Mainsail OS**, **Moonraker** (recomendado)  
+✔ Acesso SSH à sua Raspberry Pi (Mobaxterm)  
 
 ❌ Você NÃO precisa mais:
 
 - Compilar firmware manualmente
 - Criar o arquivo printer.cfg
-
----
-
-## 🚀 Início Rápido
-
-```bash
-sudo apt-get update && sudo apt-get install git -y
-sudo apt install python3-pip -y
-
-git clone https://github.com/3D-uy/KACE.git ~/kace
-cd ~/kace
-pip3 install -r requirements.txt --break-system-packages
-kace
-```
-
-Ou com uma linha:
-
-```bash
-bash <(curl -s https://raw.githubusercontent.com/3D-uy/KACE/main/install.sh) && kace
-```
 
 ---
 
@@ -152,7 +133,7 @@ Após executar o KACE você terá:
 3. Reiniciar os serviços:
 
 ```bash
-sudo systemctl restart klipper moonraker
+sudo reboot
 ```
 
 ---
@@ -194,6 +175,23 @@ O autor não se responsabiliza por **danos ao hardware, configurações incorret
 
 👉 Sempre revise o `printer.cfg` gerado antes de usar sua impressora.  
 👉 Verifique o firmware antes de gravar.
+
+---
+
+## 🗑️ Desinstalar
+
+Para remover o KACE do seu sistema:
+
+```bash
+# Remover o symlink do comando global
+sudo rm -f /usr/local/bin/kace
+
+# Ou se instalado sem sudo (fallback)
+rm -f ~/.local/bin/kace
+
+# Remover o diretório do KACE
+rm -rf ~/kace
+```
 
 ---
 
