@@ -224,6 +224,102 @@ def translate_comment(comment, lang):
         "Define aliases for board pins (e.g., EXP1 and EXP2 headers)": {
             "Español": "Define los alias para los pines de la placa (ej., conectores EXP1 y EXP2)",
             "Português": "Define os aliases para os pinos da placa (ex., conectores EXP1 e EXP2)"
+        },
+        "filament per motor revolution (mm) --- manual configuration --- (calibrate by extruding 100mm)": {
+            "Español": "filamento por revolución del motor (mm) --- configuración manual --- (calibrar extruyendo 100mm)",
+            "Português": "filamento por revolução do motor (mm) --- configuração manual --- (calibrar extrusando 100mm)"
+        },
+        "PID proportional --- manual configuration --- (run PID_CALIBRATE HEATER=extruder TARGET=200)": {
+            "Español": "PID proporcional --- configuración manual --- (ejecutar PID_CALIBRATE HEATER=extruder TARGET=200)",
+            "Português": "PID proporcional --- configuração manual --- (executar PID_CALIBRATE HEATER=extruder TARGET=200)"
+        },
+        "PID integral --- manual configuration --- (run PID_CALIBRATE)": {
+            "Español": "PID integral --- configuración manual --- (ejecutar PID_CALIBRATE)",
+            "Português": "PID integral --- configuração manual --- (executar PID_CALIBRATE)"
+        },
+        "PID derivative --- manual configuration --- (run PID_CALIBRATE)": {
+            "Español": "PID derivativo --- configuración manual --- (ejecutar PID_CALIBRATE)",
+            "Português": "PID derivativo --- configuração manual --- (executar PID_CALIBRATE)"
+        },
+        "distance from nozzle to probe in X (mm) --- manual configuration --- (measure physically from nozzle to probe tip)": {
+            "Español": "distancia de la boquilla al sensor en X (mm) --- configuración manual --- (medir físicamente desde la boquilla hasta la punta del sensor)",
+            "Português": "distância do bico ao sensor em X (mm) --- configuração manual --- (medir fisicamente do bico até a ponta do sensor)"
+        },
+        "distance from nozzle to probe in Y (mm) --- manual configuration --- (measure physically from nozzle to probe tip)": {
+            "Español": "distancia de la boquilla al sensor en Y (mm) --- configuración manual --- (medir físicamente desde la boquilla hasta la punta del sensor)",
+            "Português": "distância do bico ao sensor em Y (mm) --- configuração manual --- (medir fisicamente do bico até a ponta do sensor)"
+        },
+        "nozzle to bed distance (mm) --- manual configuration --- (set using PROBE_CALIBRATE)": {
+            "Español": "distancia de la boquilla a la cama (mm) --- configuración manual --- (configurar usando PROBE_CALIBRATE)",
+            "Português": "distância do bico à mesa (mm) --- configuração manual --- (configurar usando PROBE_CALIBRATE)"
+        },
+        "Probe speed in mm/s": {
+            "Español": "Velocidad de prueba en mm/s",
+            "Português": "Velocidade de teste em mm/s"
+        },
+        "Z height before moving to next probe point": {
+            "Español": "Altura de Z antes de moverse al siguiente punto",
+            "Português": "Altura de Z antes de mover para o próximo ponto"
+        },
+        "probing area start (mm) --- manual configuration --- (must be inside bed limits)": {
+            "Español": "inicio del área de prueba (mm) --- configuración manual --- (debe estar dentro de los límites de la cama)",
+            "Português": "início da área de teste (mm) --- configuração manual --- (deve estar dentro dos limites da mesa)"
+        },
+        "probing area end (mm) --- manual configuration --- (must be inside bed limits)": {
+            "Español": "fin del área de prueba (mm) --- configuración manual --- (debe estar dentro de los límites de la cama)",
+            "Português": "fim da área de teste (mm) --- configuração manual --- (deve estar dentro dos limites da mesa)"
+        },
+        "Probe grid size": {
+            "Español": "Tamaño de la cuadrícula de prueba",
+            "Português": "Tamanho da grade de teste"
+        },
+        "--- optional --- (automatic Z leveling for multiple motors)": {
+            "Español": "--- opcional --- (nivelación automática de Z para múltiples motores)",
+            "Português": "--- opcional --- (nivelamento automático de Z para múltiplos motores)"
+        },
+        "Locations of the bed pivot points": {
+            "Español": "Ubicaciones de los puntos de pivote de la cama",
+            "Português": "Localizações dos pontos de pivô da mesa"
+        },
+        "Probing points for Z leveling": {
+            "Español": "Puntos de prueba para la nivelación de Z",
+            "Português": "Pontos de teste para o nivelamento de Z"
+        },
+        "Speed of non-probing moves during leveling": {
+            "Español": "Velocidad de movimientos sin prueba durante la nivelación",
+            "Português": "Velocidade de movimentos sem teste durante o nivelamento"
+        },
+        "Z height to clear the bed when moving": {
+            "Español": "Altura Z para despejar la cama al moverse",
+            "Português": "Altura Z para limpar a mesa ao se mover"
+        },
+        "--- optional --- (for CoreXY gantry leveling)": {
+            "Español": "--- opcional --- (para nivelación de pórtico CoreXY)",
+            "Português": "--- opcional --- (para nivelamento de pórtico CoreXY)"
+        },
+        "Locations of the gantry pivot points": {
+            "Español": "Ubicaciones de los puntos de pivote del pórtico",
+            "Português": "Localizações dos pontos de pivô do pórtico"
+        },
+        "Probing points for gantry leveling": {
+            "Español": "Puntos de prueba para la nivelación del pórtico",
+            "Português": "Pontos de teste para o nivelamento do pórtico"
+        },
+        "bed PID proportional --- manual configuration --- (run PID_CALIBRATE HEATER=heater_bed TARGET=60)": {
+            "Español": "PID proporcional de la cama --- configuración manual --- (ejecutar PID_CALIBRATE HEATER=heater_bed TARGET=60)",
+            "Português": "PID proporcional da mesa --- configuração manual --- (executar PID_CALIBRATE HEATER=heater_bed TARGET=60)"
+        },
+        "bed PID integral --- manual configuration --- (run PID_CALIBRATE)": {
+            "Español": "PID integral de la cama --- configuración manual --- (ejecutar PID_CALIBRATE)",
+            "Português": "PID integral da mesa --- configuração manual --- (executar PID_CALIBRATE)"
+        },
+        "bed PID derivative --- manual configuration --- (run PID_CALIBRATE)": {
+            "Español": "PID derivativo de la cama --- configuración manual --- (ejecutar PID_CALIBRATE)",
+            "Português": "PID derivativo da mesa --- configuração manual --- (executar PID_CALIBRATE)"
+        },
+        "motor current (A) --- manual configuration --- (check motor specs)": {
+            "Español": "corriente del motor (A) --- configuración manual --- (verificar especificaciones)",
+            "Português": "corrente do motor (A) --- configuração manual --- (verificar especificações)"
         }
     }
 
