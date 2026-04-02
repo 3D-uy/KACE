@@ -20,18 +20,24 @@ INSTALL_DIR="$HOME/kace"
 KACE_BIN="/usr/local/bin/kace"
 
 # ── Banner ───────────────────────────────────────────────────
-echo ""
-echo -e "  ${G}██╗  ██╗${Y}  ${G}█████╗${Y}  ${G}██████╗${Y} ${G}███████╗${R}"
-echo -e "  ${G}██║ ██╔╝${G}██╔══██╗${G}██╔════╝${G}██╔════╝${R}"
-echo -e "  ${G}█████╔╝ ${G}███████║${G}██║${G}     █████╗${R}"
-echo -e "  ${G}██╔═██╗ ${G}██╔══██║${G}██║${G}     ██╔══╝${R}"
-echo -e "  ${G}██║  ██╗${G}██║  ██║${Y}╚${G}██████╗${G}███████╗${R}"
-echo -e "  ${Y}╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚══════╝${R}"
-echo ""
-echo -e "  ${C}──────────────────────────────────────────${R}"
-echo -e "  ${B}${C}  KACE Installer v0.1.0-beta${R}"
-echo -e "  ${C}──────────────────────────────────────────${R}"
-echo ""
+clear
+BANNER_URL="https://raw.githubusercontent.com/3D-uy/KACE/main/core/banner.py"
+SUBTITLE="KACE Installer"
+VERSION="v0.1.0-beta"
+
+if [ -f "core/banner.py" ]; then
+    python3 core/banner.py "$SUBTITLE" "$VERSION"
+elif [ -f "$INSTALL_DIR/core/banner.py" ]; then
+    python3 "$INSTALL_DIR/core/banner.py" "$SUBTITLE" "$VERSION"
+else
+    python3 -c "$(curl -fsSL $BANNER_URL)" "$SUBTITLE" "$VERSION" 2>/dev/null || {
+        echo ""
+        echo -e "  ${C}──────────────────────────────────────────${R}"
+        echo -e "  ${B}${C}  $SUBTITLE $VERSION${R}"
+        echo -e "  ${C}──────────────────────────────────────────${R}"
+        echo ""
+    }
+fi
 
 # ── Step 1: System dependencies ──────────────────────────────
 echo -e "${C}[1/5]${R} Updating system packages..."
