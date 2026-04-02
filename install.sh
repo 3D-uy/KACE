@@ -85,14 +85,12 @@ else
 fi
 
 # ── Done ─────────────────────────────────────────────────────
+# ── Done ─────────────────────────────────────────────────────
 echo ""
 echo -e "  ${G}══════════════════════════════════════════${R}"
 echo -e "  ${B}${G}  ✅ KACE installed successfully!${R}"
 echo -e "  ${G}══════════════════════════════════════════${R}"
 echo ""
-echo -e "  ${B}Run KACE:${R}"
-echo -e "    ${C}kace${R}"
-echo ""
-echo -e "  ${B}Or manually:${R}"
-echo -e "    ${C}python3 ~/kace/kace.py${R}"
-echo ""
+echo -e "  ${C}Launching KACE...${R}"
+sleep 1
+cd "$INSTALL_DIR" && python3 kace.py

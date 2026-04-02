@@ -54,6 +54,14 @@ def generate_config(parsed_data, user_data):
     
     final_output = chr(10).join(aligned_lines)
     
+    # Validation: Do not proceed if generic TODO pins are left, preventing Klipper startup errors
+    if "TODO" in final_output:
+        import sys
+        print("\n\033[91mCRITICAL ERROR: Configuration generated with unresolved 'TODO' values!\033[0m")
+        print("\033[93mThis usually happens if your board does not map all required pins natively.\033[0m")
+        print("\033[91mGeneration aborted to guarantee it starts without errors in Klipper.\033[0m")
+        sys.exit(1)
+        
     # Write to printer.cfg
     output_path = os.path.expanduser('~/kace')
     os.makedirs(output_path, exist_ok=True)
@@ -61,3 +69,4 @@ def generate_config(parsed_data, user_data):
     cfg_file = os.path.join(output_path, 'printer.cfg')
     with open(cfg_file, 'w') as f:
         f.write(final_output)
+

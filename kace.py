@@ -19,6 +19,9 @@ from core.generator import generate_config
 from core.deployer import deploy_config, deploy_usb, deploy_local, deploy_avrdude
 
 def print_header():
+    # Clear screen KIAUH-style
+    os.system('clear' if os.name == 'posix' else 'cls')
+
     # ANSI Escape Codes
     G = "\033[92m"  # Green
     Y = "\033[93m"  # Yellow
@@ -26,18 +29,29 @@ def print_header():
     B = "\033[1m"   # Bold
     R = "\033[0m"   # Reset
 
-    logo = [
-        f"{G}██{Y}╗{G}  ██{Y}╗{G} █████{Y}╗{G}  ██████{Y}╗{G}███████{Y}╗",
-        f"{G}██{Y}║{G} ██{Y}╔╝{G}██{Y}╔══{G}██{Y}╗{G}██{Y}╔════╝{G}██{Y}╔════╝",
-        f"{G}█████{Y}╔╝{G} ███████{Y}║{G}██{Y}║{G}     █████{Y}╗",
-        f"{G}██{Y}╔═{G}██{Y}╗{G} ██{Y}╔══{G}██{Y}║{G}██{Y}║{G}     ██{Y}╔══╝",
-        f"{G}██{Y}║{G}  ██{Y}╗{G}██{Y}║{G}  ██{Y}║{Y}╚{G}██████{Y}╗{G}███████{Y}╗",
-        f"{Y}╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚══════╝"
+    raw_logo = [
+        "██╗  ██╗ █████╗  ██████╗███████╗",
+        "██║ ██╔╝██╔══██╗██╔════╝██╔════╝",
+        "█████╔╝ ███████║██║     █████╗  ",
+        "██╔═██╗ ██╔══██║██║     ██╔══╝  ",
+        "██║  ██╗██║  ██║╚██████╗███████╗",
+        "╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚══════╝"
     ]
 
     print("")
-    for line in logo:
-        print(f"  {line}")
+    max_len = max(len(l) for l in raw_logo)
+    c1 = (46, 204, 113) # Vibrant Green
+    c2 = (52, 152, 219) # Vibrant Blue
+    
+    for line in raw_logo:
+        colored_line = ""
+        for i, char in enumerate(line):
+            ratio = i / max(1, max_len - 1)
+            r = int(c1[0] + (c2[0] - c1[0]) * ratio)
+            g = int(c1[1] + (c2[1] - c1[1]) * ratio)
+            b = int(c1[2] + (c2[2] - c1[2]) * ratio)
+            colored_line += f"\033[38;2;{r};{g};{b}m{char}"
+        print(f"  {colored_line}\033[0m")
     
     print(f"  {C}──────────────────────────────────────────{R}")
     print(f"  {B}{C}Klipper Automated Configuration Ecosystem{R}")
@@ -194,11 +208,13 @@ def main():
                 driver_type = user_data.get("driver_type", "None (Standard)")
                 driver_mode = user_data.get("driver_mode", "")
                 if "TMC" in driver_type and driver_mode in ["UART", "SPI"]:
-                    uart_pin = questionary.text(f"Enter {driver_mode.lower()}_pin for {motor_name} (optional, press Enter to skip):", style=custom_style).ask()
-                    if uart_pin:
-                        tmc_section = f"{driver_type.lower()} {motor_name}"
-                        pin_key = "uart_pin" if driver_mode == "UART" else "cs_pin"
-                        parsed_data[tmc_section] = {pin_key: uart_pin, "run_current": "0.650"}
+                    uart_pin = questionary.text(f"Enter {driver_mode.lower()}_pin for {motor_name}:", style=custom_style).ask()
+                    if not uart_pin:
+                        print(f"\n\033[91mError: {driver_mode} pin is critically required. Aborting.\033[0m")
+                        sys.exit(1)
+                    tmc_section = f"{driver_type.lower()} {motor_name}"
+                    pin_key = "uart_pin" if driver_mode == "UART" else "cs_pin"
+                    parsed_data[tmc_section] = {pin_key: uart_pin, "run_current": "0.650"}
             else:
                 src_data = parsed_data[selected_driver]
                 parsed_data[motor_name] = {
@@ -208,12 +224,21 @@ def main():
                 }
                 
                 driver_type = user_data.get("driver_type", "None (Standard)")
+                driver_mode = user_data.get("driver_mode", "")
                 if "TMC" in driver_type:
-                    src_tmc = f"{driver_type.lower()} {selected_driver}"
                     dest_tmc = f"{driver_type.lower()} {motor_name}"
-                    if src_tmc in parsed_data:
-                        parsed_data[dest_tmc] = parsed_data[src_tmc].copy()
-                        del parsed_data[src_tmc]
+                    found_tmc = False
+                    for possible_tmc in ["tmc2209", "tmc2208", "tmc2130", "tmc5160", "tmc2225", "tmc2240"]:
+                        src_tmc = f"{possible_tmc} {selected_driver}"
+                        if src_tmc in parsed_data:
+                            parsed_data[dest_tmc] = parsed_data[src_tmc].copy()
+                            del parsed_data[src_tmc]
+                            found_tmc = True
+                            break
+                    if not found_tmc and driver_mode in ["UART", "SPI"]:
+                        print(f"\n\033[91mError: No {driver_mode} pin mapping found on this board for {selected_driver}.\033[0m")
+                        print("\033[93mGeneration aborted to prevent missing parameters.\033[0m")
+                        sys.exit(1)
                 
                 del parsed_data[selected_driver]
                 available_driver_keys.remove(selected_driver)

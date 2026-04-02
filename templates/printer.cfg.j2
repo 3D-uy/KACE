@@ -166,57 +166,57 @@ speed: 50 # Speed at which the toolhead is moved to the safe Z home coordinate
 z_hop: 10 # Distance (in mm) to lift the Z axis prior to homing
 z_hop_speed: 5 # Speed (in mm/s) at which the Z axis is lifted prior to homing
 
-[bed_mesh]
-speed: 120 # Probe speed in mm/s
-horizontal_move_z: 5 # Z height before moving to next probe point
-mesh_min: 10, 10 # probing area start (mm) --- manual configuration --- (must be inside bed limits)
-mesh_max: {{ user.x_size | int - 10 }}, {{ user.y_size | int - 10 }} # probing area end (mm) --- manual configuration --- (must be inside bed limits)
-probe_count: 5, 5 # Probe grid size
+# [bed_mesh]
+# speed: 120 # Probe speed in mm/s
+# horizontal_move_z: 5 # Z height before moving to next probe point
+# mesh_min: 10, 10 # probing area start (mm) --- manual configuration --- (must be inside bed limits)
+# mesh_max: {{ user.x_size | int - 10 }}, {{ user.y_size | int - 10 }} # probing area end (mm) --- manual configuration --- (must be inside bed limits)
+# probe_count: 5, 5 # Probe grid size
 {%- endif %}
 
 {%- if user.z_motors | int >= 2 and not (user.kinematics == 'corexy' and user.z_motors | int >= 3) %}
 {%- set bx = user.x_size | int %}
 {%- set by = user.y_size | int %}
 
-[z_tilt] # --- optional --- (automatic Z leveling for multiple motors)
-z_positions: # Locations of the bed pivot points
+# [z_tilt] # --- optional --- (automatic Z leveling for multiple motors)
+# z_positions: # Locations of the bed pivot points
 {%- if user.z_motors | int == 2 %}
-  0, {{ by // 2 }}
-  {{ bx }}, {{ by // 2 }}
+#   0, {{ by // 2 }}
+#   {{ bx }}, {{ by // 2 }}
 {%- elif user.z_motors | int == 3 %}
-  0, 0
-  {{ bx }}, 0
-  {{ bx // 2 }}, {{ by }}
+#   0, 0
+#   {{ bx }}, 0
+#   {{ bx // 2 }}, {{ by }}
 {%- else %}
-  0, 0
-  {{ bx }}, 0
-  {{ bx }}, {{ by }}
-  0, {{ by }}
+#   0, 0
+#   {{ bx }}, 0
+#   {{ bx }}, {{ by }}
+#   0, {{ by }}
 {%- endif %}
-points: # Probing points for Z leveling
-  10, 10
-  {{ bx - 10 }}, 10
-  {{ bx - 10 }}, {{ by - 10 }}
-  10, {{ by - 10 }}
-speed: 50 # Speed of non-probing moves during leveling
-horizontal_move_z: 5 # Z height to clear the bed when moving
+# points: # Probing points for Z leveling
+#   10, 10
+#   {{ bx - 10 }}, 10
+#   {{ bx - 10 }}, {{ by - 10 }}
+#   10, {{ by - 10 }}
+# speed: 50 # Speed of non-probing moves during leveling
+# horizontal_move_z: 5 # Z height to clear the bed when moving
 {%- endif %}
 
 {%- if user.kinematics == 'corexy' and user.z_motors | int >= 3 %}
 {%- set bx = user.x_size | int %}
 {%- set by = user.y_size | int %}
 
-[quad_gantry_level] # --- optional --- (for CoreXY gantry leveling)
-gantry_corners: # Locations of the gantry pivot points
-  -60, -10
-  {{ bx + 60 }}, {{ by + 90 }}
-points: # Probing points for gantry leveling
-  10, 10
-  {{ bx - 10 }}, 10
-  {{ bx - 10 }}, {{ by - 10 }}
-  10, {{ by - 10 }}
-speed: 50 # Speed of non-probing moves during leveling
-horizontal_move_z: 5 # Z height to clear the bed when moving
+# [quad_gantry_level] # --- optional --- (for CoreXY gantry leveling)
+# gantry_corners: # Locations of the gantry pivot points
+#   -60, -10
+#   {{ bx + 60 }}, {{ by + 90 }}
+# points: # Probing points for gantry leveling
+#   10, 10
+#   {{ bx - 10 }}, 10
+#   {{ bx - 10 }}, {{ by - 10 }}
+#   10, {{ by - 10 }}
+# speed: 50 # Speed of non-probing moves during leveling
+# horizontal_move_z: 5 # Z height to clear the bed when moving
 {%- endif %}
 
 # --------------------------------------------------
