@@ -73,7 +73,6 @@ Configurar o Klipper manualmente envolve:
 | Compilação de Firmware | ✅ Funcionando |
 | Deploy via SSH | ✅ Funcionando |
 | Instalação em uma linha | ✅ Funcionando |
-| Interface GUI / Web | 🚧 Planejado |
 
 ---
 

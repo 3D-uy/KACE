@@ -73,7 +73,6 @@ Setting up Klipper manually involves:
 | Firmware Compilation | ✅ Working |
 | SSH Deploy | ✅ Working |
 | One-line install | ✅ Working |
-| GUI / Web interface | 🚧 Planned |
 
 ---
 
@@ -91,8 +90,8 @@ bash <(curl -s https://raw.githubusercontent.com/3D-uy/KACE/main/install.sh)
 
 Before using KACE:
 
-✔ Raspberry Pi Imager installed in SD card: incudes **Klipper**,**Mainsail OS**,**Moonraker** (recommended)  
-✔ SSH access to your Raspberry Pi  (Mobaxterm) 
+✔ Raspberry Pi Imager installed in SD card: includes **Klipper**, **Mainsail OS**, **Moonraker** (recommended)  
+✔ SSH access to your Raspberry Pi (Mobaxterm) 
 
 ❌ You NO LONGER need to:
 
@@ -118,9 +117,11 @@ KACE automates the entire process:
 
 After running KACE you will have:
 
+```
 ~/kace/
 ├── printer.cfg
 ├── klipper.bin / klipper.uf2 / klipper.hex
+```
 
 ---
 
