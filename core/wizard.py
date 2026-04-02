@@ -172,7 +172,7 @@ def run_wizard():
         elif step == 7:
             ans = questionary.select(
                 "Select Stepper Driver Type:",
-                choices=["None (Standard)", "TMC2208", "TMC2209", "TMC2130", "A4988", "Back", "Quit"],
+                choices=["None (Standard)", "TMC2208", "TMC2209", "TMC2225", "TMC2130", "TMC5160", "A4988", "DRV8825", "Back", "Quit"],
                 style=custom_style
             ).ask()
             if ans == "Quit" or ans is None: sys.exit(0)
@@ -180,7 +180,7 @@ def run_wizard():
                 step -= 1
                 continue
             user_data["driver_type"] = ans
-            if ans in ["None (Standard)", "A4988"]:
+            if ans in ["None (Standard)", "A4988", "DRV8825"]:
                 user_data["driver_mode"] = "Standalone"
                 step += 2
             else:
@@ -202,12 +202,12 @@ def run_wizard():
         elif step == 9:
             ans = questionary.select(
                 "How many Z motors are you using?",
-                choices=["1", "2", "Back", "Quit"],
+                choices=["1", "2", "3", "4", "Back", "Quit"],
                 style=custom_style
             ).ask()
             if ans == "Quit" or ans is None: sys.exit(0)
             if ans == "Back":
-                if user_data["driver_type"] in ["None (Standard)", "A4988"]:
+                if user_data["driver_type"] in ["None (Standard)", "A4988", "DRV8825"]:
                     step -= 2
                 else:
                     step -= 1

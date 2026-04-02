@@ -16,7 +16,7 @@ from core.scraper import fetch_config_list, fetch_raw_config, parse_config
 from core.wizard import run_wizard
 from core.style import custom_style
 from core.generator import generate_config
-from core.deployer import deploy_config, deploy_usb, deploy_local
+from core.deployer import deploy_config, deploy_usb, deploy_local, deploy_avrdude
 
 def print_header():
     # ANSI Escape Codes
@@ -110,9 +110,13 @@ def main():
                 user_data['mcu_type'] = result.get('mcu') # Save actual MCU used to user_data
                 
                 # --- Firmware Deployment ---
+                deploy_options = ["None (Done)", "Local Folder (PC)", "USB / SD Card"]
+                if result.get('firmware') == 'klipper.elf.hex':
+                    deploy_options.insert(1, "Flash via USB (avrdude)")
+
                 deploy_fw = questionary.select(
-                    "\nSelect Deployment Method for Firmware (klipper.bin/.uf2):",
-                    choices=["None (Done)", "Local Folder (PC)", "USB / SD Card"],
+                    "\nSelect Deployment Method for Firmware (klipper.bin/.uf2/.hex):",
+                    choices=deploy_options,
                     style=custom_style
                 ).ask()
                 
@@ -120,12 +124,14 @@ def main():
                     deploy_usb(user_data, artifact_type="firmware")
                 elif deploy_fw == "Local Folder (PC)":
                     deploy_local(user_data, artifact_type="firmware")
+                elif deploy_fw == "Flash via USB (avrdude)":
+                    deploy_avrdude(user_data, result.get("path"), result.get("mcu"))
 
             else:
                 print(f"\n\033[91mERROR:\033[0m {result.get('message')}")
     else:
         print("\n\033[93mSkipping firmware compilation (no MCU designated).\033[0m")
-
+        
     # ==========================================
     # PHASE 2: CONFIGURATION FETCH & GENERATION
     # ==========================================
@@ -135,6 +141,27 @@ def main():
     time.sleep(0.5)
     print(f"\r\033[92m[*]\033[0m Fetching configuration for \033[93m{user_data['board']}\033[0m... Done!")
     
+    # --- Multi-Z Pin Verification (Before Generation) ---
+    z_motors = int(user_data.get('z_motors', 1))
+    if z_motors > 1:
+        for i in range(2, z_motors + 1):
+            motor_name = f"stepper_z{i - 1}"
+            if motor_name not in parsed_data:
+                print(f"\n\033[93mWarning:\033[0m The selected board might not support {z_motors} Z motors natively.")
+                print(f"I did not find default pins for [{motor_name}] in the generic config.")
+                ans = questionary.confirm(f"Do you want to manually assign pins for {motor_name} now?", default=True).ask()
+                if ans:
+                    step_pin = questionary.text(f"Enter step_pin for {motor_name} (e.g. PC4):").ask()
+                    dir_pin = questionary.text(f"Enter dir_pin for {motor_name} (add '!' to invert if needed):").ask()
+                    en_pin = questionary.text(f"Enter enable_pin for {motor_name} (usually starts with '!'):").ask()
+                    parsed_data[motor_name] = {
+                        "step_pin": step_pin,
+                        "dir_pin": dir_pin,
+                        "enable_pin": en_pin
+                    }
+                else:
+                    print(f"\033[91mNotice: {motor_name} will be generated with 'TODO' pins. Remember to fix them later!\033[0m")
+
     print("\033[91m[*]\033[0m Generating printer.cfg...", end="", flush=True)
     generate_config(parsed_data, user_data)
     time.sleep(0.5)
