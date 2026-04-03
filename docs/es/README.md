@@ -1,3 +1,7 @@
+![Status](https://img.shields.io/badge/status-beta%201-orange)
+![Version](https://img.shields.io/badge/version-v0.1.0-blue)
+
+
 <p align="center">
   <img src="../assets/kace_banner.png" width="1000">
 </p>
