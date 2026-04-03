@@ -4,25 +4,32 @@
 ![Board](https://img.shields.io/badge/Board-SKR%201.4%20%2F%201.4%20Turbo-blue)
 ![Raspberry](https://img.shields.io/badge/Raspberry-Pi%203B-red)
 ![Interface](https://img.shields.io/badge/UI-Mainsail-purple)
-![Guide](https://img.shields.io/badge/Guía-Instalación%20simple-success)
+![Guide](https://img.shields.io/badge/Guia-Instalação%20simples-success)
+
+<p align="center">
+
+🌐 **Idioma**  
+🇺🇸 <a href="../en/Klipper_install.md">English</a> | 🇪🇸 <a href="../es/klipper_install.md">Español</a> | 🇧🇷 Português
+
+</p>
 
 # 🧠 O guia definitivo para instalar o Klipper
 
-Este tutorial foi projetado para ser seguido junto com o vídeo.
-Basta copiar cada bloco de código e colá-lo no terminal.
+Este tutorial foi projetado para ser seguido junto com o vídeo.  
+Basta copiar cada bloco de código e colá-lo no terminal.  
 Você não precisa digitar comandos manualmente.
 
 ---
 
 # 📋 REQUISITOS
 
-* 🧠 Raspberry Pi (como exemplo usaremos uma Raspberry Pi 3B)
-* 🧩 Placa exemplo: SKR 1.4 Turbo
-* 💾 Cartão SD de boa qualidade para a Raspberry
-* 💾 Cartão SD para carregar firmware na SKR
-* 🔌 Cabo USB entre Raspberry e SKR
-* 💻 PC com Windows
-* 🖥️ MobaXterm instalado
+- 🧠 Raspberry Pi (como exemplo usaremos uma Raspberry Pi 3B)
+- 🧩 Placa exemplo: SKR 1.4 Turbo
+- 💾 Cartão SD de boa qualidade para a Raspberry
+- 💾 Cartão SD para carregar firmware na SKR
+- 🔌 Cabo USB entre Raspberry e SKR
+- 💻 PC com Windows
+- 🖥️ MobaXterm instalado
 
 ## 🔗 Todos os links você encontrará abaixo
 
@@ -34,33 +41,11 @@ Antes de começar, você precisa gravar o sistema operacional no cartão SD da R
 
 Usaremos o **Raspberry Pi Imager**, a ferramenta oficial.
 
-📥 Baixar aqui
+📥 Baixar aqui  
 
-Site oficial [https://www.raspberrypi.com/software/](https://www.raspberrypi.com/software/)
+  Site oficial https://www.raspberrypi.com/software/
 
-Instalar e abrir o programa.
-
-Depois seguir estes passos:
-
-1. Clicar em **Modelo de Raspberry Pi**
-
-2. Selecionar:
-
-   ## Other specific-purpose OS
-
-3. Depois selecionar:
-
-   ## 3D printing
-
-4. Escolher:
-
-   ## Mainsail OS
-
-5. Clicar em **Choose Storage**
-
-6. Selecionar seu **cartão SD**
-
-7. Pressionar **FINALIZAR**
+Guia para instalar o **Raspberry Pi Imager** <a href="pi_imager.md">pi_imager</a>
 
 O programa irá baixar a imagem e gravá-la automaticamente.
 
@@ -68,27 +53,26 @@ O programa irá baixar a imagem e gravá-la automaticamente.
 
 ## 🖥️ Baixar MobaXterm
 
-Site oficial
-[https://mobaxterm.mobatek.net/download.html](https://mobaxterm.mobatek.net/download.html)
+   Site oficial  
+   https://mobaxterm.mobatek.net/download.html
 
 ---
 
-# ⚡ Quando terminar
+# ⚡ Quando terminar de instalar o **Raspberry Pi Imager**
 
 1. Remover o cartão SD
 2. Inseri-lo na **Raspberry Pi**
 3. Ligar a Raspberry
 
-## Aguardar aproximadamente **1 a 2 minutos** para que o sistema inicialize completamente.
+  ## Aguardar aproximadamente **1 a 2 minutos** para que o sistema inicialize completamente.
 
-# 📡 PARTE 2  Abrir o MainsailOS
+
+# 📡 PARTE 2  Abrir o MainsailOS.
 
 ### Abrir o navegador e acessar:
-
 ```
 klipper.local
 ```
-
 Se abrir o Mainsail → perfeito.
 
 ---
@@ -98,28 +82,22 @@ Se abrir o Mainsail → perfeito.
 ### 🖥️ Abrir MobaXterm → Session → SSH
 
 Remote host:
-
 ```
 klipper.local
 ```
-
 Username:
-
 ```
 pi
 ```
-
 Password:
-
 ```
 raspberry
 ```
-
 ## Se entrar → estamos dentro da Raspberry.
 
 ---
 
-# ⚡ PARTE — Instalar e usar KACE (TUDO em um)
+# ⚡ PARTE 4 — Instalar e usar KACE (TUDO em um)
 
 O KACE simplifica TODO o processo:
 
@@ -198,6 +176,5 @@ O KACE busca tornar esse ecossistema mais acessível para todos.
 🚀 Feito para simplificar o Klipper
 
 </p>
-
 
 ---

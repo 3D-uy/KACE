@@ -48,27 +48,6 @@ Usaremos **Raspberry Pi Imager**, la herramienta oficial.
 
 Guia para instalar **Raspberry Pi Imager** <a href="pi_imager.md">pi_imager</a>
 
-Instalar y abrir el programa.
-
-Luego seguir estos pasos:
-
-1. Hacer clic en **Modelo de Raspberry Pi**
-2. Seleccionar:
-
-   ## Other specific-purpose OS
-
-3. Luego seleccionar:
-
-   ## 3D printing
-
-4. Elegir:
-
-   ## Mainsail OS
-
-5. Hacer clic en **Choose Storage**
-6. Seleccionar tu **tarjeta SD**
-7. Presionar **FINALIZAR**
-
 El programa descargará la imagen y la grabará automáticamente.
 
 # 📥 Mientras tanto descarga el siguiente programa
@@ -80,7 +59,7 @@ El programa descargará la imagen y la grabará automáticamente.
 
 ---
 
-# ⚡ Cuando termine
+# ⚡ Cuando termine de instalar **Raspberry Pi Imager**
 
 1. Retirar la tarjeta SD
 2. Insertarla en la **Raspberry Pi**
@@ -119,7 +98,7 @@ raspberry
 
 ---
 
-# ⚡ PARTE — Instalar y usar KACE (TODO en uno)
+# ⚡ PARTE 4 — Instalar y usar KACE (TODO en uno)
 
 KACE simplifica TODO el proceso:
 

@@ -198,20 +198,19 @@ rm -rf ~/kace
 
 👉 Documentación completa:
 
-* 🇺🇸 English: `../../README.md`
-* 🇪🇸 Español: *(esta página)*
-* 🇧🇷 Português: `../pt/README.md`
+* 🇺🇸 English:   <a href="../../README.md">../../README.md</a>
+* 🇪🇸 Español:   *(esta página)*
+* 🇧🇷 Português: <a href="../pt/README.md">../pt/README.md</a>
 
 👉 Instalación Pi Imager:
-* 🇺🇸 English: `../../docs/en/pi_imager_install.md`
-* 🇪🇸 Español: `pi_imager.md`
-* 🇧🇷 Português: `../pt/pi_imager.md`
+* 🇺🇸 English:   <a href="../en/pi_imager.md">../en/pi_imager.md</a>
+* 🇪🇸 Español:   *(esta página)*
+* 🇧🇷 Português: <a href="../pt/pi_imager.md">../pt/pi_imager.md</a>
 
 👉 Instalación Klipper Completa:
-* 🇺🇸 English: `../../docs/en/Klipper_install.md`
-* 🇪🇸 Español: `klipper_install.md`
-* 🇧🇷 Português: `../pt/klipper_install.md`
-
+* 🇺🇸 English:   <a href="../en/Klipper_install.md">../en/Klipper_install.md</a>
+* 🇪🇸 Español:   *(esta página)*
+* 🇧🇷 Português: <a href="../pt/klipper_install.md">../pt/klipper_install.md</a>
 ---
 
 ## 🙌 Contribuir y feedback
@@ -231,6 +230,20 @@ KACE evoluciona con la comunidad:
 Este proyecto se apoya en el trabajo increíble de la comunidad de **Klipper**.
 
 KACE busca hacer ese ecosistema más accesible para todos.
+
+---
+
+## 📜 Licencia y Uso
+
+KACE está licenciado bajo GPL-3.0 🛠️
+
+💡 Para uso comercial, distribución en productos de pago o cambio de marca,  
+por favor contacta al autor.
+
+🏷️ El nombre "KACE" y su imagen de marca no pueden usarse en productos comerciales  
+sin el permiso del autor.
+
+🤝 La atribución es apreciada y ayuda a mantener el proyecto.
 
 ---
 
