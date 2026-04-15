@@ -204,12 +204,12 @@ rm -rf ~/kace
 
 👉 Instalación Pi Imager:
 * 🇺🇸 English:   <a href="../en/pi_imager.md">pi_imager.md</a>
-* 🇪🇸 Español:   *(esta página)*
+* 🇪🇸 Español:   <a href="../es/pi_imager.md">pi_imager.md</a>
 * 🇧🇷 Português: <a href="../pt/pi_imager.md">pi_imager.md</a>
 
 👉 Instalación Klipper Completa:
 * 🇺🇸 English:   <a href="../en/Klipper_install.md">Klipper_install.md</a>
-* 🇪🇸 Español:   *(esta página)*
+* 🇪🇸 Español:   <a href="../es/klipper_install.md">klipper_install.md</a>
 * 🇧🇷 Português: <a href="../pt/klipper_install.md">klipper_install.md</a>
 ---
 
