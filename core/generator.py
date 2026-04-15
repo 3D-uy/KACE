@@ -54,11 +54,27 @@ def generate_config(parsed_data, user_data):
     
     final_output = chr(10).join(aligned_lines)
     
-    # Validation: Do not proceed if generic TODO pins are left, preventing Klipper startup errors
-    if "TODO" in final_output:
+    # Validation: Do not proceed if generic TODO pins are left active, preventing Klipper startup errors
+    has_active_todo = False
+    for line in final_output.splitlines():
+        if "TODO" in line and not line.lstrip().startswith("#"):
+            has_active_todo = True
+            break
+            
+    if has_active_todo:
         import sys
         print("\n\033[91mCRITICAL ERROR: Configuration generated with unresolved 'TODO' values!\033[0m")
         print("\033[93mThis usually happens if your board does not map all required pins natively.\033[0m")
+        
+        current_section = "unknown"
+        for line in final_output.splitlines():
+            stripped = line.strip()
+            if stripped.startswith("[") and "]" in stripped:
+                current_section = stripped
+            elif "TODO" in line and not line.lstrip().startswith("#"):
+                key = line.split(":")[0].strip().lstrip("#").strip()
+                print(f"TODO_FOUND: {current_section} -> {key}")
+                
         print("\033[91mGeneration aborted to guarantee it starts without errors in Klipper.\033[0m")
         sys.exit(1)
         

@@ -10,10 +10,20 @@ from core.style import custom_style
 
 MCU_SEARCH_TERMS = {
     "lpc1769": ["skr-v1.4", "skr-v1.3", "sgen-l"],
+    "lpc1768": ["mks-sgenl", "sbase"],
     "stm32f103": ["creality-v4.2.2", "creality-v4.2.7", "skr-mini-e3"],
+    "stm32f407": ["mks-robin-nano-v3", "skr-pro"],
+    "stm32f429": ["skr-2", "octopus-pro-v1.0"],
     "stm32f446": ["octopus", "spider"],
+    "stm32g0b1": ["manta", "skr-mini-e3-v3.0"],
+    "stm32h723": ["octopus-max-ez"],
+    "stm32f042": ["cheetah-v2.0"],
     "rp2040": ["skr-pico"],
-    "atmega2560": ["ramps", "mega2560"]
+    "atmega2560": ["ramps", "mega2560"],
+    "atmega1284p": ["melzi"],
+    "at90usb1286": ["printrboard"],
+    "sam4e8e": ["duet2"],
+    "samd51": ["duet3-mini"]
 }
 
 def discover_mcu():

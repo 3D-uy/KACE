@@ -221,6 +221,16 @@ z_hop_speed: 5 # Speed (in mm/s) at which the Z axis is lifted prior to homing
 {%- endif %}
 
 # --------------------------------------------------
+# Part Cooling Fan
+# --------------------------------------------------
+[fan]
+{%- if 'fan' in pins %}
+pin: {{ pins['fan'].get('pin', 'TODO') }} # Pin connected to the part cooling fan
+{%- else %}
+# pin: TODO # Pin connected to the part cooling fan (uncomment and set if available)
+{%- endif %}
+
+# --------------------------------------------------
 # Heated Bed
 # --------------------------------------------------
 [heater_bed]

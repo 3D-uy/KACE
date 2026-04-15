@@ -7,11 +7,62 @@ import sys
 import time
 
 # ── Early argument handling (no heavy imports needed) ─────────
-if len(sys.argv) > 1 and sys.argv[1] in ("--version", "-v"):
-    print(f"KACE {__version__}")
-    sys.exit(0)
+if len(sys.argv) > 1:
+    if sys.argv[1] in ("--version", "-v"):
+        print(f"KACE {__version__}")
+        sys.exit(0)
+    
+    for i, arg in enumerate(sys.argv):
+        if arg.startswith("--dev-mcu="):
+            os.environ["KACE_DEV_MCU"] = arg.split("=", 1)[1]
+        elif arg == "--dev-mcu" and i + 1 < len(sys.argv):
+            os.environ["KACE_DEV_MCU"] = sys.argv[i + 1]
+        elif arg == "--auto":
+            os.environ["KACE_AUTO"] = "1"
 
 import questionary
+
+if os.environ.get("KACE_AUTO") == "1":
+    print("\n\033[93m[AUTO MODE]\033[0m User interactions disabled. Using safe defaults for all prompts.", flush=True)
+    
+    class MockQuestionary:
+        def __init__(self, default_val):
+            self.default_val = default_val
+        def ask(self):
+            return self.default_val
+
+    def mock_select(msg, choices, default=None, **kwargs):
+        if not choices:
+            val = default
+        elif isinstance(choices[0], str):
+            val = choices[0]
+        elif isinstance(choices[0], dict):
+            val = choices[0].get('value')
+        else:
+            val = getattr(choices[0], 'value', None)
+        return MockQuestionary(default if default is not None else val)
+
+    def mock_autocomplete(msg, choices, **kwargs):
+        val_env = os.environ.get("KACE_DEV_BOARD")
+        if val_env and val_env in choices:
+            return MockQuestionary(val_env)
+        val = choices[0] if choices else None
+        return MockQuestionary(val)
+
+    def mock_text(msg, default="", **kwargs):
+        return MockQuestionary(default)
+        
+    def mock_confirm(msg, default=False, **kwargs):
+        return MockQuestionary(default) # Safe default: aborts builds/deployments
+
+    def mock_password(msg, **kwargs):
+        return MockQuestionary("")
+
+    questionary.select = mock_select
+    questionary.autocomplete = mock_autocomplete
+    questionary.text = mock_text
+    questionary.confirm = mock_confirm
+    questionary.password = mock_password
 from core.scraper import fetch_config_list, fetch_raw_config, parse_config
 from core.wizard import run_wizard
 from core.style import custom_style
