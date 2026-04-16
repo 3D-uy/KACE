@@ -1,7 +1,9 @@
 <p align="center">
-  <img src="docs/assets/kace_banner.png" width="1000">
+  <img src="docs/assets/kace_banner.png" width="1000"><br>
+  <img src="https://github.com/3D-uy/kace/actions/workflows/test.yml/badge.svg">
 </p>
-![CI](https://github.com/3D-uy/kace/actions/workflows/test.yml/badge.svg)
+
+
 <h1 align="center">🚀 KACE — Klipper Automated Configuration Ecosystem</h1>
 
 <p align="center">
