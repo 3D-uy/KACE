@@ -9,7 +9,6 @@
   <img src="https://img.shields.io/badge/version-v0.1.0--beta-blue?style=flat-square" alt="Version">
   <img src="https://img.shields.io/badge/platform-Linux%20%7C%20Raspberry%20Pi-green?style=flat-square" alt="Platform">
   <img src="https://img.shields.io/github/license/3D-uy/KACE?style=flat-square" alt="License">
-  ![CI](https://github.com/3D-uy/kace/actions/workflows/test.yml/badge.svg)
 </p>
 
 <p align="center">
