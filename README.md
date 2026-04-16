@@ -11,7 +11,7 @@
   <img src="https://img.shields.io/github/license/3D-uy/KACE?style=flat-square" alt="License">
 </p>
 
-![CI](https://github.com/3D-uy/kace/actions/workflows/test.yml/badge.svg)
+![CI](https://github.com/3D-uy/kace/.github/workflows/test.yml/badge.svg)
 
 <p align="center">
 🌐 <strong>Language</strong><br>
