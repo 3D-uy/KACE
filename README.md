@@ -1,11 +1,10 @@
 <p align="center">
   <img src="docs/assets/kace_banner.png" width="1000">
 </p>
-
+![CI](https://github.com/3D-uy/kace/actions/workflows/test.yml/badge.svg)
 <h1 align="center">🚀 KACE — Klipper Automated Configuration Ecosystem</h1>
 
 <p align="center">
-  ![CI](https://github.com/3D-uy/kace/actions/workflows/test.yml/badge.svg)
   <img src="https://img.shields.io/badge/status-beta-orange?style=flat-square" alt="Status">
   <img src="https://img.shields.io/badge/version-v0.1.0--beta-blue?style=flat-square" alt="Version">
   <img src="https://img.shields.io/badge/platform-Linux%20%7C%20Raspberry%20Pi-green?style=flat-square" alt="Platform">
