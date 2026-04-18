@@ -158,7 +158,7 @@ def deploy_avrdude(user_data, artifact_path, mcu_type):
         "-c", "arduino", 
         "-P", port, 
         "-b", "115200", 
-        f"-U", f"flash:w:{artifact_path}:i"
+        "-U", f"flash:w:{artifact_path}:i"
     ]
     
     cmd_str = " ".join(cmd)
@@ -166,7 +166,7 @@ def deploy_avrdude(user_data, artifact_path, mcu_type):
     
     confirm = questionary.confirm("Execute this command now?").ask()
     if confirm:
-        print(f"\n\033[96m>>> Running avrdude...\033[0m")
+        print("\n\033[96m>>> Running avrdude...\033[0m")
         try:
             subprocess.run(cmd, check=True)
             print("\n\033[92mSUCCESS:\033[0m Firmware flashed successfully!")

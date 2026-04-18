@@ -11,7 +11,7 @@ def validate_config(klipper_path="~/klipper"):
     if not os.path.exists(config_path):
         return False, f"Configuration file not found at {config_path}"
         
-    with open(config_path, "r") as f:
+    with open(config_path, "r", encoding="utf-8") as f:
         content = f.read()
 
     # 1. Architecture defined

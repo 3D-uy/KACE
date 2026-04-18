@@ -1,12 +1,9 @@
-import glob
-import re
-import os
 import sys
 import questionary
-from questionary import Style
-from .scraper import fetch_config_list
+from .scraper import fetch_config_list, fetch_raw_config, parse_config, extract_profile_defaults
 from firmware.detector import discover_mcu_hardware
 from core.style import custom_style
+from data.profiles import THERMISTOR_PRESETS
 
 MCU_SEARCH_TERMS = {
     "lpc1769": ["skr-v1.4", "skr-v1.3", "sgen-l"],
@@ -41,30 +38,35 @@ def run_wizard():
     print("\033[96m>>> Fetching board database...\033[0m")
     boards = fetch_config_list()
     
+    printer_configs = [b for b in boards if b.startswith("printer-")]
+    board_configs = [b for b in boards if b.startswith("generic-")]
+    
     suggested_configs = []
     if detected_mcu:
         print(f"\nDetected MCU: {detected_mcu.upper()}\n")
         if detected_mcu in MCU_SEARCH_TERMS:
             search_terms = MCU_SEARCH_TERMS[detected_mcu]
-            for b in boards:
+            for b in board_configs:
                 if any(term in b.lower() for term in search_terms):
                     suggested_configs.append(b)
 
-    # Prompt user for manual config board finding if not completely derived
     if mcu_hint == "manual" and not detected_mcu:
-        print(f"\nUsing manual MCU. You will have a chance to enter the compiler configuration later.")
+        print("\nUsing manual MCU. You will have a chance to enter the compiler configuration later.")
 
     user_data = {
         "mcu_path": mcu_path,
         "mcu_type": detected_mcu,
         "mcu_hint": mcu_hint,
         "language": "English",
+        "printer_profile": None,
         "board": None,
-        "kinematics": None,
+        "kinematics": "cartesian",
         "x_size": "235",
         "y_size": "235",
         "z_size": "250",
-        "probe": None,
+        "probe": "None",
+        "hotend_thermistor": "EPCOS 100K B57560G104F",
+        "bed_thermistor": "EPCOS 100K B57560G104F",
         "driver_type": None,
         "driver_mode": "Standalone",
         "z_motors": None,
@@ -72,7 +74,7 @@ def run_wizard():
     }
     
     step = 0
-    while step < 11:
+    while step < 14:
         if step == 0:
             ans = questionary.select(
                 "Select language for comments / Seleccione el idioma / Selecione o idioma:",
@@ -84,53 +86,90 @@ def run_wizard():
             step += 1
 
         elif step == 1:
-            ans = None
-            if suggested_configs and not user_data["board"]:
-                choices = suggested_configs + ["Search manually...", "Back", "Quit"]
-                ans = questionary.select(
-                    "Suggested boards based on your MCU:",
-                    choices=choices,
-                    style=custom_style
-                ).ask()
-                
-                if ans == "Quit" or ans is None: sys.exit(0)
-                if ans == "Back":
-                    step -= 1
-                    continue
-                if ans != "Search manually...":
-                    user_data["board"] = ans
-                    step += 1
-                    continue
-
-            # Manually searching
+            choices = ["Custom / Scratch Build"] + printer_configs
             ans = questionary.autocomplete(
-                "Select your board (type to search) [Ctrl+C to go back]:",
-                choices=boards,
+                "Select your Printer Model (type to search) [Ctrl+C to go back]:",
+                choices=choices,
                 style=custom_style
             ).ask()
+            
             if ans is None:
-                user_data["board"] = None
-                if not suggested_configs:
-                    step -= 1
+                step -= 1
                 continue
-            user_data["board"] = ans
+                
+            user_data["printer_profile"] = ans
+            if ans != "Custom / Scratch Build":
+                print(f"\n\033[96m>>> Loading defaults for {ans}...\033[0m")
+                raw = fetch_raw_config(ans)
+                if raw:
+                    parsed = parse_config(raw, ans)
+                    defaults = extract_profile_defaults(parsed)
+                    for k, v in defaults.items():
+                        user_data[k] = v
+                        
+                    print("\n\033[92mDetected profile:\033[0m")
+                    print(f"  - Build volume: {user_data.get('x_size')} x {user_data.get('y_size')} x {user_data.get('z_size')}")
+                    print(f"  - Kinematics: {user_data.get('kinematics')}")
+                    print(f"  - Thermistors: {user_data.get('hotend_thermistor')} (Hotend), {user_data.get('bed_thermistor')} (Bed)")
             step += 1
 
         elif step == 2:
+            choices = []
+            if user_data["printer_profile"] != "Custom / Scratch Build":
+                choices.append("Stock Board (from printer profile)")
+                
+            if suggested_configs and not user_data["board"]:
+                choices.extend(suggested_configs)
+                
+            choices.extend(["Search manually...", "Back", "Quit"])
+            
+            ans = questionary.select(
+                "Select your Board:",
+                choices=choices,
+                style=custom_style
+            ).ask()
+            
+            if ans == "Quit" or ans is None: sys.exit(0)
+            if ans == "Back":
+                step -= 1
+                continue
+                
+            if ans == "Stock Board (from printer profile)":
+                user_data["board"] = user_data["printer_profile"]
+                step += 1
+                continue
+                
+            if ans != "Search manually...":
+                user_data["board"] = ans
+                step += 1
+                continue
+
+            ans = questionary.autocomplete(
+                "Select your board manually (type to search) [Ctrl+C to go back]:",
+                choices=board_configs,
+                style=custom_style
+            ).ask()
+            if ans is None:
+                continue
+                
+            user_data["board"] = ans
+            step += 1
+
+        elif step == 3:
             ans = questionary.select(
                 "Select Kinematics:",
                 choices=["cartesian", "corexy", "delta", "Back", "Quit"],
+                default=user_data["kinematics"] if user_data["kinematics"] in ["cartesian", "corexy", "delta"] else None,
                 style=custom_style
             ).ask()
             if ans == "Quit" or ans is None: sys.exit(0)
             if ans == "Back":
-                user_data["board"] = None
                 step -= 1
                 continue
             user_data["kinematics"] = ans
             step += 1
 
-        elif step == 3:
+        elif step == 4:
             ans = questionary.text(
                 "Enter X build volume (mm) [Ctrl+C to go back]:", 
                 default=user_data["x_size"], 
@@ -142,7 +181,7 @@ def run_wizard():
             user_data["x_size"] = ans
             step += 1
 
-        elif step == 4:
+        elif step == 5:
             ans = questionary.text(
                 "Enter Y build volume (mm) [Ctrl+C to go back]:", 
                 default=user_data["y_size"], 
@@ -154,7 +193,7 @@ def run_wizard():
             user_data["y_size"] = ans
             step += 1
 
-        elif step == 5:
+        elif step == 6:
             ans = questionary.text(
                 "Enter Z build volume (mm) [Ctrl+C to go back]:", 
                 default=user_data["z_size"], 
@@ -166,10 +205,11 @@ def run_wizard():
             user_data["z_size"] = ans
             step += 1
 
-        elif step == 6:
+        elif step == 7:
             ans = questionary.select(
                 "Select Probe Type:",
                 choices=["None", "BLTouch", "Inductive", "CR-Touch", "Back", "Quit"],
+                default=user_data["probe"] if user_data["probe"] in ["None", "BLTouch", "Inductive", "CR-Touch"] else None,
                 style=custom_style
             ).ask()
             if ans == "Quit" or ans is None: sys.exit(0)
@@ -179,7 +219,57 @@ def run_wizard():
             user_data["probe"] = ans
             step += 1
 
-        elif step == 7:
+        elif step == 8:
+            preset_choices = list(THERMISTOR_PRESETS)
+            if user_data["hotend_thermistor"] not in preset_choices:
+                preset_choices.insert(0, user_data["hotend_thermistor"])
+            choices = preset_choices + ["Other (Manual Entry)", "Back", "Quit"]
+            
+            ans = questionary.select(
+                "Select Hotend Thermistor:",
+                choices=choices,
+                default=user_data["hotend_thermistor"] if user_data["hotend_thermistor"] in choices else None,
+                style=custom_style
+            ).ask()
+            if ans == "Quit" or ans is None: sys.exit(0)
+            if ans == "Back":
+                step -= 1
+                continue
+            if ans == "Other (Manual Entry)":
+                manual_ans = questionary.text("Enter custom hotend thermistor name:", style=custom_style).ask()
+                if manual_ans is None:
+                    continue
+                user_data["hotend_thermistor"] = manual_ans
+            else:
+                user_data["hotend_thermistor"] = ans
+            step += 1
+            
+        elif step == 9:
+            preset_choices = list(THERMISTOR_PRESETS)
+            if user_data["bed_thermistor"] not in preset_choices:
+                preset_choices.insert(0, user_data["bed_thermistor"])
+            choices = preset_choices + ["Other (Manual Entry)", "Back", "Quit"]
+            
+            ans = questionary.select(
+                "Select Bed Thermistor:",
+                choices=choices,
+                default=user_data["bed_thermistor"] if user_data["bed_thermistor"] in choices else None,
+                style=custom_style
+            ).ask()
+            if ans == "Quit" or ans is None: sys.exit(0)
+            if ans == "Back":
+                step -= 1
+                continue
+            if ans == "Other (Manual Entry)":
+                manual_ans = questionary.text("Enter custom bed thermistor name:", style=custom_style).ask()
+                if manual_ans is None:
+                    continue
+                user_data["bed_thermistor"] = manual_ans
+            else:
+                user_data["bed_thermistor"] = ans
+            step += 1
+
+        elif step == 10:
             ans = questionary.select(
                 "Select Stepper Driver Type:",
                 choices=["None (Standard)", "TMC2208", "TMC2209", "TMC2225", "TMC2130", "TMC5160", "A4988", "DRV8825", "Back", "Quit"],
@@ -196,7 +286,7 @@ def run_wizard():
             else:
                 step += 1
 
-        elif step == 8:
+        elif step == 11:
             ans = questionary.select(
                 f"Select {user_data['driver_type']} Communication Mode:",
                 choices=["UART", "SPI", "Standalone", "Back", "Quit"],
@@ -209,10 +299,10 @@ def run_wizard():
             user_data["driver_mode"] = ans
             step += 1
 
-        elif step == 9:
+        elif step == 12:
             ans = questionary.select(
-                "How many Z motors are you using?",
-                choices=["1", "2", "3", "4", "Back", "Quit"],
+                "Select your Web Interface (for includes):",
+                choices=["Mainsail", "Fluidd", "None", "Back", "Quit"],
                 style=custom_style
             ).ask()
             if ans == "Quit" or ans is None: sys.exit(0)
@@ -222,20 +312,20 @@ def run_wizard():
                 else:
                     step -= 1
                 continue
-            user_data["z_motors"] = ans
+            user_data["web_interface"] = ans
             step += 1
 
-        elif step == 10:
+        elif step == 13:
             ans = questionary.select(
-                "Select your Web Interface (for includes):",
-                choices=["Mainsail", "Fluidd", "None", "Back", "Quit"],
+                "How many Z motors are you using?",
+                choices=["1", "2", "3", "4", "Back", "Quit"],
                 style=custom_style
             ).ask()
             if ans == "Quit" or ans is None: sys.exit(0)
             if ans == "Back":
                 step -= 1
                 continue
-            user_data["web_interface"] = ans
+            user_data["z_motors"] = ans
             step += 1
 
     return user_data
