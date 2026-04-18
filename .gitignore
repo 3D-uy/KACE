@@ -3,7 +3,3 @@ __pycache__/
 *$py.class
 *.so
 .DS_Store
-run-dev.ps1
-run-prod.ps1
-docker-compose.dev.yml
-Dockerfile
