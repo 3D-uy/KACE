@@ -3,3 +3,4 @@ __pycache__/
 *$py.class
 *.so
 .DS_Store
+run main-dev.md
