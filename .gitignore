@@ -79,3 +79,7 @@ docker-compose.prod.yml
 
 # Personal files
 docs/PRD.md
+
+# Test results
+tests/results/
+tests/results_profiles/

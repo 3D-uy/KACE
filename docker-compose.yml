@@ -1,8 +1,0 @@
-version: "3.9"
-
-services:
-  kace:
-    build: .
-    container_name: kace
-    ports:
-      - "3000:3000"
