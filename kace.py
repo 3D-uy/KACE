@@ -80,12 +80,15 @@ if os.environ.get("KACE_AUTO") == "1":
     questionary.text = mock_text
     questionary.confirm = mock_confirm
     questionary.password = mock_password
+
 from core.scraper import fetch_raw_config, parse_config
 from core.wizard import run_wizard
 from core.style import custom_style
 from core.generator import generate_config
 from core.deployer import deploy_config, deploy_usb, deploy_local, deploy_avrdude
 from core.banner import print_kace_banner
+from core.translations import t
+
 
 def print_summary(user_data: dict):
     """Print final summary with output paths and next steps."""
@@ -100,11 +103,11 @@ def print_summary(user_data: dict):
 
     print("")
     print(f"  {G}══════════════════════════════════════════{R}")
-    print(f"  {B}{G}  ✅ Setup Complete{R}")
+    print(f"  {B}{G}  ✅ {t('summary.title')}{R}")
     print(f"  {G}══════════════════════════════════════════{R}")
     print("")
-    print(f"  {B}Firmware:{R} {Y}{fw_path}{R}")
-    print(f"  {B}Config:  {R} {Y}{cfg_path}{R}")
+    print(f"  {B}{t('summary.firmware')}{R} {Y}{fw_path}{R}")
+    print(f"  {B}{t('summary.config')}{R} {Y}{cfg_path}{R}")
     print("")
     print(f"  {B}--- Generation Details ---{R}")
     print(f"  {B}Printer Profile:{R} {Y}{user_data.get('printer_profile') or 'Custom / Scratch Build'}{R}")
@@ -112,10 +115,10 @@ def print_summary(user_data: dict):
     print(f"  {B}Kinematics:     {R} {Y}{user_data.get('kinematics')}{R}")
     print(f"  {B}Thermistors:    {R} {Y}{user_data.get('hotend_thermistor')} (Hotend), {user_data.get('bed_thermistor')} (Bed){R}")
     print("")
-    print(f"  {B}{C}Next steps:{R}")
-    print(f"  {C}1.{R} Flash firmware to your board")
-    print(f"  {C}2.{R} Upload printer.cfg to Klipper")
-    print(f"  {C}3.{R} Restart Klipper")
+    print(f"  {B}{C}{t('summary.next_steps')}{R}")
+    print(f"  {C}1.{R} {t('summary.step1')}")
+    print(f"  {C}2.{R} {t('summary.step2')}")
+    print(f"  {C}3.{R} {t('summary.step3')}")
     print("")
     print(f"  {G}──────────────────────────────────────────{R}")
     print("")
@@ -124,15 +127,30 @@ def print_summary(user_data: dict):
 def main():
     print_kace_banner("Klipper Automated Configuration Ecosystem", __version__)
     
+    # ── Dashboard (bypassed in CI / auto / dev modes) ─────────
+    _bypassed = (
+        os.environ.get("KACE_AUTO") == "1"
+        or os.environ.get("KACE_DEV_MCU")
+        or os.environ.get("KACE_DEV_PRINTER")
+        or os.environ.get("KACE_DEV_BOARD")
+        or os.environ.get("KACE_DEV_BOARD_TYPE")
+    )
+    if not _bypassed:
+        from core.dashboard import detect_system_state, run_dashboard
+        _state = detect_system_state()
+        _action = run_dashboard(_state)
+        if _action == "quit":
+            sys.exit(0)
+    
     # Milestone 3 & 4: Interactive Wizard
     try:
         user_data = run_wizard()
     except (KeyboardInterrupt, EOFError):
-        print("\n\033[93mSetup cancelled by user.\033[0m")
+        print(f"\n\033[93m{t('kace.cancelled')}\033[0m")
         sys.exit(0)
     except ImportError as e:
-        print(f"\n\033[91mERROR:\033[0m Missing dependency: {e}")
-        print("\033[93mRun: pip3 install -r requirements.txt --break-system-packages\033[0m")
+        print(f"\n\033[91mERROR:\033[0m {t('kace.missing_dep', error=e)}")
+        print(f"\033[93m{t('kace.missing_dep_hint')}\033[0m")
         sys.exit(1)
 
     # ==========================================
@@ -151,9 +169,9 @@ def main():
             if motor_name in parsed_data:
                 continue
 
-            print(f"\n\033[96m>>> Mapping pins for [ {motor_name} ] ...\033[0m")
+            print(f"\n\033[96m{t('wizard.mapping_pins', motor=motor_name)}\033[0m")
             if not available_driver_keys:
-                print("\033[93mWarning: Your board does not have enough available stepper drivers in its config for this Z motor.\033[0m")
+                print(f"\033[93m{t('wizard.no_drivers_warning')}\033[0m")
 
             driver_choices = []
             for dk in available_driver_keys:
@@ -162,27 +180,27 @@ def main():
                     label = "E1 (recommended)"
                 driver_choices.append({"name": label, "value": dk})
 
-            driver_choices.append({"name": "Custom pin assignment", "value": "custom"})
-            driver_choices.append({"name": "Quit setup", "value": "quit"})
+            driver_choices.append({"name": t("choice.custom_pins"), "value": "custom"})
+            driver_choices.append({"name": t("choice.quit_setup"), "value": "quit"})
 
             selected_driver = questionary.select(
-                f"Select driver for {motor_name.upper()}:",
+                t("wizard.select_driver_z", motor=motor_name.upper()),
                 choices=driver_choices,
                 style=custom_style
             ).ask()
 
             if selected_driver == "quit" or selected_driver is None:
-                print("\n\033[91mSetup aborted. Missing pins for Z motors.\033[0m")
+                print(f"\n\033[91m{t('kace.abort_missing_pins')}\033[0m")
                 sys.exit(1)
 
             if selected_driver == "custom":
                 print(f"\nAssigning custom pins for {motor_name}:")
-                step_pin = questionary.text("Enter step_pin (e.g. PC4):", style=custom_style).ask()
-                dir_pin = questionary.text("Enter dir_pin (e.g. PA6):", style=custom_style).ask()
-                en_pin = questionary.text("Enter enable_pin (e.g. !PC5):", style=custom_style).ask()
+                step_pin = questionary.text(t("wizard.custom_step_pin"), style=custom_style).ask()
+                dir_pin = questionary.text(t("wizard.custom_dir_pin"), style=custom_style).ask()
+                en_pin = questionary.text(t("wizard.custom_en_pin"), style=custom_style).ask()
 
                 if not step_pin or not dir_pin or not en_pin:
-                    print("\n\033[91mError: Valid pins are required to proceed. Aborting.\033[0m")
+                    print(f"\n\033[91m{t('kace.abort_valid_pins')}\033[0m")
                     sys.exit(1)
 
                 parsed_data[motor_name] = {
@@ -194,9 +212,12 @@ def main():
                 driver_type = user_data.get("driver_type", "None (Standard)")
                 driver_mode = user_data.get("driver_mode", "")
                 if "TMC" in driver_type and driver_mode in ["UART", "SPI"]:
-                    uart_pin = questionary.text(f"Enter {driver_mode.lower()}_pin for {motor_name}:", style=custom_style).ask()
+                    uart_pin = questionary.text(
+                        t("wizard.custom_uart_pin", mode=driver_mode.lower(), motor=motor_name),
+                        style=custom_style
+                    ).ask()
                     if not uart_pin:
-                        print(f"\n\033[91mError: {driver_mode} pin is critically required. Aborting.\033[0m")
+                        print(f"\n\033[91m{t('kace.abort_no_uart', mode=driver_mode)}\033[0m")
                         sys.exit(1)
                     tmc_section = f"{driver_type.lower()} {motor_name}"
                     pin_key = "uart_pin" if driver_mode == "UART" else "cs_pin"
@@ -222,15 +243,15 @@ def main():
                             found_tmc = True
                             break
                     if not found_tmc and driver_mode in ["UART", "SPI"]:
-                        print(f"\n\033[91mError: No {driver_mode} pin mapping found on this board for {selected_driver}.\033[0m")
-                        print("\033[93mGeneration aborted to prevent missing parameters.\033[0m")
+                        print(f"\n\033[91m{t('kace.abort_no_tmc_map', mode=driver_mode, driver=selected_driver)}\033[0m")
+                        print(f"\033[93m{t('kace.abort_generation')}\033[0m")
                         sys.exit(1)
 
                 del parsed_data[selected_driver]
                 available_driver_keys.remove(selected_driver)
 
     time.sleep(0.5)
-    print(f"\033[92m[*]\033[0m Fetched configuration for \033[93m{user_data['board']}\033[0m... Done!")
+    print(f"\033[92m[*]\033[0m {t('kace.fetching_cfg_done', board=user_data['board'])}")
 
     # ==========================================
     # PHASE 2: FIRMWARE COMPILATION & DEPLOYMENT
@@ -238,12 +259,11 @@ def main():
     mcu = user_data.get('mcu_type')
     hint = user_data.get('mcu_hint')
     if mcu or hint == "manual":
-        # If MCU was skipped completely or the user hit enter manually, ask what the target is
         prompt_mcu = mcu if mcu else "manually selected board"
-        ans = questionary.confirm(f"Do you want to automatically compile Klipper firmware for your {prompt_mcu}?").ask()
+        ans = questionary.confirm(t("kace.compile_prompt", mcu=prompt_mcu)).ask()
         if ans:
             from firmware.builder import build_firmware_orchestrator
-            print("\n\033[91m[*]\033[0m Rebuilding Klipper firmware for your controller...", flush=True)
+            print(f"\n\033[91m[*]\033[0m {t('kace.compiling')}", flush=True)
             result = build_firmware_orchestrator(
                 mcu_path=user_data.get('mcu_path'),
                 derived_mcu=mcu,
@@ -252,61 +272,69 @@ def main():
             )
 
             if result.get("status") == "success":
-                print(f"\033[92mSUCCESS:\033[0m Firmware built locally at {result.get('path')}")
-                user_data['mcu_type'] = result.get('mcu') # Save actual MCU used to user_data
+                print(f"\033[92mSUCCESS:\033[0m {t('kace.firmware_success', path=result.get('path'))}")
+                user_data['mcu_type'] = result.get('mcu')
 
-                # --- Firmware Deployment ---
-                deploy_options = ["None (Done)", "Local Folder (PC)", "USB / SD Card"]
+                deploy_options = [
+                    {"name": t("kace.deploy_none"),  "value": "none"},
+                    {"name": t("kace.deploy_local"),  "value": "local"},
+                    {"name": t("kace.deploy_usb"),    "value": "usb"},
+                ]
                 if result.get('firmware') == 'klipper.elf.hex':
-                    deploy_options.insert(1, "Flash via USB (avrdude)")
+                    deploy_options.insert(1, {"name": t("kace.deploy_avrdude"), "value": "avrdude"})
 
                 deploy_fw = questionary.select(
-                    "\nSelect Deployment Method for Firmware (klipper.bin/.uf2/.hex):",
+                    f"\n{t('kace.deploy_firmware_prompt')}",
                     choices=deploy_options,
                     style=custom_style
                 ).ask()
 
-                if deploy_fw == "USB / SD Card":
+                if deploy_fw == "usb":
                     deploy_usb(user_data, artifact_type="firmware")
-                elif deploy_fw == "Local Folder (PC)":
+                elif deploy_fw == "local":
                     deploy_local(user_data, artifact_type="firmware")
-                elif deploy_fw == "Flash via USB (avrdude)":
+                elif deploy_fw == "avrdude":
                     deploy_avrdude(user_data, result.get("path"), result.get("mcu"))
 
             else:
-                print(f"\n\033[91mERROR:\033[0m {result.get('message')}")
+                print(f"\n\033[91mERROR:\033[0m {t('kace.firmware_error', message=result.get('message'))}")
     else:
-        print("\n\033[93mSkipping firmware compilation (no MCU designated).\033[0m")
+        print(f"\n\033[93m{t('kace.skip_firmware')}\033[0m")
 
     # ==========================================
     # PHASE 3: CONFIGURATION GENERATION
     # ==========================================
-    print("\033[91m[*]\033[0m Generating printer.cfg...", end="", flush=True)
+    print(f"\033[91m[*]\033[0m {t('kace.generating_cfg')}", end="", flush=True)
     generate_config(parsed_data, user_data)
     time.sleep(0.5)
-    print("\r\033[92m[*]\033[0m Generating printer.cfg... Done!")
+    print(f"\r\033[92m[*]\033[0m {t('kace.generating_cfg_done')}")
     
     cfg_path = os.path.expanduser('~/kace/printer.cfg')
-    print(f"\n\033[92mSUCCESS:\033[0m printer.cfg generated successfully at \033[93m{cfg_path}\033[0m")
+    print(f"\n\033[92mSUCCESS:\033[0m {t('kace.cfg_success', path=cfg_path)}")
 
     # ==========================================
     # PHASE 4: CONFIGURATION DEPLOYMENT
     # ==========================================
     deploy_cfg = questionary.select(
-        "\nSelect Deployment Method for Configuration (printer.cfg):",
-        choices=["None (Done)", "Local Folder (PC)", "USB / SD Card", "SSH (Push to host)"],
+        f"\n{t('kace.deploy_cfg_prompt')}",
+        choices=[
+            {"name": t("kace.deploy_none"),  "value": "none"},
+            {"name": t("kace.deploy_local"),  "value": "local"},
+            {"name": t("kace.deploy_usb"),    "value": "usb"},
+            {"name": t("kace.deploy_ssh"),    "value": "ssh"},
+        ],
         style=custom_style
     ).ask()
 
-    if deploy_cfg == "USB / SD Card":
+    if deploy_cfg == "usb":
         deploy_usb(user_data, artifact_type="config")
-    elif deploy_cfg == "Local Folder (PC)":
+    elif deploy_cfg == "local":
         deploy_local(user_data, artifact_type="config")
-    elif deploy_cfg == "SSH (Push to host)":
-        user_data['host'] = questionary.text("Enter SSH Host (e.g. 192.168.1.100):", style=custom_style).ask()
-        user_data['user'] = questionary.text("Enter SSH User (e.g. pi):", default="pi", style=custom_style).ask()
-        user_data['password'] = questionary.password("Enter SSH Password:", style=custom_style).ask()
-        user_data['dest_path'] = questionary.text("Enter Destination Path:", default="~/printer_data/config/", style=custom_style).ask()
+    elif deploy_cfg == "ssh":
+        user_data['host'] = questionary.text(t("kace.ssh_host_prompt"), style=custom_style).ask()
+        user_data['user'] = questionary.text(t("kace.ssh_user_prompt"), default="pi", style=custom_style).ask()
+        user_data['password'] = questionary.password(t("kace.ssh_pass_prompt"), style=custom_style).ask()
+        user_data['dest_path'] = questionary.text(t("kace.ssh_dest_prompt"), default="~/printer_data/config/", style=custom_style).ask()
         if user_data['host'] and user_data['user'] and user_data['dest_path']:
             deploy_config(user_data)
 
