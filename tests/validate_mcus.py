@@ -39,9 +39,9 @@ def main():
     }
     
     for board in BOARDS_TO_TEST:
-        print(f"=======================================")
+        print("=======================================")
         print(f"Testing Board: {board}")
-        print(f"=======================================")
+        print("=======================================")
         
         # We need to simulate the environment
         env = os.environ.copy()
@@ -79,7 +79,7 @@ def main():
             error_reasons.append("printer.cfg was not generated at the expected location.")
         else:
             # Parse it for fundamental sections
-            with open(expected_cfg, "r") as f:
+            with open(expected_cfg, "r", encoding="utf-8") as f:
                 content = f.read()
                 
             if "[mcu]" not in content:
@@ -131,16 +131,16 @@ def main():
                 print(f"  - {reason}")
             # Optionally print standard error from process
             if result.stderr:
-                clean_stderr = result.stderr.strip()[-500:].encode('cp1252', errors='replace').decode('cp1252')
+                clean_stderr = result.stderr.strip()[-500:]
                 print(f"\nSTDERR:\n{clean_stderr}")
             if result.stdout and not is_todo_error:
-                clean_stdout = result.stdout.strip()[-1000:].encode('cp1252', errors='replace').decode('cp1252')
+                clean_stdout = result.stdout.strip()[-1000:]
                 print(f"\nSTDOUT:\n{clean_stdout}")
             
         print("\n")
 
     print("=======================================")
-    print("VALIDATION SUMMARY")
+    print("MCU VALIDATION SUMMARY")
     print("=======================================")
     print(f"Total Tested: {len(BOARDS_TO_TEST)}")
     print(f"\033[92mPasses: {success_count}\033[0m")
@@ -156,7 +156,7 @@ def main():
                     print(f"    - {b}")
          sys.exit(1)
     else:
-         print(f"\033[92mAll tests passed successfully.\033[0m")
+         print("\033[92mAll tests passed successfully.\033[0m")
          sys.exit(0)
 
 if __name__ == "__main__":

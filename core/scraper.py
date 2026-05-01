@@ -71,10 +71,43 @@ def fetch_config_list():
 
 def fetch_raw_config(filename):
     """Fetches the raw content of a specific config file."""
+    cache_dir = os.path.expanduser("~/.kace_configs_cache")
+    if not os.path.exists(cache_dir):
+        try: os.makedirs(cache_dir)
+        except Exception: pass
+        
+    cache_file = os.path.join(cache_dir, filename)
+    
+    # 1. Check cache first (valid for 3 days)
+    try:
+        if os.path.exists(cache_file):
+            if time.time() - os.path.getmtime(cache_file) < 3 * 24 * 3600:
+                with open(cache_file, 'r', encoding='utf-8') as f:
+                    return f.read()
+    except Exception:
+        pass
+
     url = f"https://raw.githubusercontent.com/Klipper3d/klipper/master/config/{filename}"
     req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 KACE-App'})
-    with urllib.request.urlopen(req) as response:
-        return response.read().decode('utf-8', errors='ignore')
+    try:
+        with urllib.request.urlopen(req) as response:
+            content = response.read().decode('utf-8', errors='ignore')
+            # Save to cache
+            try:
+                with open(cache_file, 'w', encoding='utf-8') as f:
+                    f.write(content)
+            except Exception: pass
+            return content
+    except Exception as e:
+        # Fallback to expired cache
+        try:
+            if os.path.exists(cache_file):
+                with open(cache_file, 'r', encoding='utf-8') as f:
+                    return f.read()
+        except Exception:
+            pass
+        print(f"\n\033[93mWarning: Failed to fetch {filename} ({e}).\033[0m")
+        return ""
 
 def parse_config(raw_cfg, filename=""):
     """
@@ -173,3 +206,84 @@ def parse_config(raw_cfg, filename=""):
         if "control_pin" not in data["bltouch"]: data["bltouch"]["control_pin"] = "PA8"
         
     return data
+
+def extract_profile_defaults(parsed_data):
+    """Extracts default values from a parsed printer profile, with graceful fallbacks."""
+    defaults = {
+        'kinematics': 'cartesian',
+        'x_size': '235',
+        'y_size': '235',
+        'z_size': '250',
+        'hotend_thermistor': 'EPCOS 100K B57560G104F',
+        'bed_thermistor': 'EPCOS 100K B57560G104F',
+        'probe': 'None'
+    }
+    
+    try:
+        def parse_rd(val):
+            try:
+                v = float(val)
+                if v <= 0:
+                    print(f"\n\033[93mWarning: Invalid rotation_distance ({val}) <= 0. Ignoring.\033[0m")
+                    return None
+                return f"{round(v, 4):g}"
+            except Exception:
+                return None
+                
+        def parse_gear(val):
+            if val and ':' in str(val): return str(val)
+            print(f"\n\033[93mWarning: Invalid gear_ratio ({val}). Ignoring.\033[0m")
+            return None
+
+        if 'printer' in parsed_data:
+            defaults['kinematics'] = parsed_data['printer'].get('kinematics', 'cartesian')
+            
+        for axis in ['x', 'y', 'z']:
+            sec = f'stepper_{axis}'
+            if sec in parsed_data:
+                defaults[f'{axis}_size'] = parsed_data[sec].get('position_max', defaults.get(f'{axis}_size', '250'))
+                
+                rd = None
+                if 'rotation_distance' in parsed_data[sec]:
+                    rd = parse_rd(parsed_data[sec]['rotation_distance'])
+                elif 'step_distance' in parsed_data[sec]:
+                    sd = float(parsed_data[sec]['step_distance'])
+                    microsteps = float(parsed_data[sec].get('microsteps', 16))
+                    full_steps = float(parsed_data[sec].get('full_steps_per_rotation', 200))
+                    rd = parse_rd(sd * microsteps * full_steps)
+                
+                if rd: defaults[f'rotation_distance_{axis}'] = rd
+                
+                if 'gear_ratio' in parsed_data[sec]:
+                    gr = parse_gear(parsed_data[sec]['gear_ratio'])
+                    if gr: defaults[f'gear_ratio_{axis}'] = gr
+            
+        if 'extruder' in parsed_data:
+            defaults['hotend_thermistor'] = parsed_data['extruder'].get('sensor_type', 'EPCOS 100K B57560G104F')
+            
+            rd = None
+            if 'rotation_distance' in parsed_data['extruder']:
+                rd = parse_rd(parsed_data['extruder']['rotation_distance'])
+            elif 'step_distance' in parsed_data['extruder']:
+                sd = float(parsed_data['extruder']['step_distance'])
+                microsteps = float(parsed_data['extruder'].get('microsteps', 16))
+                full_steps = float(parsed_data['extruder'].get('full_steps_per_rotation', 200))
+                rd = parse_rd(sd * microsteps * full_steps)
+                
+            if rd: defaults['rotation_distance_e'] = rd
+                
+            if 'gear_ratio' in parsed_data['extruder']:
+                gr = parse_gear(parsed_data['extruder']['gear_ratio'])
+                if gr: defaults['gear_ratio_e'] = gr
+                
+        if 'heater_bed' in parsed_data:
+            defaults['bed_thermistor'] = parsed_data['heater_bed'].get('sensor_type', 'EPCOS 100K B57560G104F')
+            
+        if parsed_data.get('bltouch'):
+            defaults['probe'] = 'BLTouch'
+        elif parsed_data.get('probe') or parsed_data.get('smart_effector'):
+            defaults['probe'] = 'Inductive'
+    except Exception as e:
+        print(f"\n\033[93mWarning: Failed to parse some printer profile defaults ({e}). Using standard defaults.\033[0m")
+        
+    return defaults

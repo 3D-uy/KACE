@@ -1,6 +1,5 @@
 <p align="center">
   <img src="docs/assets/kace_banner.png" width="1000"><br>
-  <img src="https://github.com/3D-uy/kace/actions/workflows/test.yml/badge.svg">
 </p>
 
 
@@ -22,7 +21,7 @@
 
 > [!WARNING]
 > **KACE is currently in Beta.** Core features are working, but you may encounter bugs or rough edges.
-> Always review generated files before use. Report issues using the [Bug Report](.github/ISSUE_TEMPLATE/bug_report.md) template.
+> Always review generated files before use. Report issues on the issue tracker.
 
 ---
 

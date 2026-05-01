@@ -17,7 +17,7 @@ def derive_config(mcu, hint=None):
         arch = prompt_mcu_family()
         config["CONFIG_MCU"] = f'"{arch}"'
         if arch != "linux":
-            print(f"Make sure to manually configure other specific settings like bootloader.")
+            print("Make sure to manually configure other specific settings like bootloader.")
     elif "stm32f1" in mcu:
         config["CONFIG_MCU"] = '"stm32"'
         config["CONFIG_MACH_STM32"] = "y"
@@ -83,8 +83,7 @@ def derive_config(mcu, hint=None):
 
     else:
         # Unknown MCU pattern
-        arch = prompt_mcu_family(mcu)
-        config["CONFIG_MCU"] = f'"{arch}"'
+        raise ValueError("Unknown MCU model")
         
     # 2. Derive Communication interface
     comm = hint

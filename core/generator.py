@@ -9,7 +9,7 @@ _TEMPLATES_DIR = os.path.join(_BASE_DIR, 'templates')
 def generate_config(parsed_data, user_data):
     """Milestone 2: Jinja2 Template Rendering"""
     # Setup Jinja2 environment
-    env = Environment(loader=FileSystemLoader(_TEMPLATES_DIR))
+    env = Environment(loader=FileSystemLoader(_TEMPLATES_DIR, encoding='utf-8'))
     template = env.get_template('printer.cfg.j2')
     
     # Render the template with parsed pins and user input
@@ -83,6 +83,6 @@ def generate_config(parsed_data, user_data):
     os.makedirs(output_path, exist_ok=True)
     
     cfg_file = os.path.join(output_path, 'printer.cfg')
-    with open(cfg_file, 'w') as f:
+    with open(cfg_file, 'w', encoding='utf-8') as f:
         f.write(final_output)
 

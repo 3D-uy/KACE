@@ -12,7 +12,7 @@ def generate_firmware_config(config_dict, klipper_path="~/klipper"):
         if not os.path.exists(klipper_path):
             return False, f"Klipper directory not found at {klipper_path}"
             
-        with open(config_file_path, "w") as f:
+        with open(config_file_path, "w", encoding="utf-8") as f:
             for key, value in config_dict.items():
                 f.write(f"{key}={value}\n")
                 
