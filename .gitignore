@@ -76,3 +76,6 @@ run-prod.ps1
 docker-compose.yml
 docker-compose.dev.yml
 docker-compose.prod.yml
+
+# Personal files
+docs/PRD.md
