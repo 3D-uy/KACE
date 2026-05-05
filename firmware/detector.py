@@ -24,19 +24,25 @@ def discover_mcu_hardware(interactive=True):
             ports.append(p)
             
     # Active Klipper Config Fallback (if they already have Mainsail running)
-    cfg_path = os.path.expanduser("~/printer_data/config/printer.cfg")
-    if not ports and os.path.exists(cfg_path):
-        try:
-            with open(cfg_path, "r") as f:
-                content = f.read()
-                # Find [mcu] section and extract serial:
-                mcu_match = re.search(r'\[mcu\][^\[]*serial:\s*([^\s\n]+)', content, re.MULTILINE)
-                if mcu_match:
-                    found_port = mcu_match.group(1).strip()
-                    if found_port not in ports:
-                        ports.append(found_port)
-        except Exception:
-            pass
+    cfg_paths = [
+        "~/printer_data/config/printer.cfg",
+        "~/klipper_config/printer.cfg",
+        "~/printer.cfg"
+    ]
+    for p in cfg_paths:
+        cfg_path = os.path.expanduser(p)
+        if not ports and os.path.exists(cfg_path):
+            try:
+                with open(cfg_path, "r") as f:
+                    content = f.read()
+                    # Find [mcu] section and extract serial:
+                    mcu_match = re.search(r'\[mcu\][^\[]*serial:\s*([^\s\n]+)', content, re.MULTILINE)
+                    if mcu_match:
+                        found_port = mcu_match.group(1).strip()
+                        if found_port not in ports:
+                            ports.append(found_port)
+            except Exception:
+                pass
 
     context = {"mcu_path": None, "derived_mcu": None, "hint": None}
     

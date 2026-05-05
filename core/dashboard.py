@@ -27,7 +27,20 @@ _PATH_KLIPPER     = os.path.expanduser("~/klipper")
 _PATH_MOONRAKER   = os.path.expanduser("~/moonraker")
 _PATH_MAINSAIL    = os.path.expanduser("~/mainsail")
 _PATH_FLUIDD      = os.path.expanduser("~/fluidd")
-_PATH_PRINTER_CFG = os.path.expanduser("~/printer_data/config/printer.cfg")
+
+def get_printer_cfg_path():
+    paths = [
+        "~/printer_data/config/printer.cfg",
+        "~/klipper_config/printer.cfg",
+        "~/printer.cfg"
+    ]
+    for p in paths:
+        full_path = os.path.expanduser(p)
+        if os.path.isfile(full_path):
+            return full_path
+    return os.path.expanduser("~/printer_data/config/printer.cfg")
+
+_PATH_PRINTER_CFG = get_printer_cfg_path()
 
 # ── ANSI helpers ───────────────────────────────────────────────
 _G = "\033[92m"   # green
