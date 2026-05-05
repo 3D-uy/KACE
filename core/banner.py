@@ -4,7 +4,6 @@ def print_kace_banner(subtitle="Klipper Automated Configuration Ecosystem", vers
     os.system('clear' if os.name == 'posix' else 'cls')
 
     # ANSI Escape Codes
-    G = "\033[92m"  # Green
     Y = "\033[93m"  # Yellow
     C = "\033[96m"  # Cyan
     B = "\033[1m"   # Bold

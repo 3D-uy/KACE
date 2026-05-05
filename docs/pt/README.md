@@ -181,14 +181,17 @@ O autor não se responsabiliza por **danos ao hardware, configurações incorret
 
 Para remover o KACE do seu sistema:
 
-```bash
+
 # Remover o symlink do comando global
+```
 sudo rm -f /usr/local/bin/kace
-
+```
 # Ou se instalado sem sudo (fallback)
+```
 rm -f ~/.local/bin/kace
-
+```
 # Remover o diretório do KACE
+```
 rm -rf ~/kace
 ```
 
