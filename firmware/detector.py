@@ -23,6 +23,13 @@ def discover_mcu_hardware(interactive=True):
         }
 
     ports = glob.glob('/dev/serial/by-id/*')
+    if not ports:
+        ports = glob.glob('/dev/serial/by-path/*')
+    if os.path.exists('/dev/ttyAMA0'):
+        ports.append('/dev/ttyAMA0')
+    if os.path.exists('/dev/ttyS0'):
+        ports.append('/dev/ttyS0')
+
     context = {"mcu_path": None, "derived_mcu": None, "hint": None}
     
     if not ports:
