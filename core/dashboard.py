@@ -18,7 +18,7 @@ import sys
 import questionary
 
 from core.style import custom_style
-from core.translations import t
+from core.translations import t, set_lang
 from core.banner import print_kace_banner
 
 # ── Detection path constants (KIAUH / MainsailOS defaults) ────
@@ -141,27 +141,36 @@ def _render_status_panel(state: dict) -> None:
     width = max(42, 14 + 1 + len(mcu_raw) + 2)
     border = "─" * width
 
-    def _row(label: str, ok: bool, detail: str) -> str:
-        icon = _OK if ok else _NOK
+    # ANSI-safe row builder: pad using explicit spaces so box width is
+    # not distorted by invisible escape-code characters.
+    def _row(label: str, ok: bool) -> str:
+        icon   = _OK if ok else _NOK
         status = t("dashboard.installed") if ok else t("dashboard.not_found")
-        return f"  │  {_B}{label:<14}{_R} {icon}  {status:<{width - 19}}│"
+        # visible columns: 2(indent) + 1(│) + 2(sp) + 14(label) + 1(sp) + icon(1vis) + 2(sp) + status + padding + 1(│)
+        # icon itself prints as 1 visible char; ANSI codes are zero-width.
+        status_pad = width - 19 - len(status)   # remaining cols after status text
+        padding    = " " * max(0, status_pad)
+        label_pad  = " " * max(0, 14 - len(label))
+        return f"  │  {_B}{label}{_R}{label_pad} {icon}  {status}{padding}│"
 
     print(f"\n  {_C}┌─ {_B}{title}{_R}{_C} {border[:width - len(title) - 3]}┐{_R}")
-    print(_row("Klipper",    state["klipper"],     ""))
-    print(_row("Moonraker",  state["moonraker"],   ""))
-    print(_row("Mainsail",   state["mainsail"],    ""))
-    print(_row("Fluidd",     state["fluidd"],      ""))
+    print(_row("Klipper",    state["klipper"]))
+    print(_row("Moonraker",  state["moonraker"]))
+    print(_row("Mainsail",   state["mainsail"]))
+    print(_row("Fluidd",     state["fluidd"]))
 
     # printer.cfg row
     cfg_ok     = state["printer_cfg"]
     cfg_icon   = _OK if cfg_ok else _NOK
     cfg_status = t("dashboard.found") if cfg_ok else t("dashboard.not_found")
-    print(f"  │  {_B}{'printer.cfg':<14}{_R} {cfg_icon}  {cfg_status:<{width - 19}}│")
+    cfg_pad    = " " * max(0, width - 19 - len(cfg_status))
+    print(f"  │  {_B}printer.cfg   {_R} {cfg_icon}  {cfg_status}{cfg_pad}│")
 
-    pad_len = max(0, width - 16 - len(mcu_raw))
+    # MCU row — value may be long; pad to fill box width
+    mcu_col_width = width - 16   # cols available for mcu value (after label)
+    pad_len = max(0, mcu_col_width - len(mcu_raw))
     mcu_padded = mcu_text + (" " * pad_len)
-    
-    print(f"  │  {_B}{'MCU':<14}{_R} {mcu_padded}│")
+    print(f"  │  {_B}MCU           {_R} {mcu_padded}│")
 
     print(f"  {_C}└{'─' * (width + 2)}┘{_R}")
 
@@ -189,6 +198,29 @@ def _show_manage_view(state: dict) -> None:
         pass
 
 
+def _select_language() -> None:
+    """Show a language picker and activate the chosen language immediately.
+
+    Called once after the status panel is rendered for the first time.
+    This ensures all subsequent prompts (including the action menu) are
+    displayed in the user's preferred language.
+    """
+    LANGUAGES = ["English", "Español", "Português"]
+    try:
+        lang = questionary.select(
+            "Select language / Seleccione el idioma / Selecione o idioma:",
+            choices=LANGUAGES,
+            style=custom_style,
+        ).ask()
+    except (KeyboardInterrupt, EOFError):
+        sys.exit(0)
+
+    if lang is None:
+        sys.exit(0)
+
+    set_lang(lang)
+
+
 def run_dashboard(state: dict) -> str:
     """Display the KACE landing dashboard and return the chosen action.
 
@@ -197,6 +229,17 @@ def run_dashboard(state: dict) -> str:
     (it shows the status view and loops back to the menu), so callers
     only ever receive "generate", "reconfigure", or "quit".
     """
+    # Draw banner + status panel once, then ask for language.
+    # The language selection happens BEFORE the action menu so all
+    # subsequent prompts are in the user's chosen language.
+    print_kace_banner("Klipper Automated Configuration Ecosystem")
+    _render_status_panel(state)
+    suggestions = get_suggestions(state)
+    _render_suggestions(suggestions)
+    print("")
+
+    _select_language()
+
     while True:
         # Redraw banner + status on every loop iteration so the screen
         # stays fresh after returning from the manage view.

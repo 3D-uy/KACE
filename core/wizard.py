@@ -4,7 +4,7 @@ from .scraper import fetch_config_list, fetch_raw_config, parse_config, extract_
 from firmware.detector import discover_mcu_hardware
 from core.style import custom_style
 from data.profiles import THERMISTOR_PRESETS
-from core.translations import t, set_lang
+from core.translations import t
 
 _BACK = "__back__"
 _QUIT = "__quit__"
@@ -91,19 +91,8 @@ def run_wizard():
     }
     
     step = 0
-    while step < 14:
+    while step < 13:
         if step == 0:
-            ans = questionary.select(
-                t("wizard.select_language"),
-                choices=["English", "Español", "Português", _quit_choice()],
-                style=custom_style
-            ).ask()
-            if ans == _QUIT or ans is None: sys.exit(0)
-            user_data["language"] = ans
-            set_lang(ans)
-            step += 1
-
-        elif step == 1:
             custom_choice_str = t("choice.custom_scratch")
             choices = [custom_choice_str] + printer_configs
             ans = questionary.autocomplete(
@@ -133,7 +122,7 @@ def run_wizard():
                     print(f"  - Thermistors: {user_data.get('hotend_thermistor')} (Hotend), {user_data.get('bed_thermistor')} (Bed)")
             step += 1
 
-        elif step == 2:
+        elif step == 1:
             choices = []
             if user_data["printer_profile"] != "Custom / Scratch Build":
                 choices.append({"name": t("choice.stock_board"), "value": "__stock__"})
@@ -175,7 +164,7 @@ def run_wizard():
             user_data["board"] = ans
             step += 1
 
-        elif step == 3:
+        elif step == 2:
             ans = questionary.select(
                 t("wizard.select_kinematics"),
                 choices=["cartesian", "corexy", "delta", _back_choice(), _quit_choice()],
@@ -189,7 +178,7 @@ def run_wizard():
             user_data["kinematics"] = ans
             step += 1
 
-        elif step == 4:
+        elif step == 3:
             ans = questionary.text(
                 t("wizard.x_volume"), 
                 default=user_data["x_size"], 
@@ -201,7 +190,7 @@ def run_wizard():
             user_data["x_size"] = ans
             step += 1
 
-        elif step == 5:
+        elif step == 4:
             ans = questionary.text(
                 t("wizard.y_volume"), 
                 default=user_data["y_size"], 
@@ -213,7 +202,7 @@ def run_wizard():
             user_data["y_size"] = ans
             step += 1
 
-        elif step == 6:
+        elif step == 5:
             ans = questionary.text(
                 t("wizard.z_volume"), 
                 default=user_data["z_size"], 
@@ -225,7 +214,7 @@ def run_wizard():
             user_data["z_size"] = ans
             step += 1
 
-        elif step == 7:
+        elif step == 6:
             ans = questionary.select(
                 t("wizard.select_probe"),
                 choices=["None", "BLTouch", "Inductive", "CR-Touch", _back_choice(), _quit_choice()],
@@ -239,7 +228,7 @@ def run_wizard():
             user_data["probe"] = ans
             step += 1
 
-        elif step == 8:
+        elif step == 7:
             preset_choices = list(THERMISTOR_PRESETS)
             if user_data["hotend_thermistor"] not in preset_choices:
                 preset_choices.insert(0, user_data["hotend_thermistor"])
@@ -264,7 +253,7 @@ def run_wizard():
                 user_data["hotend_thermistor"] = ans
             step += 1
             
-        elif step == 9:
+        elif step == 8:
             preset_choices = list(THERMISTOR_PRESETS)
             if user_data["bed_thermistor"] not in preset_choices:
                 preset_choices.insert(0, user_data["bed_thermistor"])
@@ -289,7 +278,7 @@ def run_wizard():
                 user_data["bed_thermistor"] = ans
             step += 1
 
-        elif step == 10:
+        elif step == 9:
             ans = questionary.select(
                 t("wizard.select_driver"),
                 choices=["None (Standard)", "TMC2208", "TMC2209", "TMC2225", "TMC2130", "TMC5160", "A4988", "DRV8825", _back_choice(), _quit_choice()],
@@ -306,7 +295,7 @@ def run_wizard():
             else:
                 step += 1
 
-        elif step == 11:
+        elif step == 10:
             ans = questionary.select(
                 t("wizard.select_driver_mode", driver=user_data["driver_type"]),
                 choices=["UART", "SPI", "Standalone", _back_choice(), _quit_choice()],
@@ -319,7 +308,7 @@ def run_wizard():
             user_data["driver_mode"] = ans
             step += 1
 
-        elif step == 12:
+        elif step == 11:
             ans = questionary.select(
                 t("wizard.select_web_ui"),
                 choices=["Mainsail", "Fluidd", "None", _back_choice(), _quit_choice()],
@@ -335,7 +324,7 @@ def run_wizard():
             user_data["web_interface"] = ans
             step += 1
 
-        elif step == 13:
+        elif step == 12:
             ans = questionary.select(
                 t("wizard.z_motors"),
                 choices=["1", "2", "3", "4", _back_choice(), _quit_choice()],
