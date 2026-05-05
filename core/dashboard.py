@@ -107,13 +107,30 @@ def get_suggestions(state: dict) -> list:
 def _render_status_panel(state: dict) -> None:
     """Print the colored system status table."""
     title = t("dashboard.status_title")
-    width = 42
+    
+    # Pre-calculate MCU text to determine dynamic width
+    mcu_val = state.get("mcu")
+    mcu_path = state.get("mcu_path")
+    
+    if mcu_val:
+        mcu_raw = f"{mcu_val} ({t('dashboard.detected')})"
+        mcu_text = f"{mcu_val} {_DIM}({t('dashboard.detected')}){_R}"
+    elif mcu_path:
+        base_path = mcu_path.split('/')[-1]
+        mcu_raw = f"{base_path}"
+        mcu_text = f"{base_path}"
+    else:
+        mcu_raw = t("dashboard.no_mcu")
+        mcu_text = f"{_DIM}{mcu_raw}{_R}"
+
+    # Calculate dynamic width (minimum 42, expand if MCU path is long)
+    width = max(42, 14 + 1 + len(mcu_raw) + 2)
     border = "─" * width
 
     def _row(label: str, ok: bool, detail: str) -> str:
         icon = _OK if ok else _NOK
         status = t("dashboard.installed") if ok else t("dashboard.not_found")
-        return f"  │  {_B}{label:<14}{_R} {icon}  {status:<20}│"
+        return f"  │  {_B}{label:<14}{_R} {icon}  {status:<{width - 19}}│"
 
     print(f"\n  {_C}┌─ {_B}{title}{_R}{_C} {border[:width - len(title) - 3]}┐{_R}")
     print(_row("Klipper",    state["klipper"],     ""))
@@ -125,27 +142,9 @@ def _render_status_panel(state: dict) -> None:
     cfg_ok     = state["printer_cfg"]
     cfg_icon   = _OK if cfg_ok else _NOK
     cfg_status = t("dashboard.found") if cfg_ok else t("dashboard.not_found")
-    print(f"  │  {_B}{'printer.cfg':<14}{_R} {cfg_icon}  {cfg_status:<20}│")
+    print(f"  │  {_B}{'printer.cfg':<14}{_R} {cfg_icon}  {cfg_status:<{width - 19}}│")
 
-    # MCU row
-    mcu_val = state.get("mcu")
-    mcu_path = state.get("mcu_path")
-    
-    if mcu_val:
-        mcu_raw = f"{mcu_val} ({t('dashboard.detected')})"
-        mcu_text = f"{mcu_val} {_DIM}({t('dashboard.detected')}){_R}"
-    elif mcu_path:
-        # Show path basename if Klipper not yet flashed
-        base_path = mcu_path.split('/')[-1]
-        if len(base_path) > 12:
-            base_path = base_path[:10] + ".."
-        mcu_raw = f"{base_path} (Unknown)"
-        mcu_text = f"{base_path} {_DIM}(Unknown){_R}"
-    else:
-        mcu_raw = t("dashboard.no_mcu")
-        mcu_text = f"{_DIM}{mcu_raw}{_R}"
-        
-    pad_len = max(0, 23 - len(mcu_raw))
+    pad_len = max(0, width - 16 - len(mcu_raw))
     mcu_padded = mcu_text + (" " * pad_len)
     
     print(f"  │  {_B}{'MCU':<14}{_R} {mcu_padded}│")
