@@ -53,8 +53,8 @@ def discover_mcu_hardware(interactive=True):
     context["mcu_path"] = choice
     
     # Extract MCU name and interface Hint
-    # Example format: usb-Klipper_stm32f103_123456-if00
-    match = re.search(r'(usb|can|uart|tty)[_-]Klipper_([a-zA-Z0-9]+)_', choice)
+    # Example format: usb-Klipper_stm32f103_123456-if00 or usb-Klipper_lpc1768-if00
+    match = re.search(r'(usb|can|uart|tty)[_-]Klipper_([a-zA-Z0-9]+)', choice)
     if match:
         context["hint"] = match.group(1).lower()
         if context["hint"] == "tty":
@@ -62,7 +62,7 @@ def discover_mcu_hardware(interactive=True):
         context["derived_mcu"] = match.group(2).lower()
     else:
         # Fallback regex for standard usb paths without specific comm prefix
-        match_simple = re.search(r'usb-Klipper_([a-zA-Z0-9]+)_', choice)
+        match_simple = re.search(r'usb-Klipper_([a-zA-Z0-9]+)', choice)
         if match_simple:
             context["hint"] = "usb"
             context["derived_mcu"] = match_simple.group(1).lower()

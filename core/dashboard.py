@@ -67,10 +67,12 @@ def detect_system_state() -> dict:
 
     # Reuse the existing MCU detector — returns empty dict on failure.
     mcu = None
+    mcu_path = None
     try:
         from firmware.detector import discover_mcu_hardware
         ctx = discover_mcu_hardware(interactive=False)
         mcu = ctx.get("derived_mcu")
+        mcu_path = ctx.get("mcu_path")
     except Exception:
         pass
 
@@ -81,6 +83,7 @@ def detect_system_state() -> dict:
         "fluidd":      fluidd,
         "printer_cfg": has_cfg,
         "mcu":         mcu,
+        "mcu_path":    mcu_path,
     }
 
 
@@ -125,12 +128,27 @@ def _render_status_panel(state: dict) -> None:
     print(f"  │  {_B}{'printer.cfg':<14}{_R} {cfg_icon}  {cfg_status:<20}│")
 
     # MCU row
-    mcu_val = state["mcu"]
+    mcu_val = state.get("mcu")
+    mcu_path = state.get("mcu_path")
+    
     if mcu_val:
-        mcu_text = f"{mcu_val}  {_DIM}({t('dashboard.detected')}){_R}"
+        mcu_raw = f"{mcu_val} ({t('dashboard.detected')})"
+        mcu_text = f"{mcu_val} {_DIM}({t('dashboard.detected')}){_R}"
+    elif mcu_path:
+        # Show path basename if Klipper not yet flashed
+        base_path = mcu_path.split('/')[-1]
+        if len(base_path) > 12:
+            base_path = base_path[:10] + ".."
+        mcu_raw = f"{base_path} (Unknown)"
+        mcu_text = f"{base_path} {_DIM}(Unknown){_R}"
     else:
-        mcu_text = f"{_DIM}{t('dashboard.no_mcu')}{_R}"
-    print(f"  │  {_B}{'MCU':<14}{_R} {mcu_text:<40}│")
+        mcu_raw = t("dashboard.no_mcu")
+        mcu_text = f"{_DIM}{mcu_raw}{_R}"
+        
+    pad_len = max(0, 23 - len(mcu_raw))
+    mcu_padded = mcu_text + (" " * pad_len)
+    
+    print(f"  │  {_B}{'MCU':<14}{_R} {mcu_padded}│")
 
     print(f"  {_C}└{'─' * (width + 2)}┘{_R}")
 
