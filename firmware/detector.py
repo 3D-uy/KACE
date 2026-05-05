@@ -18,6 +18,11 @@ def discover_mcu_hardware(interactive=True):
     if not ports:
         ports = glob.glob('/dev/serial/by-path/*')
         
+    # ttyUSB / ttyACM fallbacks if udev symlinks are completely broken
+    if not ports:
+        ports.extend(glob.glob('/dev/ttyUSB*'))
+        ports.extend(glob.glob('/dev/ttyACM*'))
+        
     # GPIO UART fallbacks
     for p in ['/dev/ttyAMA0', '/dev/ttyS0']:
         if os.path.exists(p) and p not in ports:
@@ -68,7 +73,7 @@ def discover_mcu_hardware(interactive=True):
             context["hint"] = "manual"
             return context
     else:
-        klipper_ports = [p for p in ports if "Klipper" in p]
+        klipper_ports = [p for p in ports if "klipper" in p.lower()]
         choice = klipper_ports[0] if klipper_ports else ports[0]
         
     context["mcu_path"] = choice

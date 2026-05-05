@@ -125,13 +125,14 @@ def _render_status_panel(state: dict) -> None:
     mcu_val = state.get("mcu")
     mcu_path = state.get("mcu_path")
     
-    if mcu_val:
-        mcu_raw = f"{mcu_val} ({t('dashboard.detected')})"
-        mcu_text = f"{mcu_val} {_DIM}({t('dashboard.detected')}){_R}"
-    elif mcu_path:
+    if mcu_path:
         base_path = mcu_path.split('/')[-1]
-        mcu_raw = f"{base_path}"
-        mcu_text = f"{base_path}"
+        if mcu_val:
+            mcu_raw = f"{base_path} ({t('dashboard.detected')})"
+            mcu_text = f"{base_path} {_DIM}({t('dashboard.detected')}){_R}"
+        else:
+            mcu_raw = f"{base_path} (Unknown)"
+            mcu_text = f"{base_path} {_DIM}(Unknown){_R}"
     else:
         mcu_raw = t("dashboard.no_mcu")
         mcu_text = f"{_DIM}{mcu_raw}{_R}"
