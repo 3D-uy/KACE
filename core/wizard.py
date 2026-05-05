@@ -54,8 +54,15 @@ def run_wizard():
     suggested_configs = []
     if detected_mcu:
         print(f"\nDetected MCU: {detected_mcu.upper()}\n")
-        if detected_mcu in MCU_SEARCH_TERMS:
-            search_terms = MCU_SEARCH_TERMS[detected_mcu]
+        
+        matched_base_mcu = None
+        for base_mcu in MCU_SEARCH_TERMS:
+            if detected_mcu.startswith(base_mcu):
+                matched_base_mcu = base_mcu
+                break
+                
+        if matched_base_mcu:
+            search_terms = MCU_SEARCH_TERMS[matched_base_mcu]
             for b in board_configs:
                 if any(term in b.lower() for term in search_terms):
                     suggested_configs.append(b)

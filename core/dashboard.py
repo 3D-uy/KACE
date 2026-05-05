@@ -69,7 +69,7 @@ def detect_system_state() -> dict:
     mcu = None
     try:
         from firmware.detector import discover_mcu_hardware
-        ctx = discover_mcu_hardware()
+        ctx = discover_mcu_hardware(interactive=False)
         mcu = ctx.get("derived_mcu")
     except Exception:
         pass
