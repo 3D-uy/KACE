@@ -142,7 +142,7 @@ def build_firmware_orchestrator(mcu_path=None, derived_mcu=None, hint=None, klip
         except Exception:
             pass # Fallback if nproc is not available
 
-        subprocess.run(
+        res = subprocess.run(
             build_cmd,
             cwd=klipper_path,
             check=True,
