@@ -48,27 +48,6 @@ Usaremos **Raspberry Pi Imager**, la herramienta oficial.
 
 Guia para instalar **Raspberry Pi Imager** <a href="pi_imager.md">pi_imager</a>
 
-Instalar y abrir el programa.
-
-Luego seguir estos pasos:
-
-1. Hacer clic en **Modelo de Raspberry Pi**
-2. Seleccionar:
-
-   ## Other specific-purpose OS
-
-3. Luego seleccionar:
-
-   ## 3D printing
-
-4. Elegir:
-
-   ## Mainsail OS
-
-5. Hacer clic en **Choose Storage**
-6. Seleccionar tu **tarjeta SD**
-7. Presionar **FINALIZAR**
-
 El programa descargará la imagen y la grabará automáticamente.
 
 # 📥 Mientras tanto descarga el siguiente programa
@@ -80,7 +59,7 @@ El programa descargará la imagen y la grabará automáticamente.
 
 ---
 
-# ⚡ Cuando termine
+# ⚡ Cuando termine de instalar **Raspberry Pi Imager**
 
 1. Retirar la tarjeta SD
 2. Insertarla en la **Raspberry Pi**
@@ -119,61 +98,7 @@ raspberry
 
 ---
 
-# 🔄 PARTE 4 — Actualizar el sistema (MUY IMPORTANTE)
-
-MainsailOS ya trae Klipper, Moonraker y Mainsail instalados.
-Lo primero que debemos hacer es actualizar todo.
-
-### PASO 1
-
-  En MobaXterm (conectado por SSH) copiar y pegar:
-
-```
-sudo apt update
-sudo apt upgrade -y
-```
-
-### PASO 2
-
-  Instalar python:
-
-```
-sudo apt install python3-pip -y
-```
-
-### PASO 3
-
-  Actualizar Klipper:
-
-```
-cd ~/klipper
-git pull
-```
-  
-### PASO 4
-
-  Reiniciar la Raspberry:
-
-```
-sudo reboot
-```
-
-# Esperar 1 o 2 minutos antes de continuar.
-
-## Presionar R para reiniciar la terminal, te volverá a pedir el usuarior y el password.
-
-user:
-```
-pi
-```
-password:
-```
-raspberry
-```
-
----
-
-# ⚡ PARTE 5 — Instalar y usar KACE (TODO en uno)
+# ⚡ PARTE 4 — Instalar y usar KACE (TODO en uno)
 
 KACE simplifica TODO el proceso:
 
@@ -183,84 +108,36 @@ KACE simplifica TODO el proceso:
 
 ---
 
-## ⚡ Instalación rápida (vía SSH)
 
-En MobaXterm, copiar y pegar:
-
-```bash
-sudo apt-get update && sudo apt-get install git -y
-sudo apt install python3-pip -y
-```
-
----
-
-## 🚀 Ejecutar KACE
+## ⚡ Instalación en una línea
 
 ```bash
-git clone https://github.com/3D-uy/KACE.git kace
-cd kace
-pip3 install -r requirements.txt --break-system-packages
-clear
-python3 kace.py
+bash <(curl -s https://raw.githubusercontent.com/3D-uy/KACE/main/install.sh)
+```
+
+> Esto instalará todas las dependencias, clonará el repositorio y configurará el comando global `kace` automáticamente.
+
+## 📦 Resultado final
+
+Después de ejecutar KACE tendrás:
+
+```
+~/kace/
+├── printer.cfg
+├── klipper.bin / klipper.uf2 / klipper.hex
 ```
 
 ---
 
-## 🧠 Dentro de KACE
+## 🚀 Siguientes pasos
 
-1. Selecciona tu placa (ej: SKR 1.4 / Turbo)
-2. KACE se encarga del resto automáticamente
-
-✔ Firmware listo para flashear
-✔ `printer.cfg` generado
-✔ Configuración optimizada
-
----
-
-# 💾 PARTE 6 — Flashear la SKR
-
-1. Ir a:
-
-```
-/home/pi/klipper/out/
-```
-
-2. Descargar:
-
-```
-klipper.bin
-```
-
-3. Renombrar a:
-
-```
-firmware.bin
-```
-
-4. Copiar a la SD de la SKR
-5. Insertar en la impresora
-6. Encender
-
-## ✔ Si cambia a FIRMWARE.CUR → perfecto
-
----
-
-# 🧠 PARTE 7 — Aplicar configuración
-
-1. Descargar el `printer.cfg` generado por KACE
-2. Subirlo a Mainsail (**Machine**)
-3. Reemplazar si es necesario
-
----
-
-# 🔄 PARTE 8 — Reiniciar sistema
+1. Flashear firmware en tu placa (SD / USB)
+2. Subir `printer.cfg` a Klipper
+3. Reiniciar servicios:
 
 ```bash
 sudo reboot
 ```
-
-Reiniciar también la impresora.
-
 
 ---
 

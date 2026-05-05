@@ -1,6 +1,7 @@
 import paramiko
 import os
 import shutil
+import subprocess
 
 def deploy_config(user_data):
     """Deploys the generated printer.cfg to the Klipper host via SSH/SCP."""
@@ -121,3 +122,56 @@ def deploy_local(user_data, artifact_type="all"):
             
     except Exception as e:
         print(f"\033[91mSave failed: {e}\033[0m")
+
+def deploy_avrdude(user_data, artifact_path, mcu_type):
+    """Deploys firmware via USB using avrdude (for AVR MCUs)."""
+    import questionary
+    from core.style import custom_style
+
+    if not shutil.which("avrdude"):
+        print("\n\033[91mERROR:\033[0m 'avrdude' is not installed or not in PATH.")
+        print("\033[93mPlease install it (e.g., 'sudo apt install avrdude') and try again.\033[0m")
+        return
+
+    # Try to derive the avrdude mcu part from mcu_type (e.g. atmega1284p -> atmega1284p)
+    # Most times user_data['mcu_type'] is already correct, but just in case
+    mcu_part = mcu_type.lower() if mcu_type else "atmega2560"
+    
+    default_port = user_data.get('mcu_path')
+    if not default_port or default_port == "TODO" or "TODO" in default_port:
+        default_port = "/dev/ttyUSB0"
+
+    print("\n\033[96m>>> AVR Flashing via avrdude\033[0m")
+    port = questionary.text(
+        "Enter the serial port for flashing:",
+        default=default_port,
+        style=custom_style
+    ).ask()
+
+    if not port:
+        print("\033[93mFlashing cancelled.\033[0m")
+        return
+
+    cmd = [
+        "avrdude", 
+        "-p", mcu_part, 
+        "-c", "arduino", 
+        "-P", port, 
+        "-b", "115200", 
+        f"-U", f"flash:w:{artifact_path}:i"
+    ]
+    
+    cmd_str = " ".join(cmd)
+    print(f"\n\033[93mGenerated Command:\033[0m {cmd_str}")
+    
+    confirm = questionary.confirm("Execute this command now?").ask()
+    if confirm:
+        print(f"\n\033[96m>>> Running avrdude...\033[0m")
+        try:
+            subprocess.run(cmd, check=True)
+            print("\n\033[92mSUCCESS:\033[0m Firmware flashed successfully!")
+        except subprocess.CalledProcessError as e:
+            print(f"\n\033[91mERROR:\033[0m avrdude failed with return code {e.returncode}.")
+    else:
+        print("\n\033[93mCommand execution cancelled. You can run it manually.\033[0m")
+
