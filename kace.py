@@ -21,11 +21,7 @@ if len(sys.argv) > 1:
         sys.exit(0)
     
     for i, arg in enumerate(sys.argv):
-        if arg.startswith("--dev-mcu="):
-            os.environ["KACE_DEV_MCU"] = arg.split("=", 1)[1]
-        elif arg == "--dev-mcu" and i + 1 < len(sys.argv):
-            os.environ["KACE_DEV_MCU"] = sys.argv[i + 1]
-        elif arg == "--auto":
+        if arg == "--auto":
             os.environ["KACE_AUTO"] = "1"
 
 import questionary
@@ -40,10 +36,6 @@ if os.environ.get("KACE_AUTO") == "1":
             return self.default_val
 
     def mock_select(msg, choices, default=None, **kwargs):
-        val_board_type = os.environ.get("KACE_DEV_BOARD_TYPE")
-        if "Select your Board:" in msg and val_board_type:
-            if val_board_type in choices:
-                return MockQuestionary(val_board_type)
         if not choices:
             val = default
         elif isinstance(choices[0], str):
@@ -55,14 +47,6 @@ if os.environ.get("KACE_AUTO") == "1":
         return MockQuestionary(default if default is not None else val)
 
     def mock_autocomplete(msg, choices, **kwargs):
-        val_printer = os.environ.get("KACE_DEV_PRINTER")
-        if "Select your Printer Model" in msg and val_printer:
-            if val_printer in choices:
-                return MockQuestionary(val_printer)
-                
-        val_env = os.environ.get("KACE_DEV_BOARD")
-        if val_env and val_env in choices:
-            return MockQuestionary(val_env)
         val = choices[0] if choices else None
         return MockQuestionary(val)
 
@@ -128,13 +112,7 @@ def main():
     print_kace_banner("Klipper Automated Configuration Ecosystem", __version__)
     
     # ── Dashboard (bypassed in CI / auto / dev modes) ─────────
-    _bypassed = (
-        os.environ.get("KACE_AUTO") == "1"
-        or os.environ.get("KACE_DEV_MCU")
-        or os.environ.get("KACE_DEV_PRINTER")
-        or os.environ.get("KACE_DEV_BOARD")
-        or os.environ.get("KACE_DEV_BOARD_TYPE")
-    )
+    _bypassed = os.environ.get("KACE_AUTO") == "1"
     if not _bypassed:
         from core.dashboard import detect_system_state, run_dashboard
         _state = detect_system_state()
