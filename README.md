@@ -1,6 +1,8 @@
 <p align="center">
-  <img src="docs/assets/kace_banner.png" width="1000">
+  <img src="docs/assets/kace_banner.png" width="1000"><br>
+  <img src="https://github.com/3D-uy/kace/actions/workflows/test.yml/badge.svg">
 </p>
+
 
 <h1 align="center">🚀 KACE — Klipper Automated Configuration Ecosystem</h1>
 
@@ -10,6 +12,8 @@
   <img src="https://img.shields.io/badge/platform-Linux%20%7C%20Raspberry%20Pi-green?style=flat-square" alt="Platform">
   <img src="https://img.shields.io/github/license/3D-uy/KACE?style=flat-square" alt="License">
 </p>
+
+
 
 <p align="center">
 🌐 <strong>Language</strong><br>
@@ -199,18 +203,18 @@ rm -rf ~/kace
 👉 Complete documentation:
 
 * 🇺🇸 English:   *(this page)*
-* 🇪🇸 Español:   <a href="docs/es/README.md">docs/es/README.md</a>
-* 🇧🇷 Português: <a href="docs/pt/README.md">docs/pt/README.md</a>
+* 🇪🇸 Español:   <a href="docs/es/README.md">README.md</a>
+* 🇧🇷 Português: <a href="docs/pt/README.md">README.md</a>
 
 👉 Pi Imager Setup:
-* 🇺🇸 English:   <a href="docs/en/pi_imager.md">docs/en/pi_imager.md</a>
-* 🇪🇸 Español:   <a href="docs/es/pi_imager.md">docs/es/pi_imager.md</a>
-* 🇧🇷 Português: <a href="docs/pt/pi_imager.md">docs/pt/pi_imager.md</a>
+* 🇺🇸 English:   <a href="docs/en/pi_imager.md">pi_imager.md</a>
+* 🇪🇸 Español:   <a href="docs/es/pi_imager.md">pi_imager.md</a>
+* 🇧🇷 Português: <a href="docs/pt/pi_imager.md">pi_imager.md</a>
 
 👉 Full Klipper Install:
-* 🇺🇸 English:   <a href="docs/en/Klipper_install.md">docs/en/Klipper_install.md</a>
-* 🇪🇸 Español:   <a href="docs/es/klipper_install.md">docs/es/klipper_install.md</a>
-* 🇧🇷 Português: <a href="docs/pt/Klipper_install.md">docs/pt/Klipper_install.md</a>
+* 🇺🇸 English:   <a href="docs/en/Klipper_install.md">Klipper_install.md</a>
+* 🇪🇸 Español:   <a href="docs/es/klipper_install.md">klipper_install.md</a>
+* 🇧🇷 Português: <a href="docs/pt/Klipper_install.md">Klipper_install.md</a>
 
 
 ---

@@ -198,19 +198,19 @@ rm -rf ~/kace
 
 👉 Documentación completa:
 
-* 🇺🇸 English:   <a href="../../README.md">../../README.md</a>
+* 🇺🇸 English:   <a href="../../README.md">README.md</a>
 * 🇪🇸 Español:   *(esta página)*
-* 🇧🇷 Português: <a href="../pt/README.md">../pt/README.md</a>
+* 🇧🇷 Português: <a href="../pt/README.md">README.md</a>
 
 👉 Instalación Pi Imager:
-* 🇺🇸 English:   <a href="../en/pi_imager.md">../en/pi_imager.md</a>
-* 🇪🇸 Español:   *(esta página)*
-* 🇧🇷 Português: <a href="../pt/pi_imager.md">../pt/pi_imager.md</a>
+* 🇺🇸 English:   <a href="../en/pi_imager.md">pi_imager.md</a>
+* 🇪🇸 Español:   <a href="../es/pi_imager.md">pi_imager.md</a>
+* 🇧🇷 Português: <a href="../pt/pi_imager.md">pi_imager.md</a>
 
 👉 Instalación Klipper Completa:
-* 🇺🇸 English:   <a href="../en/Klipper_install.md">../en/Klipper_install.md</a>
-* 🇪🇸 Español:   *(esta página)*
-* 🇧🇷 Português: <a href="../pt/klipper_install.md">../pt/klipper_install.md</a>
+* 🇺🇸 English:   <a href="../en/Klipper_install.md">Klipper_install.md</a>
+* 🇪🇸 Español:   <a href="../es/klipper_install.md">klipper_install.md</a>
+* 🇧🇷 Português: <a href="../pt/klipper_install.md">klipper_install.md</a>
 ---
 
 ## 🙌 Contribuir y feedback

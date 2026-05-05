@@ -103,9 +103,17 @@ def parse_config(raw_cfg, filename=""):
             if kv_match:
                 key = kv_match.group(1).strip().lower()
                 val = kv_match.group(2).strip()
+                
+                # Prevent [board_pins] parser leakage: 'aliases' uniquely belongs to board_pins
+                if key == 'aliases' and current_section != 'board_pins':
+                    current_section = 'board_pins'
+                    if current_section not in data:
+                        data[current_section] = {}
+                        
                 # Clean up inline comments
                 if '#' in val and key != 'aliases':
                     val = val.split('#')[0].strip()
+                    
                 data[current_section][key] = val
                 last_key = key
             elif last_key == 'aliases':
@@ -116,6 +124,21 @@ def parse_config(raw_cfg, filename=""):
                         clean_val = stripped
                     else:
                         clean_val = '# ' + stripped
+                        
+                if clean_val and "TODO" in clean_val:
+                    # Filter out individual EXP1/EXP2 mappings containing TODO
+                    parts = []
+                    for p in clean_val.split(','):
+                        p_strip = p.strip()
+                        if "TODO" in p_strip and ("EXP" in p_strip):
+                            continue
+                        if p_strip:
+                            parts.append(p_strip)
+                    if parts:
+                        clean_val = ', '.join(parts) + (',' if clean_val.rstrip().endswith(',') else '')
+                    else:
+                        clean_val = ""
+                        
                 if clean_val:
                     data[current_section][last_key] += '\n    ' + clean_val
                 

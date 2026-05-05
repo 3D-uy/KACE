@@ -1,5 +1,6 @@
 import glob
 import re
+import os
 import questionary
 from core.style import custom_style
 
@@ -11,6 +12,15 @@ def discover_mcu_hardware():
     - derived_mcu (e.g. stm32f103)
     - hint (e.g. usb, uart, can)
     """
+    if "KACE_DEV_MCU" in os.environ:
+        dev_mcu = os.environ["KACE_DEV_MCU"].lower()
+        print(f"\033[93m[DEV MODE]\033[0m Simulating MCU detection: \033[96m{dev_mcu}\033[0m")
+        return {
+            "mcu_path": "/dev/null",
+            "derived_mcu": dev_mcu,
+            "hint": "usb"
+        }
+
     ports = glob.glob('/dev/serial/by-id/*')
     context = {"mcu_path": None, "derived_mcu": None, "hint": None}
     
