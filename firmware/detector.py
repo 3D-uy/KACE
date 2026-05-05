@@ -6,7 +6,7 @@ from core.style import custom_style
 
 def discover_mcu_hardware(interactive=True):
     """
-    Auto-discovers the MCU via /dev/serial/by-id/.
+    Auto-discovers the MCU via various paths or active Klipper configs.
     Returns a dictionary of:
     - mcu_path (e.g. /dev/ttyUSB0)
     - derived_mcu (e.g. stm32f103)
@@ -16,19 +16,33 @@ def discover_mcu_hardware(interactive=True):
         dev_mcu = os.environ["KACE_DEV_MCU"].lower()
         if interactive:
             print(f"\033[93m[DEV MODE]\033[0m Simulating MCU detection: \033[96m{dev_mcu}\033[0m")
-        return {
-            "mcu_path": "/dev/null",
-            "derived_mcu": dev_mcu,
-            "hint": "usb"
-        }
+        return {"mcu_path": "/dev/null", "derived_mcu": dev_mcu, "hint": "usb"}
 
     ports = glob.glob('/dev/serial/by-id/*')
+    
+    # Debian Bookworm udev bug fallback
     if not ports:
         ports = glob.glob('/dev/serial/by-path/*')
-    if os.path.exists('/dev/ttyAMA0'):
-        ports.append('/dev/ttyAMA0')
-    if os.path.exists('/dev/ttyS0'):
-        ports.append('/dev/ttyS0')
+        
+    # GPIO UART fallbacks
+    for p in ['/dev/ttyAMA0', '/dev/ttyS0']:
+        if os.path.exists(p) and p not in ports:
+            ports.append(p)
+            
+    # Active Klipper Config Fallback (if they already have Mainsail running)
+    cfg_path = os.path.expanduser("~/printer_data/config/printer.cfg")
+    if not ports and os.path.exists(cfg_path):
+        try:
+            with open(cfg_path, "r") as f:
+                content = f.read()
+                # Find [mcu] section and extract serial:
+                mcu_match = re.search(r'\[mcu\][^\[]*serial:\s*([^\s\n]+)', content, re.MULTILINE)
+                if mcu_match:
+                    found_port = mcu_match.group(1).strip()
+                    if found_port not in ports:
+                        ports.append(found_port)
+        except Exception:
+            pass
 
     context = {"mcu_path": None, "derived_mcu": None, "hint": None}
     
