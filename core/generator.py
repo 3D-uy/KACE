@@ -1,6 +1,6 @@
 import os
 from jinja2 import Environment, FileSystemLoader
-from core.translations import translate_comment
+from core.translations import translate_comment, get_lang
 
 # Resolve templates directory relative to this file's location, not the CWD
 _BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -21,7 +21,9 @@ def generate_config(parsed_data, user_data):
     # Align inline comments for a professional look
     aligned_lines = []
     comment_col = 48
-    language = user_data.get('language', 'English')
+    # get_lang() is always authoritative: set by the dashboard language picker
+    # before the wizard runs. user_data['language'] is a synced copy of it.
+    language = get_lang()
     for line in output.splitlines():
         # Check if line is a commented setting that contains an inline comment
         is_commented_setting = line.lstrip().startswith('#') and line.count('#') > 1 and (':' in line or ('[' in line and ']' in line))

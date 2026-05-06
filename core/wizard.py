@@ -4,7 +4,7 @@ from .scraper import fetch_config_list, fetch_raw_config, parse_config, extract_
 from firmware.detector import discover_mcu_hardware
 from core.style import custom_style
 from data.profiles import THERMISTOR_PRESETS
-from core.translations import t
+from core.translations import t, get_lang
 
 _BACK = "__back__"
 _QUIT = "__quit__"
@@ -74,7 +74,9 @@ def run_wizard():
         "mcu_path": mcu_path,
         "mcu_type": detected_mcu,
         "mcu_hint": mcu_hint,
-        "language": "English",
+        # Sync from the live language state set by the dashboard language picker.
+        # Falls back to "English" only in --auto / CI mode (dashboard bypassed).
+        "language": get_lang(),
         "printer_profile": None,
         "board": None,
         "kinematics": "cartesian",
