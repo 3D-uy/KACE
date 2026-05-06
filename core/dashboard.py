@@ -118,61 +118,35 @@ def get_suggestions(state: dict) -> list:
 
 
 def _render_status_panel(state: dict) -> None:
-    """Print the colored system status table."""
-    title = t("dashboard.status_title")
-    
-    # Pre-calculate MCU text to determine dynamic width
-    mcu_val = state.get("mcu")
-    mcu_path = state.get("mcu_path")
-    
-    if mcu_path:
-        base_path = mcu_path.split('/')[-1]
-        if mcu_val:
-            mcu_raw = f"{base_path} ({t('dashboard.detected')})"
-            mcu_text = f"{base_path} {_DIM}({t('dashboard.detected')}){_R}"
-        else:
-            mcu_raw = f"{base_path} (Unknown)"
-            mcu_text = f"{base_path} {_DIM}(Unknown){_R}"
-    else:
-        mcu_raw = t("dashboard.no_mcu")
-        mcu_text = f"{_DIM}{mcu_raw}{_R}"
+    """Print the system status table between # separator lines."""
+    title  = t("dashboard.status_title")
+    SEP    = f"  {_C}{'#' * 48}{_R}"
 
-    # Calculate dynamic width (minimum 42, expand if MCU path is long)
-    width = max(42, 14 + 1 + len(mcu_raw) + 2)
-    border = "─" * width
-
-    # ANSI-safe row builder: pad using explicit spaces so box width is
-    # not distorted by invisible escape-code characters.
     def _row(label: str, ok: bool) -> str:
         icon   = _OK if ok else _NOK
         status = t("dashboard.installed") if ok else t("dashboard.not_found")
-        # visible columns: 2(indent) + 1(│) + 2(sp) + 14(label) + 1(sp) + icon(1vis) + 2(sp) + status + padding + 1(│)
-        # icon itself prints as 1 visible char; ANSI codes are zero-width.
-        status_pad = width - 19 - len(status)   # remaining cols after status text
-        padding    = " " * max(0, status_pad)
-        label_pad  = " " * max(0, 14 - len(label))
-        return f"  │  {_B}{label}{_R}{label_pad} {icon}  {status}{padding}│"
+        label_pad = " " * max(0, 14 - len(label))
+        return f"  {_B}{label}{_R}{label_pad} {icon}  {status}"
 
-    print(f"\n  {_C}┌─ {_B}{title}{_R}{_C} {border[:width - len(title) - 3]}┐{_R}")
-    print(_row("Klipper",    state["klipper"]))
-    print(_row("Moonraker",  state["moonraker"]))
-    print(_row("Mainsail",   state["mainsail"]))
-    print(_row("Fluidd",     state["fluidd"]))
+    mcu_val  = state.get("mcu")
+    mcu_path = state.get("mcu_path")
+    if mcu_path:
+        base_path = mcu_path.split('/')[-1]
+        label     = f"({t('dashboard.detected')})" if mcu_val else "(Unknown)"
+        mcu_line  = f"  {_B}MCU           {_R} {base_path} {_DIM}{label}{_R}"
+    else:
+        mcu_line  = f"  {_B}MCU           {_R} {_DIM}{t('dashboard.no_mcu')}{_R}"
 
-    # printer.cfg row
-    cfg_ok     = state["printer_cfg"]
-    cfg_icon   = _OK if cfg_ok else _NOK
-    cfg_status = t("dashboard.found") if cfg_ok else t("dashboard.not_found")
-    cfg_pad    = " " * max(0, width - 19 - len(cfg_status))
-    print(f"  │  {_B}printer.cfg   {_R} {cfg_icon}  {cfg_status}{cfg_pad}│")
-
-    # MCU row — value may be long; pad to fill box width
-    mcu_col_width = width - 16   # cols available for mcu value (after label)
-    pad_len = max(0, mcu_col_width - len(mcu_raw))
-    mcu_padded = mcu_text + (" " * pad_len)
-    print(f"  │  {_B}MCU           {_R} {mcu_padded}│")
-
-    print(f"  {_C}└{'─' * (width + 2)}┘{_R}")
+    print(f"\n  {_C}{_B}{title}{_R}")
+    print(SEP)
+    print(_row("Klipper",     state["klipper"]))
+    print(_row("Moonraker",   state["moonraker"]))
+    print(_row("Mainsail",    state["mainsail"]))
+    print(_row("Fluidd",      state["fluidd"]))
+    cfg_ok = state["printer_cfg"]
+    print(_row("printer.cfg", cfg_ok))
+    print(mcu_line)
+    print(SEP)
 
 
 def _render_suggestions(suggestions: list) -> None:
@@ -236,7 +210,6 @@ def run_dashboard(state: dict) -> str:
     _render_status_panel(state)
     suggestions = get_suggestions(state)
     _render_suggestions(suggestions)
-    print("")
 
     _select_language()
 
