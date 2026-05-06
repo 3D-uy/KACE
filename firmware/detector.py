@@ -8,7 +8,7 @@ def discover_mcu_hardware(interactive=True):
     """
     Auto-discovers the connected printer MCU via USB serial.
 
-    Priority order (matches KIAUH / Klipper documentation):
+    Priority order (matches KACE / Klipper documentation):
       1. /dev/serial/by-id/*    — persistent symlinks, best option
       2. /dev/serial/by-path/*  — fallback if udev didn't create by-id links
       3. /dev/ttyUSB*           — raw USB-Serial adapters (CH340, CP2102, etc.)

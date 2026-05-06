@@ -6,7 +6,7 @@
 #
 # Design principles:
 #   - detect_system_state() is fast, read-only, no network calls.
-#   - Detection paths use KIAUH/MainsailOS defaults; constants are
+#   - Detection paths use KACE/Klipper defaults; constants are
 #     defined at module level so they can be made configurable later.
 #   - All user-facing strings go through t() from core.translations.
 #   - Bypassed entirely by kace.py when CI/auto/dev env vars are set.
@@ -21,7 +21,7 @@ from core.style import custom_style
 from core.translations import t, set_lang
 from core.banner import print_kace_banner
 
-# ── Detection path constants (KIAUH / MainsailOS defaults) ────
+# ── Detection path constants (KACE / Klipper defaults) ──────────
 # Centralised here so future configurability is one-line change.
 _PATH_KLIPPER     = os.path.expanduser("~/klipper")
 _PATH_MOONRAKER   = os.path.expanduser("~/moonraker")

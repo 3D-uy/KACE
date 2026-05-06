@@ -25,7 +25,7 @@ def get_lang() -> str:
 # All user-facing UI strings keyed by a short dot-separated ID.
 # Each entry maps language name → display string.
 # Strings may contain {placeholders} for str.format(**kwargs).
-# Detection paths listed here use KIAUH/MainsailOS defaults and
+# Detection paths listed here use standard Klipper defaults and
 # are kept in one place to make future configurability easy.
 UI_STRINGS: dict = {
     # ── Wizard prompts ─────────────────────────────────────────
@@ -257,9 +257,9 @@ UI_STRINGS: dict = {
         "Português": "Sugestões",
     },
     "dashboard.suggest_no_klipper": {
-        "English":   "Klipper not found — install it via KIAUH or install.sh",
-        "Español":   "Klipper no encontrado — instálelo con KIAUH o install.sh",
-        "Português": "Klipper não encontrado — instale-o via KIAUH ou install.sh",
+        "English":   "Klipper not found — install it via KACE or install.sh",
+        "Español":   "Klipper no encontrado — instálelo con KACE o install.sh",
+        "Português": "Klipper não encontrado — instale-o via KACE ou install.sh",
     },
     "dashboard.suggest_no_moonraker": {
         "English":   "Moonraker not found — instálelo para habilitar el control web",
