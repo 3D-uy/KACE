@@ -4,6 +4,7 @@ import subprocess
 from .derivation import derive_config
 from .generator import generate_firmware_config
 from .validator import validate_config
+from core.translations import t
 
 def build_firmware_orchestrator(mcu_path=None, derived_mcu=None, hint=None, klipper_path="~/klipper", output_dir="~/kace"):
     """
@@ -17,7 +18,7 @@ def build_firmware_orchestrator(mcu_path=None, derived_mcu=None, hint=None, klip
     try:
         config_dict = derive_config(derived_mcu, hint)
     except Exception as e:
-        return {"status": "error", "message": f"Configuration derivation failed: {str(e)}"}
+        return {"status": "error", "message": t("builder.derivation_failed", error=str(e))}
         
     # --- Summary & Confirmation Segment ---
     import questionary
@@ -25,13 +26,13 @@ def build_firmware_orchestrator(mcu_path=None, derived_mcu=None, hint=None, klip
 
     def format_flash(f):
         mapping = {
-            "0x0": "No bootloader",
-            "0x2000": "8KiB bootloader",
-            "0x4000": "16KiB bootloader",
-            "0x7000": "28KiB bootloader",
-            "0x8000": "32KiB bootloader",
-            "0x10000": "64KiB bootloader",
-            "0x20000": "128KiB bootloader"
+            "0x0": t("builder.boot_no"),
+            "0x2000": t("builder.boot_8k"),
+            "0x4000": t("builder.boot_16k"),
+            "0x7000": t("builder.boot_28k"),
+            "0x8000": t("builder.boot_32k"),
+            "0x10000": t("builder.boot_64k"),
+            "0x20000": t("builder.boot_128k")
         }
         return f"{mapping[f]} ({f})" if f in mapping else f
 
@@ -60,64 +61,64 @@ def build_firmware_orchestrator(mcu_path=None, derived_mcu=None, hint=None, klip
             return f"  {_B}{_C}{label}{_R}{pad}: {_Y}{value}{_R}"
 
         print(f"\n  {_C}{_SEP}{_R}")
-        print(f"  {_B}{_M}  🛠  Klipper Firmware Target Summary{_R}")
+        print(f"  {_B}{_M}  {t('builder.summary_title')}{_R}")
         print(f"  {_C}{_SEP}{_R}")
-        print(_fw_row("Architecture",            arch.upper()))
-        print(_fw_row("Processor Model",          model.upper()))
-        print(_fw_row("Bootloader Offset",        format_flash(flash)))
-        print(_fw_row("Communication Interface",  comm))
+        print(_fw_row(t("builder.architecture"),           arch.upper()))
+        print(_fw_row(t("builder.processor"),              model.upper()))
+        print(_fw_row(t("builder.bootloader"),             format_flash(flash)))
+        print(_fw_row(t("builder.comm_interface"),         comm))
 
         clock = config_dict.get("CONFIG_CLOCK_FREQ")
         if clock:
-            print(_fw_row("Clock Frequency", f"{int(clock)//1000000} MHz"))
+            print(_fw_row(t("builder.clock"), f"{int(clock)//1000000} MHz"))
 
-        print(_fw_row("USB IDs / Serial Path",    mcu_path if mcu_path else "Not Detected"))
+        print(_fw_row(t("builder.usb_path"),    mcu_path if mcu_path else t("builder.not_detected")))
         print(f"  {_C}{_SEP}{_R}\n")
 
         choices = [
-            f"🚀  Compile Firmware Now",
-            f"🔧  Edit Architecture",
-            f"🔧  Edit Processor Model",
-            f"🔧  Edit Bootloader Offset",
-            f"🔧  Edit Communication Interface",
+            t("builder.compile_now"),
+            t("builder.edit_arch"),
+            t("builder.edit_proc"),
+            t("builder.edit_boot"),
+            t("builder.edit_comm"),
         ]
         if clock:
-            choices.append(f"🔧  Edit Clock Frequency")
-        choices.append(f"❌  Abort")
+            choices.append(t("builder.edit_clock"))
+        choices.append(t("builder.abort"))
 
-        ans = questionary.select("Is this configuration correct? (Use arrow keys)", choices=choices, style=custom_style).ask()
+        ans = questionary.select(t("builder.config_correct"), choices=choices, style=custom_style).ask()
 
-        if ans == f"🚀  Compile Firmware Now":
+        if ans == t("builder.compile_now"):
             break
-        elif ans == f"❌  Abort" or ans is None:
-            return {"status": "error", "message": "Compilation aborted by user."}
-        elif ans == f"🔧  Edit Architecture":
-            new_arch = questionary.text("Enter Kconfig Architecture (e.g. stm32, lpc176x):", default=arch, style=custom_style).ask()
+        elif ans == t("builder.abort") or ans is None:
+            return {"status": "error", "message": t("builder.compilation_aborted")}
+        elif ans == t("builder.edit_arch"):
+            new_arch = questionary.text(t("builder.enter_arch"), default=arch, style=custom_style).ask()
             if new_arch: config_dict["CONFIG_MCU"] = f'"{new_arch}"'
-        elif ans == f"🔧  Edit Processor Model":
-            new_model = questionary.text("Enter Processor Model (e.g. stm32f446):", default=model, style=custom_style).ask()
+        elif ans == t("builder.edit_proc"):
+            new_model = questionary.text(t("builder.enter_proc"), default=model, style=custom_style).ask()
             if new_model: derived_mcu = new_model
-        elif ans == f"🔧  Edit Bootloader Offset":
+        elif ans == t("builder.edit_boot"):
             opts = [
-                "No bootloader (0x0)", "8KiB bootloader (0x2000)", "16KiB bootloader (0x4000)",
-                "28KiB bootloader (0x7000)", "32KiB bootloader (0x8000)", "64KiB bootloader (0x10000)",
-                "128KiB bootloader (0x20000)", "Enter manually"
+                f"{t('builder.boot_no')} (0x0)", f"{t('builder.boot_8k')} (0x2000)", f"{t('builder.boot_16k')} (0x4000)",
+                f"{t('builder.boot_28k')} (0x7000)", f"{t('builder.boot_32k')} (0x8000)", f"{t('builder.boot_64k')} (0x10000)",
+                f"{t('builder.boot_128k')} (0x20000)", t("builder.enter_manual")
             ]
-            f_ans = questionary.select("Select Bootloader Offset:", choices=opts, style=custom_style).ask()
-            if f_ans == "Enter manually":
-                f_ans = questionary.text("Enter HEX offset (e.g. 0x8000):", default=flash, style=custom_style).ask()
+            f_ans = questionary.select(t("builder.select_boot"), choices=opts, style=custom_style).ask()
+            if f_ans == t("builder.enter_manual"):
+                f_ans = questionary.text(t("builder.enter_hex"), default=flash, style=custom_style).ask()
                 if f_ans: config_dict["CONFIG_FLASH_START"] = f_ans
             elif f_ans:
                 config_dict["CONFIG_FLASH_START"] = f_ans.split(" (")[1].replace(")", "")
-        elif ans == f"🔧  Edit Communication Interface":
-            c_ans = questionary.select("Select Interface:", choices=["USB", "UART", "CAN", "SPI"], style=custom_style).ask()
+        elif ans == t("builder.edit_comm"):
+            c_ans = questionary.select(t("builder.select_interface"), choices=["USB", "UART", "CAN", "SPI"], style=custom_style).ask()
             if c_ans:
                 config_dict["CONFIG_USB"]    = "y" if c_ans == "USB"  else "n"
                 config_dict["CONFIG_SERIAL"] = "y" if c_ans == "UART" else "n"
                 config_dict["CONFIG_CANBUS"] = "y" if c_ans == "CAN"  else "n"
                 config_dict["CONFIG_SPI"]    = "y" if c_ans == "SPI"  else "n"
-        elif ans == f"🔧  Edit Clock Frequency":
-            clk = questionary.text("Enter Clock Frequency in Hz (e.g. 120000000):", default=clock, style=custom_style).ask()
+        elif ans == t("builder.edit_clock"):
+            clk = questionary.text(t("builder.enter_clock"), default=clock, style=custom_style).ask()
             if clk: config_dict["CONFIG_CLOCK_FREQ"] = clk
     # ──────────────────────────────────────────────────────────────
 
@@ -184,11 +185,11 @@ def build_firmware_orchestrator(mcu_path=None, derived_mcu=None, hint=None, klip
                     "path": dest
                 }
                 
-        return {"status": "error", "message": "Firmware compiled, but no recognized output file (klipper.bin/.uf2/.elf.hex) found."}
+        return {"status": "error", "message": t("builder.no_binary")}
         
     except subprocess.CalledProcessError as e:
-         return {"status": "error", "message": f"Failed to compile firmware (Make error {e.returncode}):\n{e.stderr}"}
+         return {"status": "error", "message": t("builder.make_error", code=e.returncode, error=e.stderr)}
     except FileNotFoundError:
-         return {"status": "error", "message": "Failed to compile firmware: 'make' command not found. build-essential package required."}
+         return {"status": "error", "message": t("builder.make_not_found")}
     except Exception as e:
-         return {"status": "error", "message": f"An unexpected error occurred during build: {str(e)}"}
+         return {"status": "error", "message": t("builder.unexpected_error", error=str(e))}

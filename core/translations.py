@@ -503,6 +503,187 @@ UI_STRINGS: dict = {
         "Español":   "Reinicie Klipper",
         "Português": "Reinicie o Klipper",
     },
+    # ── builder.py strings ──────────────────────────────────────
+    "builder.summary_title": {
+        "English":   "🛠  Klipper Firmware Target Summary",
+        "Español":   "🛠  Resumen de Destino del Firmware de Klipper",
+        "Português": "🛠  Resumo do Alvo do Firmware do Klipper",
+    },
+    "builder.architecture": {
+        "English":   "Architecture",
+        "Español":   "Arquitectura",
+        "Português": "Arquitetura",
+    },
+    "builder.processor": {
+        "English":   "Processor Model",
+        "Español":   "Modelo de Procesador",
+        "Português": "Modelo do Processador",
+    },
+    "builder.bootloader": {
+        "English":   "Bootloader Offset",
+        "Español":   "Offset del Bootloader",
+        "Português": "Offset do Bootloader",
+    },
+    "builder.comm_interface": {
+        "English":   "Communication Interface",
+        "Español":   "Interfaz de Comunicación",
+        "Português": "Interface de Comunicação",
+    },
+    "builder.clock": {
+        "English":   "Clock Frequency",
+        "Español":   "Frecuencia de Reloj",
+        "Português": "Frequência de Clock",
+    },
+    "builder.usb_path": {
+        "English":   "USB IDs / Serial Path",
+        "Español":   "IDs USB / Ruta Serial",
+        "Português": "IDs USB / Caminho Serial",
+    },
+    "builder.not_detected": {
+        "English":   "Not Detected",
+        "Español":   "No Detectado",
+        "Português": "Não Detectado",
+    },
+    "builder.config_correct": {
+        "English":   "Is this configuration correct? (Use arrow keys)",
+        "Español":   "¿Es correcta esta configuración? (Use las flechas)",
+        "Português": "Esta configuração está correta? (Use as setas)",
+    },
+    "builder.compile_now": {
+        "English":   "🚀  Compile Firmware Now",
+        "Español":   "🚀  Compilar Firmware Ahora",
+        "Português": "🚀  Compilar Firmware Agora",
+    },
+    "builder.edit_arch": {
+        "English":   "🔧  Edit Architecture",
+        "Español":   "🔧  Editar Arquitectura",
+        "Português": "🔧  Editar Arquitetura",
+    },
+    "builder.edit_proc": {
+        "English":   "🔧  Edit Processor Model",
+        "Español":   "🔧  Editar Modelo de Procesador",
+        "Português": "🔧  Editar Modelo do Processador",
+    },
+    "builder.edit_boot": {
+        "English":   "🔧  Edit Bootloader Offset",
+        "Español":   "🔧  Editar Offset del Bootloader",
+        "Português": "🔧  Editar Offset do Bootloader",
+    },
+    "builder.edit_comm": {
+        "English":   "🔧  Edit Communication Interface",
+        "Español":   "🔧  Editar Interfaz de Comunicación",
+        "Português": "🔧  Editar Interface de Comunicação",
+    },
+    "builder.edit_clock": {
+        "English":   "🔧  Edit Clock Frequency",
+        "Español":   "🔧  Editar Frecuencia de Reloj",
+        "Português": "🔧  Editar Frequência de Clock",
+    },
+    "builder.abort": {
+        "English":   "❌  Abort",
+        "Español":   "❌  Abortar",
+        "Português": "❌  Abortar",
+    },
+    "builder.boot_no": {
+        "English":   "No bootloader",
+        "Español":   "Sin bootloader",
+        "Português": "Sem bootloader",
+    },
+    "builder.boot_8k": {
+        "English":   "8KiB bootloader",
+        "Español":   "Bootloader de 8KiB",
+        "Português": "Bootloader de 8KiB",
+    },
+    "builder.boot_16k": {
+        "English":   "16KiB bootloader",
+        "Español":   "Bootloader de 16KiB",
+        "Português": "Bootloader de 16KiB",
+    },
+    "builder.boot_28k": {
+        "English":   "28KiB bootloader",
+        "Español":   "Bootloader de 28KiB",
+        "Português": "Bootloader de 28KiB",
+    },
+    "builder.boot_32k": {
+        "English":   "32KiB bootloader",
+        "Español":   "Bootloader de 32KiB",
+        "Português": "Bootloader de 32KiB",
+    },
+    "builder.boot_64k": {
+        "English":   "64KiB bootloader",
+        "Español":   "Bootloader de 64KiB",
+        "Português": "Bootloader de 64KiB",
+    },
+    "builder.boot_128k": {
+        "English":   "128KiB bootloader",
+        "Español":   "Bootloader de 128KiB",
+        "Português": "Bootloader de 128KiB",
+    },
+    "builder.enter_arch": {
+        "English":   "Enter Kconfig Architecture (e.g. stm32, lpc176x):",
+        "Español":   "Ingrese la Arquitectura de Kconfig (ej. stm32, lpc176x):",
+        "Português": "Digite a Arquitetura do Kconfig (ex. stm32, lpc176x):",
+    },
+    "builder.enter_proc": {
+        "English":   "Enter Processor Model (e.g. stm32f446):",
+        "Español":   "Ingrese el Modelo del Procesador (ej. stm32f446):",
+        "Português": "Digite o Modelo do Processador (ex. stm32f446):",
+    },
+    "builder.select_boot": {
+        "English":   "Select Bootloader Offset:",
+        "Español":   "Seleccione el Offset del Bootloader:",
+        "Português": "Selecione o Offset do Bootloader:",
+    },
+    "builder.enter_manual": {
+        "English":   "Enter manually",
+        "Español":   "Ingresar manualmente",
+        "Português": "Inserir manualmente",
+    },
+    "builder.enter_hex": {
+        "English":   "Enter HEX offset (e.g. 0x8000):",
+        "Español":   "Ingrese el offset HEX (ej. 0x8000):",
+        "Português": "Digite o offset HEX (ex. 0x8000):",
+    },
+    "builder.select_interface": {
+        "English":   "Select Interface:",
+        "Español":   "Seleccione la Interfaz:",
+        "Português": "Selecione a Interface:",
+    },
+    "builder.enter_clock": {
+        "English":   "Enter Clock Frequency in Hz (e.g. 120000000):",
+        "Español":   "Ingrese la Frecuencia de Reloj en Hz (ej. 120000000):",
+        "Português": "Digite a Frequência de Clock em Hz (ex. 120000000):",
+    },
+    "builder.derivation_failed": {
+        "English":   "Configuration derivation failed: {error}",
+        "Español":   "La derivación de la configuración falló: {error}",
+        "Português": "A derivação da configuração falhou: {error}",
+    },
+    "builder.compilation_aborted": {
+        "English":   "Compilation aborted by user.",
+        "Español":   "Compilación abortada por el usuario.",
+        "Português": "Compilação abortada pelo usuário.",
+    },
+    "builder.no_binary": {
+        "English":   "Firmware compiled, but no recognized output file (klipper.bin/.uf2/.elf.hex) found.",
+        "Español":   "Firmware compilado, pero no se encontró ningún archivo de salida reconocido (klipper.bin/.uf2/.elf.hex).",
+        "Português": "Firmware compilado, mas nenhum arquivo de saída reconhecido (klipper.bin/.uf2/.elf.hex) foi encontrado.",
+    },
+    "builder.make_error": {
+        "English":   "Failed to compile firmware (Make error {code}):\n{error}",
+        "Español":   "Error al compilar el firmware (Error de Make {code}):\n{error}",
+        "Português": "Falha ao compilar o firmware (Erro do Make {code}):\n{error}",
+    },
+    "builder.make_not_found": {
+        "English":   "Failed to compile firmware: 'make' command not found. build-essential package required.",
+        "Español":   "Error al compilar el firmware: comando 'make' no encontrado. Se requiere el paquete build-essential.",
+        "Português": "Falha ao compilar o firmware: comando 'make' não encontrado. Pacote build-essential necessário.",
+    },
+    "builder.unexpected_error": {
+        "English":   "An unexpected error occurred during build: {error}",
+        "Español":   "Ocurrió un error inesperado durante la compilación: {error}",
+        "Português": "Ocorreu um erro inesperado durante a compilação: {error}",
+    },
 }
 
 
