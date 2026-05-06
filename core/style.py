@@ -1,22 +1,40 @@
-from questionary import Style
+from prompt_toolkit.styles import Style
 
-# Custom KACE-inspired style
 custom_style = Style([
-    ('qmark', 'fg:#673ab7 bold'),            # token in front of the question
-    ('question', 'bold'),                    # question text
-    ('answer', 'fg:#4caf50 bold'),           # submitted answer text behind the question (green after selected)
-    ('pointer', 'fg:#f5a623 bold'),          # pointer used in select and checkbox prompts
-    # highlighted: use a distinct text color without background highlight
-    ('highlighted', 'fg:#f5a623 bold'),  # active item in select / checkbox
-    ('selected', 'fg:#4caf50'),              # selected choice in checkbox prompts
-    ('separator', 'fg:#cc5454'),             # separator in lists
-    ('instruction', 'fg:#888888'),           # help text for the user
-    ('text', ''),                            # any generic text
-    ('disabled', 'fg:#858585 italic'),       # disabled choices for select and checkbox prompts
-    # Autocomplete dropdown
+    # --- Base ---
+    ('', 'nobg'),  # 🔥 evita backgrounds heredados raros
+
+    # --- Pregunta / respuesta ---
+    ('qmark', 'fg:#673ab7 bold'),
+    ('question', 'bold'),
+    ('answer', 'fg:#4caf50 bold'),
+
+    # --- Navegación ---
+    ('pointer', 'fg:#f5a623 bold nobg'),
+
+    # --- Estados ---
+    ('highlighted', 'fg:#f5a623 bold nobg'),        # item activo (cursor)
+    ('selected', 'fg:#4caf50 nobg'),                # item marcado
+    ('selected.highlighted', 'fg:#4caf50 bold nobg'),
+
+    # 🔥 FIX REAL (prompt_toolkit internals)
+    ('cursor-line', 'nobg'),
+    ('cursor-line.selected', 'nobg'),
+
+    # --- Estructura ---
+    ('separator', 'fg:#cc5454'),
+    ('instruction', 'fg:#888888'),
+    ('text', ''),
+    ('disabled', 'fg:#858585 italic'),
+
+    # --- Checkbox específicos (defensivo) ---
+    ('checkbox', ''),
+    ('checkbox-selected', 'fg:#4caf50 nobg'),
+
+    # --- Autocomplete ---
     ('completion-menu', 'bg:#1a1a2e fg:#e0e0e0'),
     ('completion-menu.completion', 'bg:#1a1a2e fg:#e0e0e0'),
-    ('completion-menu.completion.current', 'fg:#f5a623 bold'),
+    ('completion-menu.completion.current', 'fg:#f5a623 bold nobg'),
     ('completion-menu.meta.completion', 'bg:#1a1a2e fg:#888888'),
     ('completion-menu.meta.completion.current', 'fg:#f5a623'),
 ])
