@@ -81,23 +81,31 @@ def print_summary(user_data: dict):
     C = "\033[96m"
     B = "\033[1m"
     R = "\033[0m"
+    M = "\033[95m"   # magenta for section headers
 
     fw_path = user_data.get('firmware_path', '~/kace/klipper.bin')
     cfg_path = os.path.expanduser('~/kace/printer.cfg')
+
+    col_w = 22   # label column width (padded)
+
+    def _row(label: str, value: str, color: str = Y) -> str:
+        pad = " " * max(0, col_w - len(label))
+        return f"  {B}{label}{R}{pad} {color}{value}{R}"
 
     print("")
     print(f"  {G}══════════════════════════════════════════{R}")
     print(f"  {B}{G}  ✅ {t('summary.title')}{R}")
     print(f"  {G}══════════════════════════════════════════{R}")
     print("")
-    print(f"  {B}{t('summary.firmware')}{R} {Y}{fw_path}{R}")
-    print(f"  {B}{t('summary.config')}{R} {Y}{cfg_path}{R}")
+    print(_row(t('summary.firmware'), fw_path))
+    print(_row(t('summary.config'),   cfg_path))
     print("")
-    print(f"  {B}--- Generation Details ---{R}")
-    print(f"  {B}Printer Profile:{R} {Y}{user_data.get('printer_profile') or 'Custom / Scratch Build'}{R}")
-    print(f"  {B}Board Config:   {R} {Y}{user_data.get('board')}{R}")
-    print(f"  {B}Kinematics:     {R} {Y}{user_data.get('kinematics')}{R}")
-    print(f"  {B}Thermistors:    {R} {Y}{user_data.get('hotend_thermistor')} (Hotend), {user_data.get('bed_thermistor')} (Bed){R}")
+    print(f"  {M}{B}── {t('summary.generation_details')} ──{R}")
+    print(_row(t('summary.printer_profile'), user_data.get('printer_profile') or 'Custom / Scratch Build'))
+    print(_row(t('summary.board_config'),    user_data.get('board') or '-'))
+    print(_row(t('summary.kinematics'),      user_data.get('kinematics') or '-'))
+    print(_row(t('summary.hotend_thermistor'), user_data.get('hotend_thermistor') or '-'))
+    print(_row(t('summary.bed_thermistor'),    user_data.get('bed_thermistor') or '-'))
     print("")
     print(f"  {B}{C}{t('summary.next_steps')}{R}")
     print(f"  {C}1.{R} {t('summary.step1')}")
@@ -254,12 +262,12 @@ def main():
                 user_data['mcu_type'] = result.get('mcu')
 
                 deploy_options = [
-                    {"name": t("kace.deploy_none"),  "value": "none"},
-                    {"name": t("kace.deploy_local"),  "value": "local"},
-                    {"name": t("kace.deploy_usb"),    "value": "usb"},
+                    {"name": f"✅  {t('kace.deploy_none')}",   "value": "none"},
+                    {"name": f"📁  {t('kace.deploy_local')}",  "value": "local"},
+                    {"name": f"💾  {t('kace.deploy_usb')}",    "value": "usb"},
                 ]
                 if result.get('firmware') == 'klipper.elf.hex':
-                    deploy_options.insert(1, {"name": t("kace.deploy_avrdude"), "value": "avrdude"})
+                    deploy_options.insert(1, {"name": f"⚡  {t('kace.deploy_avrdude')}", "value": "avrdude"})
 
                 deploy_fw = questionary.select(
                     f"\n{t('kace.deploy_firmware_prompt')}",
@@ -296,10 +304,10 @@ def main():
     deploy_cfg = questionary.select(
         f"\n{t('kace.deploy_cfg_prompt')}",
         choices=[
-            {"name": t("kace.deploy_none"),  "value": "none"},
-            {"name": t("kace.deploy_local"),  "value": "local"},
-            {"name": t("kace.deploy_usb"),    "value": "usb"},
-            {"name": t("kace.deploy_ssh"),    "value": "ssh"},
+            {"name": f"✅  {t('kace.deploy_none')}",  "value": "none"},
+            {"name": f"📁  {t('kace.deploy_local')}",  "value": "local"},
+            {"name": f"💾  {t('kace.deploy_usb')}",    "value": "usb"},
+            {"name": f"🔗  {t('kace.deploy_ssh')}",    "value": "ssh"},
         ],
         style=custom_style
     ).ask()

@@ -27,6 +27,7 @@ _PATH_KLIPPER     = os.path.expanduser("~/klipper")
 _PATH_MOONRAKER   = os.path.expanduser("~/moonraker")
 _PATH_MAINSAIL    = os.path.expanduser("~/mainsail")
 _PATH_FLUIDD      = os.path.expanduser("~/fluidd")
+_PATH_CROWSNEST   = os.path.expanduser("~/crowsnest")
 
 def get_printer_cfg_path():
     paths = [
@@ -76,6 +77,7 @@ def detect_system_state() -> dict:
     moonraker = os.path.isdir(_PATH_MOONRAKER)  or _service_active("moonraker")
     mainsail  = os.path.isdir(_PATH_MAINSAIL)
     fluidd    = os.path.isdir(_PATH_FLUIDD)
+    crowsnest = os.path.isdir(_PATH_CROWSNEST)  or _service_active("crowsnest")
     has_cfg   = os.path.isfile(_PATH_PRINTER_CFG)
 
     # Reuse the existing MCU detector — returns empty dict on failure.
@@ -94,6 +96,7 @@ def detect_system_state() -> dict:
         "moonraker":   moonraker,
         "mainsail":    mainsail,
         "fluidd":      fluidd,
+        "crowsnest":   crowsnest,
         "printer_cfg": has_cfg,
         "mcu":         mcu,
         "mcu_path":    mcu_path,
@@ -143,6 +146,7 @@ def _render_status_panel(state: dict) -> None:
     print(_row("Moonraker",   state["moonraker"]))
     print(_row("Mainsail",    state["mainsail"]))
     print(_row("Fluidd",      state["fluidd"]))
+    print(_row("Crowsnest",   state.get("crowsnest", False)))
     cfg_ok = state["printer_cfg"]
     print(_row("printer.cfg", cfg_ok))
     print(mcu_line)

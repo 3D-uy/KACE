@@ -286,6 +286,11 @@ UI_STRINGS: dict = {
         "Español":   "Presione Enter para volver al menú...",
         "Português": "Pressione Enter para voltar ao menu...",
     },
+    "dashboard.crowsnest": {
+        "English":   "Crowsnest",
+        "Español":   "Crowsnest",
+        "Português": "Crowsnest",
+    },
     # ── kace.py messages ────────────────────────────────────────
     "kace.cancelled": {
         "English":   "Setup cancelled by user.",
@@ -447,6 +452,36 @@ UI_STRINGS: dict = {
         "English":   "Config:  ",
         "Español":   "Config:  ",
         "Português": "Config:  ",
+    },
+    "summary.generation_details": {
+        "English":   "Generation Details",
+        "Español":   "Detalles de Generación",
+        "Português": "Detalhes de Geração",
+    },
+    "summary.printer_profile": {
+        "English":   "Printer Profile:",
+        "Español":   "Perfil de Impresora:",
+        "Português": "Perfil de Impressora:",
+    },
+    "summary.board_config": {
+        "English":   "Board Config:",
+        "Español":   "Config. de Placa:",
+        "Português": "Config. de Placa:",
+    },
+    "summary.kinematics": {
+        "English":   "Kinematics:",
+        "Español":   "Cinemática:",
+        "Português": "Cinemática:",
+    },
+    "summary.hotend_thermistor": {
+        "English":   "Hotend Thermistor:",
+        "Español":   "Termistor del Hotend:",
+        "Português": "Termistor do Hotend:",
+    },
+    "summary.bed_thermistor": {
+        "English":   "Bed Thermistor:",
+        "Español":   "Termistor de la Cama:",
+        "Português": "Termistor da Mesa:",
     },
     "summary.next_steps": {
         "English":   "Next steps:",
