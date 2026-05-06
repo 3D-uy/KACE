@@ -208,10 +208,11 @@ def run_dashboard(state: dict) -> str:
     # subsequent prompts are in the user's chosen language.
     print_kace_banner("Klipper Automated Configuration Ecosystem")
     _render_status_panel(state)
-    suggestions = get_suggestions(state)
-    _render_suggestions(suggestions)
 
     _select_language()
+
+    suggestions = get_suggestions(state)
+    _render_suggestions(suggestions)
 
     while True:
         # Redraw banner + status on every loop iteration so the screen
