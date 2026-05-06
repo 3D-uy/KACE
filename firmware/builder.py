@@ -53,13 +53,15 @@ def build_firmware_orchestrator(mcu_path=None, derived_mcu=None, hint=None, klip
                "UART" if config_dict.get("CONFIG_SERIAL") == "y" else \
                "SPI" if config_dict.get("CONFIG_SPI") == "y" else "Unknown"
 
+        _SEP = "═" * 47
+
         def _fw_row(label, value):
             pad = " " * max(0, 25 - len(label))
             return f"  {_B}{_C}{label}{_R}{pad}: {_Y}{value}{_R}"
 
-        print(f"\n  {_C}{'\u2550' * 47}{_R}")
+        print(f"\n  {_C}{_SEP}{_R}")
         print(f"  {_B}{_M}  🛠  Klipper Firmware Target Summary{_R}")
-        print(f"  {_C}{'\u2550' * 47}{_R}")
+        print(f"  {_C}{_SEP}{_R}")
         print(_fw_row("Architecture",            arch.upper()))
         print(_fw_row("Processor Model",          model.upper()))
         print(_fw_row("Bootloader Offset",        format_flash(flash)))
@@ -70,7 +72,7 @@ def build_firmware_orchestrator(mcu_path=None, derived_mcu=None, hint=None, klip
             print(_fw_row("Clock Frequency", f"{int(clock)//1000000} MHz"))
 
         print(_fw_row("USB IDs / Serial Path",    mcu_path if mcu_path else "Not Detected"))
-        print(f"  {_C}{'\u2550' * 47}{_R}\n")
+        print(f"  {_C}{_SEP}{_R}\n")
 
         choices = [
             f"🚀  Compile Firmware Now",
