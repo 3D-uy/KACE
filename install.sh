@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # ============================================================
 #  KACE — Klipper Automated Configuration Ecosystem
-#  Install Script v0.1.0-beta
+#  Install Script v0.1.0
 #  Usage: bash <(curl -s https://raw.githubusercontent.com/3D-uy/KACE/main/install.sh)
 # ============================================================
 
@@ -23,7 +23,7 @@ KACE_BIN="/usr/local/bin/kace"
 clear
 BANNER_URL="https://raw.githubusercontent.com/3D-uy/KACE/main/core/banner.py"
 SUBTITLE="KACE Installer"
-VERSION="v0.1.0-beta"
+VERSION="v0.1.0"
 
 if [ -f "core/banner.py" ]; then
     python3 core/banner.py "$SUBTITLE" "$VERSION"

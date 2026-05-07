@@ -110,9 +110,9 @@ UI_STRINGS: dict = {
         "Português": "Selecione o Modo de Comunicação do {driver}:",
     },
     "wizard.z_motors": {
-        "English":   "How many Z motors are you using?",
-        "Español":   "¿Cuántos motores Z está utilizando?",
-        "Português": "Quantos motores Z você está usando?",
+        "English":   "How many Z motor drivers are you using?",
+        "Español":   "¿Cuántos drivers para motores Z está utilizando?",
+        "Português": "Quantos drivers para motores Z você está usando?",
     },
     "wizard.select_web_ui": {
         "English":   "Select your Web Interface (for includes):",
