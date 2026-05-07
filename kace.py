@@ -1,6 +1,16 @@
 #!/usr/bin/env python3
 
-__version__ = "v0.1.0-beta"
+import os as _os
+def _read_version():
+    """Read version from VERSION file (single source of truth)."""
+    try:
+        _vfile = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'VERSION')
+        with open(_vfile, 'r', encoding='utf-8') as _f:
+            return 'v' + _f.read().strip()
+    except Exception:
+        return 'v0.1.0'
+
+__version__ = _read_version()
 
 import os
 import sys
