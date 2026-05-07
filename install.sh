@@ -55,7 +55,8 @@ fi
 
 # ── Step 2: Clone or update KACE repository ──────────────────
 # Runtime files needed on the Pi — docs/assets are excluded from sparse clone
-_SPARSE_DIRS="core firmware data templates kace.py requirements.txt install.sh LICENSE"
+# Root-level files (kace.py, requirements.txt, etc.) are included automatically
+_SPARSE_DIRS="core firmware data templates"
 
 # Check if sparse checkout is supported (requires Git >= 2.25)
 _git_supports_sparse() {
