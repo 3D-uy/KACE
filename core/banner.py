@@ -1,6 +1,6 @@
 import os
 
-def print_kace_banner(subtitle="Klipper Automated Configuration Ecosystem", version="v0.1.0-beta"):
+def print_kace_banner(subtitle="Klipper Automated Configuration Ecosystem", version="v0.1.0"):
     os.system('clear' if os.name == 'posix' else 'cls')
 
     # ANSI Escape Codes
@@ -44,7 +44,7 @@ def print_kace_banner(subtitle="Klipper Automated Configuration Ecosystem", vers
 if __name__ == '__main__':
     import sys
     subtitle = "Klipper Automated Configuration Ecosystem"
-    version = "v0.1.0-beta"
+    version = "v0.1.0"
     if len(sys.argv) > 1:
         subtitle = sys.argv[1]
     if len(sys.argv) > 2:
