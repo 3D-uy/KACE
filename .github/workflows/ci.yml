@@ -33,12 +33,12 @@ jobs:
             -not -path "./__pycache__/*" \
             -not -path "./.git/*" \
             | sort \
-            | xargs python -m py_compile
+            | xargs python3 -m py_compile
           echo "All Python files passed syntax check."
 
-  # ── Stage 2: Unit + regression tests ────────────────────────────────────────
+  # ── Stage 2: Unit tests ──────────────────────────────────────────────────────
   unit-tests:
-    name: Unit & Regression Tests
+    name: Unit Tests
     runs-on: ubuntu-latest
     needs: lint
     steps:
@@ -53,7 +53,7 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Run full test suite
+      - name: Run unit tests
         run: python3 tests/run_tests.py --verbose
 
   # ── Stage 3: YAML integrity ──────────────────────────────────────────────────
@@ -95,15 +95,22 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Run snapshot regression tests
-        run: python3 tests/run_tests.py --verbose
+        # KACE_UPDATE_SNAPSHOTS must never be set in CI.
+        # Any mismatch between generated output and the golden fixture is a
+        # hard failure — this is the primary merge protection gate.
+        run: |
+          unset KACE_UPDATE_SNAPSHOTS
+          python3 tests/run_tests.py --verbose
         env:
-          # Ensure snapshots are never auto-updated in CI
-          KACE_UPDATE_SNAPSHOTS: "0"
+          KACE_UPDATE_SNAPSHOTS: ""
 
   # ── Stage 5: Full Klipper sweep (main only) ──────────────────────────────────
-  # Skipped on PRs to keep contributor iteration fast.
-  # Runs automatically on every merge/push to main.
-  # To run manually on a PR, use workflow_dispatch (future enhancement).
+  # Skipped on PRs — runs only on push/merge to main.
+  # This keeps contributor PRs fast while guaranteeing full upstream
+  # compatibility validation on every commit that lands on main.
+  #
+  # Future: add workflow_dispatch to allow maintainers to trigger the sweep
+  # manually on selected PRs (e.g. when touching parser/template logic).
   full-klipper-sweep:
     name: Full Klipper Config Sweep (192+ configs)
     runs-on: ubuntu-latest
@@ -121,7 +128,7 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Configure git for sparse checkout
+      - name: Configure git identity (required for sparse clone)
         run: |
           git config --global user.email "ci@kace"
           git config --global user.name "KACE CI"
