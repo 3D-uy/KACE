@@ -1,4 +1,5 @@
 import sys
+import os
 import questionary
 from .scraper import fetch_config_list, fetch_raw_config, parse_config, extract_profile_defaults
 from firmware.detector import discover_mcu_hardware
@@ -15,23 +16,53 @@ def _back_choice():
 def _quit_choice():
     return {"name": t("choice.quit"), "value": _QUIT}
 
-MCU_SEARCH_TERMS = {
-    "lpc1769": ["skr-v1.4", "skr-v1.3", "sgen-l"],
-    "lpc1768": ["mks-sgenl", "sbase"],
-    "stm32f103": ["creality-v4.2.2", "creality-v4.2.7", "skr-mini-e3"],
-    "stm32f407": ["mks-robin-nano-v3", "skr-pro"],
-    "stm32f429": ["skr-2", "octopus-pro-v1.0"],
-    "stm32f446": ["octopus", "spider"],
-    "stm32g0b1": ["manta", "skr-mini-e3-v3.0"],
-    "stm32h723": ["octopus-max-ez"],
-    "stm32f042": ["cheetah-v2.0"],
-    "rp2040": ["skr-pico"],
+
+# ── Hardware database ──────────────────────────────────────────────────────────
+# Loaded from data/boards.yaml. The hardcoded dict below is the fallback used
+# when the YAML file is missing (e.g., partial clone) or cannot be parsed.
+
+_MCU_SEARCH_TERMS_FALLBACK = {
+    "lpc1769":    ["skr-v1.4", "skr-v1.3", "sgen-l"],
+    "lpc1768":    ["mks-sgenl", "sbase"],
+    "stm32f103":  ["creality-v4.2.2", "creality-v4.2.7", "skr-mini-e3"],
+    "stm32f407":  ["mks-robin-nano-v3", "skr-pro"],
+    "stm32f429":  ["skr-2", "octopus-pro-v1.0"],
+    "stm32f446":  ["octopus", "spider"],
+    "stm32g0b1":  ["manta", "skr-mini-e3-v3.0"],
+    "stm32h723":  ["octopus-max-ez"],
+    "stm32f042":  ["cheetah-v2.0"],
+    "rp2040":     ["skr-pico"],
     "atmega2560": ["ramps", "mega2560"],
-    "atmega1284p": ["melzi"],
-    "at90usb1286": ["printrboard"],
-    "sam4e8e": ["duet2"],
-    "samd51": ["duet3-mini"]
+    "atmega1284p":["melzi"],
+    "at90usb1286":["printrboard"],
+    "sam4e8e":    ["duet2"],
+    "samd51":     ["duet3-mini"],
 }
+
+def _load_mcu_search_terms() -> dict:
+    """Load MCU → board search terms from data/boards.yaml.
+
+    Falls back to the hardcoded dict above if the file is missing
+    or cannot be parsed — guarantees zero regression risk.
+    """
+    try:
+        import yaml
+        _db_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'boards.yaml')
+        _db_path = os.path.normpath(_db_path)
+        with open(_db_path, 'r', encoding='utf-8') as f:
+            db = yaml.safe_load(f)
+        result = {}
+        for entry in db.get('boards', []):
+            mcu = entry.get('mcu')
+            terms = entry.get('search_terms', [])
+            if mcu and terms:
+                result[mcu] = terms
+        return result if result else _MCU_SEARCH_TERMS_FALLBACK
+    except Exception:
+        return _MCU_SEARCH_TERMS_FALLBACK
+
+MCU_SEARCH_TERMS = _load_mcu_search_terms()
+
 
 def discover_mcu():
     """Milestone 3: Auto-Discovery of MCU"""

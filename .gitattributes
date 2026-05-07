@@ -1,0 +1,41 @@
+# ============================================================
+#  KACE — .gitattributes
+#  Controls export behavior and language detection for GitHub.
+# ============================================================
+
+# ── Line endings ─────────────────────────────────────────────
+# Normalize line endings to LF in the repository (checkout as-is)
+* text=auto
+
+# Force LF for shell scripts (must not have CRLF on Linux/Pi)
+*.sh text eol=lf
+*.py text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.cfg text eol=lf
+*.j2 text eol=lf
+*.md text eol=lf
+
+# ── Binary files ─────────────────────────────────────────────
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.bin binary
+
+# ── Export ignore (git archive / release tarballs) ───────────
+# These paths are excluded from `git archive` exports and
+# future release bundles. They are NOT needed at runtime on Pi.
+docs/           export-ignore
+docs/assets/    export-ignore
+docs/en/        export-ignore
+docs/es/        export-ignore
+docs/pt/        export-ignore
+*.png           export-ignore
+
+# ── GitHub linguist overrides ─────────────────────────────────
+# Don't count docs/templates in language stats
+docs/           linguist-documentation
+templates/      linguist-documentation
+*.j2            linguist-language=Jinja2

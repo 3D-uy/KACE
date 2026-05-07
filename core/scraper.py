@@ -4,6 +4,47 @@ import re
 import os
 import time
 
+# ── Modular BLTouch database ───────────────────────────────────────────────────
+# Loaded from data/boards.yaml. Hardcoded dict is the fallback when YAML is
+# missing (e.g., older installs or partial clones).
+
+_BLTOUCH_FALLBACK = {
+    "skr-v1.4":         {"sensor_pin": "^P0.10",  "control_pin": "P2.0"},
+    "skr-v1.3":         {"sensor_pin": "^P1.27",  "control_pin": "P2.0"},
+    "skr-mini-e3-v2.0": {"sensor_pin": "^PC14",   "control_pin": "PA1"},
+    "skr-mini-e3-v3.0": {"sensor_pin": "^PC14",   "control_pin": "PA1"},
+    "creality-v4.2.2":  {"sensor_pin": "^PB1",    "control_pin": "PB0"},
+    "creality-v4.2.7":  {"sensor_pin": "^PB1",    "control_pin": "PB0"},
+    "mks-gen-l":        {"sensor_pin": "^D18",    "control_pin": "D11"},
+    "mks-sgen-l":       {"sensor_pin": "^P1.27",  "control_pin": "P2.0"},
+    "mks-robin-nano":   {"sensor_pin": "^PA11",   "control_pin": "PA8"},
+}
+
+def _load_bltouch_db() -> dict:
+    """Load BLTouch pin overrides from data/boards.yaml.
+
+    Returns a flat dict mapping board-filename-fragment → {sensor_pin, control_pin}.
+    Falls back to the hardcoded dict if the file is missing or unreadable.
+    """
+    try:
+        import yaml
+        _db_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'boards.yaml')
+        _db_path = os.path.normpath(_db_path)
+        with open(_db_path, 'r', encoding='utf-8') as f:
+            db = yaml.safe_load(f)
+        result = {}
+        for entry in db.get('boards', []):
+            for board_key, pins in entry.get('bltouch', {}).items():
+                if pins:
+                    result[board_key] = pins
+        return result if result else _BLTOUCH_FALLBACK
+    except Exception:
+        return _BLTOUCH_FALLBACK
+
+# Module-level cache — loaded once per process
+_BLTOUCH_DB = _load_bltouch_db()
+
+
 def fetch_config_list():
     """Fetches the list of generic and printer configs from Klipper GitHub."""
     cache_file = os.path.expanduser("~/.kace_boards_cache.json")
@@ -175,36 +216,21 @@ def parse_config(raw_cfg, filename=""):
                 if clean_val:
                     data[current_section][last_key] += '\n    ' + clean_val
                 
-    # Inject known BLTouch pins for popular boards if missing
+    # Inject known BLTouch pins for boards that don't define them in their cfg.
+    # Pin data is loaded from data/boards.yaml (_BLTOUCH_DB) with a hardcoded
+    # fallback — so this works even without the YAML file present.
     if "bltouch" not in data:
         data["bltouch"] = {}
-        
+
     fname = filename.lower()
-    if "skr-v1.4" in fname:
-        if "sensor_pin" not in data["bltouch"]: data["bltouch"]["sensor_pin"] = "^P0.10"
-        if "control_pin" not in data["bltouch"]: data["bltouch"]["control_pin"] = "P2.0"
-    elif "skr-v1.3" in fname:
-        if "sensor_pin" not in data["bltouch"]: data["bltouch"]["sensor_pin"] = "^P1.27"
-        if "control_pin" not in data["bltouch"]: data["bltouch"]["control_pin"] = "P2.0"
-    elif "skr-mini-e3-v2.0" in fname:
-        if "sensor_pin" not in data["bltouch"]: data["bltouch"]["sensor_pin"] = "^PC14"
-        if "control_pin" not in data["bltouch"]: data["bltouch"]["control_pin"] = "PA1"
-    elif "skr-mini-e3-v3.0" in fname:
-        if "sensor_pin" not in data["bltouch"]: data["bltouch"]["sensor_pin"] = "^PC14"
-        if "control_pin" not in data["bltouch"]: data["bltouch"]["control_pin"] = "PA1"
-    elif "creality-v4.2.2" in fname or "creality-v4.2.7" in fname:
-        if "sensor_pin" not in data["bltouch"]: data["bltouch"]["sensor_pin"] = "^PB1"
-        if "control_pin" not in data["bltouch"]: data["bltouch"]["control_pin"] = "PB0"
-    elif "mks-gen-l" in fname:
-        if "sensor_pin" not in data["bltouch"]: data["bltouch"]["sensor_pin"] = "^D18"
-        if "control_pin" not in data["bltouch"]: data["bltouch"]["control_pin"] = "D11"
-    elif "mks-sgen-l" in fname:
-        if "sensor_pin" not in data["bltouch"]: data["bltouch"]["sensor_pin"] = "^P1.27"
-        if "control_pin" not in data["bltouch"]: data["bltouch"]["control_pin"] = "P2.0"
-    elif "mks-robin-nano" in fname:
-        if "sensor_pin" not in data["bltouch"]: data["bltouch"]["sensor_pin"] = "^PA11"
-        if "control_pin" not in data["bltouch"]: data["bltouch"]["control_pin"] = "PA8"
-        
+    for board_key, pins in _BLTOUCH_DB.items():
+        if board_key in fname:
+            if "sensor_pin" not in data["bltouch"]:
+                data["bltouch"]["sensor_pin"] = pins["sensor_pin"]
+            if "control_pin" not in data["bltouch"]:
+                data["bltouch"]["control_pin"] = pins["control_pin"]
+            break  # first match wins — most specific keys should come first in YAML
+
     return data
 
 def extract_profile_defaults(parsed_data):

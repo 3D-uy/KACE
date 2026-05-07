@@ -1,37 +1,87 @@
-import paramiko
 import os
 import shutil
 import subprocess
+import sys
+
+# paramiko is an optional dependency — only needed for SSH deployment.
+# It is imported lazily here so users who never use SSH deploy do not
+# pay the install cost. On first SSH use, KACE will install it
+# automatically via pip if it is not already present.
+
+
+def _require_paramiko():
+    """Return the paramiko module, installing it on-demand if needed."""
+    try:
+        import paramiko  # noqa: PLC0415
+        return paramiko
+    except ImportError:
+        print("\n\033[96m[SSH Deployment]\033[0m")
+        print("\033[93m[*] SSH support requires the 'paramiko' library.\033[0m")
+        print("\033[93m[*] Downloading and installing (this may take a moment)...\033[0m")
+        try:
+            # Use check_output instead of check_call to capture errors silently on success,
+            # but show them on failure.
+            subprocess.check_output(
+                [sys.executable, "-m", "pip", "install", "paramiko==3.4.0", "--break-system-packages"],
+                stderr=subprocess.STDOUT
+            )
+            import paramiko  # noqa: PLC0415
+            print("\033[92m[✔] paramiko installed successfully.\033[0m\n")
+            return paramiko
+        except subprocess.CalledProcessError as e:
+            output = e.output.decode('utf-8', errors='ignore') if e.output else ""
+            print(f"\n\033[91m[!] ERROR: Failed to install paramiko automatically.\033[0m")
+            if "SSL" in output or "certificate" in output:
+                print("\033[93m    System time might be out of sync, causing SSL certificate validation to fail.\033[0m")
+            elif "NewConnectionError" in output or "Network is unreachable" in output:
+                print("\033[93m    Network unreachable. Please check your internet connection.\033[0m")
+            else:
+                print(f"\033[93m    Pip error output:\n    {output.strip()}\033[0m")
+                
+            print("\n\033[96mTo use SSH deployment, please install it manually:\033[0m")
+            print("    pip3 install paramiko==3.4.0 --break-system-packages")
+            print("\033[96mContinuing without SSH support...\033[0m\n")
+            return None
+        except Exception as e:
+            print(f"\n\033[91m[!] Unexpected error installing paramiko: {e}\033[0m")
+            print("\033[96mContinuing without SSH support...\033[0m\n")
+            return None
+
 
 def deploy_config(user_data):
     """Deploys the generated printer.cfg to the Klipper host via SSH/SCP."""
+    paramiko = _require_paramiko()
+    if paramiko is None:
+        return  # error already printed by _require_paramiko
+
     try:
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        
+
         print(f"Connecting to {user_data['host']}...")
         ssh.connect(
-            user_data['host'], 
-            username=user_data['user'], 
+            user_data['host'],
+            username=user_data['user'],
             password=user_data['password']
         )
-        
+
         sftp = ssh.open_sftp()
-        
+
         # Expand user path (e.g., ~) if necessary
         dest = user_data['dest_path']
         if dest.startswith('~/'):
             # Simple expansion for common Klipper setups
             dest = dest.replace('~/', f"/home/{user_data['user']}/")
-            
+
         print(f"Uploading printer.cfg to {dest}...")
         cfg_path = os.path.expanduser('~/kace/printer.cfg')
         sftp.put(cfg_path, dest)
-        
+
         sftp.close()
         ssh.close()
     except Exception as e:
         print(f"\033[91mDeployment failed: {e}\033[0m")
+
 
 def deploy_usb(user_data, artifact_type="all"):
     """Deploys the generated artifact(s) to a USB/SD card."""

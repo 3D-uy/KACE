@@ -6,7 +6,7 @@ from core.translations import translate_comment, get_lang
 _BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 _TEMPLATES_DIR = os.path.join(_BASE_DIR, 'templates')
 
-def generate_config(parsed_data, user_data):
+def generate_config(parsed_data, user_data, output_path=None):
     """Milestone 2: Jinja2 Template Rendering"""
     # Setup Jinja2 environment
     env = Environment(loader=FileSystemLoader(_TEMPLATES_DIR, encoding='utf-8'))
@@ -81,10 +81,14 @@ def generate_config(parsed_data, user_data):
         sys.exit(1)
         
     # Write to printer.cfg
-    output_path = os.path.expanduser('~/kace')
-    os.makedirs(output_path, exist_ok=True)
-    
-    cfg_file = os.path.join(output_path, 'printer.cfg')
+    if not output_path:
+        base_path = os.path.expanduser('~/kace')
+        os.makedirs(base_path, exist_ok=True)
+        cfg_file = os.path.join(base_path, 'printer.cfg')
+    else:
+        os.makedirs(os.path.dirname(output_path), exist_ok=True)
+        cfg_file = output_path
+        
     with open(cfg_file, 'w', encoding='utf-8') as f:
         f.write(final_output)
 

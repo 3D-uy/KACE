@@ -1,0 +1,254 @@
+# ============================================================
+#  KACE — Modular Hardware Database
+#  data/boards.yaml
+#
+#  This file centralises board-specific data that was previously
+#  hardcoded across wizard.py and scraper.py.
+#
+#  boards[].mcu          : MCU chip prefix (matches firmware/detector.py output)
+#  boards[].search_terms : substrings matched against Klipper config filenames
+#  boards[].bltouch      : map of board-filename-fragment → BLTouch pin overrides
+#  boards[].features     : (Future) hardware capabilities (e.g. uart, sensorless)
+#
+#  Adding a new board: add an entry to the appropriate mcu block's
+#  search_terms list, and optionally add its bltouch/features.
+#  No Python changes required.
+# ============================================================
+
+boards:
+
+  - mcu: lpc1769
+    search_terms:
+      - skr-v1.4
+      - skr-v1.3
+      - sgen-l
+    bltouch:
+      skr-v1.4:
+        sensor_pin: "^P0.10"
+        control_pin: "P2.0"
+      skr-v1.3:
+        sensor_pin: "^P1.27"
+        control_pin: "P2.0"
+    features:
+      uart: true
+      sensorless: true
+      input_shaper: false
+
+  - mcu: lpc1768
+    search_terms:
+      - mks-sgenl
+      - sbase
+    bltouch: {}
+
+  - mcu: stm32f103
+    search_terms:
+      - creality-v4.2.2
+      - creality-v4.2.7
+      - skr-mini-e3
+    bltouch:
+      skr-mini-e3-v2.0:
+        sensor_pin: "^PC14"
+        control_pin: "PA1"
+      skr-mini-e3-v3.0:
+        sensor_pin: "^PC14"
+        control_pin: "PA1"
+      creality-v4.2.2:
+        sensor_pin: "^PB1"
+        control_pin: "PB0"
+      creality-v4.2.7:
+        sensor_pin: "^PB1"
+        control_pin: "PB0"
+
+  - mcu: stm32f407
+    search_terms:
+      - mks-robin-nano-v3
+      - skr-pro
+    bltouch:
+      mks-robin-nano:
+        sensor_pin: "^PA11"
+        control_pin: "PA8"
+
+  - mcu: stm32f429
+    search_terms:
+      - skr-2
+      - octopus-pro-v1.0
+    bltouch: {}
+
+  - mcu: stm32f446
+    search_terms:
+      - octopus
+      - spider
+    bltouch: {}
+
+  - mcu: stm32g0b1
+    search_terms:
+      - manta
+      - skr-mini-e3-v3.0
+    bltouch: {}
+
+  - mcu: stm32h723
+    search_terms:
+      - octopus-max-ez
+    bltouch: {}
+
+  - mcu: stm32f042
+    search_terms:
+      - cheetah-v2.0
+    bltouch: {}
+
+  - mcu: rp2040
+    search_terms:
+      - skr-pico
+    bltouch: {}
+
+  - mcu: atmega2560
+    search_terms:
+      - ramps
+      - mega2560
+    bltouch: {}
+
+  - mcu: atmega1284p
+    search_terms:
+      - melzi
+    bltouch: {}
+
+  - mcu: at90usb1286
+    search_terms:
+      - printrboard
+    bltouch: {}
+
+  - mcu: sam4e8e
+    search_terms:
+      - duet2
+    bltouch: {}
+
+  - mcu: samd51
+    search_terms:
+      - duet3-mini
+    bltouch: {}
+
+  - mcu: mks-sgen-l
+    search_terms:
+      - mks-sgen-l
+    bltouch:
+      mks-sgen-l:
+        sensor_pin: "^P1.27"
+        control_pin: "P2.0"
+
+  - mcu: mks-gen-l
+    search_terms:
+      - mks-gen-l
+    bltouch:
+      mks-gen-l:
+        sensor_pin: "^D18"
+        control_pin: "D11"
+
+# ============================================================
+#  MCU Firmware Configuration Database
+#
+#  Used by firmware/derivation.py to determine the Kconfig
+#  parameters for each MCU family.
+#
+#  Fields:
+#    pattern      : substring matched against the detected MCU string (lowercase)
+#                   Order matters: most specific patterns MUST come before generic ones.
+#    arch         : value for CONFIG_MCU (the Klipper architecture string)
+#    mach         : CONFIG_MACH_{mach} key suffix (omit for AVR/RP2040)
+#    flash_start  : CONFIG_FLASH_START hex value; null = ambiguous, prompt user
+#    clock_freq   : CONFIG_CLOCK_FREQ value in Hz (optional)
+#    set_mcu_flag : if true, also sets CONFIG_MCU_{detected_mcu.upper()} = y
+#    extra_flag   : additional CONFIG_* key to set to "y" (optional)
+#    early_return : if true, return immediately after arch (no interface config)
+# ============================================================
+
+mcu_firmware:
+
+  # ── STM32 variants ─────────────────────────────────────────
+  # stm32f103 must come before stm32f1 (more specific)
+  - pattern: "stm32f103"
+    arch: stm32
+    mach: STM32
+    flash_start: "0x7000"
+    set_mcu_flag: true
+
+  - pattern: "stm32f1"
+    arch: stm32
+    mach: STM32
+    flash_start: "0x0"
+    set_mcu_flag: true
+
+  - pattern: "stm32f4"
+    arch: stm32
+    mach: STM32
+    flash_start: "0x8000"
+    set_mcu_flag: true
+
+  - pattern: "stm32h7"
+    arch: stm32
+    mach: STM32
+    flash_start: "0x20000"
+    set_mcu_flag: true
+
+  - pattern: "stm32g0b"
+    arch: stm32
+    mach: STM32
+    flash_start: "0x2000"
+    set_mcu_flag: true
+
+  # Generic STM32 fallback — bootloader offset is ambiguous, wizard will prompt
+  - pattern: "stm32"
+    arch: stm32
+    mach: STM32
+    flash_start: null
+    set_mcu_flag: true
+
+  # ── LPC176x ────────────────────────────────────────────────
+  # lpc1769/lpc1768 must come before lpc176 (more specific)
+  - pattern: "lpc1769"
+    arch: lpc176x
+    mach: LPC176X
+    flash_start: "0x4000"
+    clock_freq: 120000000
+    set_mcu_flag: true
+
+  - pattern: "lpc1768"
+    arch: lpc176x
+    mach: LPC176X
+    flash_start: "0x4000"
+    clock_freq: 100000000
+    set_mcu_flag: true
+
+  - pattern: "lpc176"
+    arch: lpc176x
+    mach: LPC176X
+    flash_start: "0x4000"
+    set_mcu_flag: true
+
+  # ── RP2040 ─────────────────────────────────────────────────
+  - pattern: "rp2040"
+    arch: rp2040
+    mach: RP2040
+
+  # ── AVR ────────────────────────────────────────────────────
+  # atmega2560 must come before atmega (more specific)
+  - pattern: "atmega2560"
+    arch: avr
+    mach: AVR
+    extra_flag: "CONFIG_MCU_ATMEGA2560"
+
+  - pattern: "atmega"
+    arch: avr
+    mach: AVR
+
+  - pattern: "avr"
+    arch: avr
+    mach: AVR
+
+  # ── Linux host MCU ─────────────────────────────────────────
+  - pattern: "linux"
+    arch: linux
+    early_return: true
+
+  - pattern: "host"
+    arch: linux
+    early_return: true
