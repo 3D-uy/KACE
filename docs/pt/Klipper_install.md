@@ -9,7 +9,7 @@
 <p align="center">
 
 🌐 **Idioma**  
-🇺🇸 <a href="../en/Klipper_install.md">English</a> | 🇪🇸 <a href="../es/klipper_install.md">Español</a> | 🇧🇷 Português
+🇺🇸 <a href="../en/Klipper_install.md">English</a> | 🇪🇸 <a href="../es/Klipper_install.md">Español</a> | 🇧🇷 Português
 
 </p>
 
@@ -45,7 +45,7 @@ Usaremos o **Raspberry Pi Imager**, a ferramenta oficial.
 
   Site oficial https://www.raspberrypi.com/software/
 
-Guia para instalar o **Raspberry Pi Imager** <a href="pi_imager.md">pi_imager</a>
+[Guia para instalar o **Raspberry Pi Imager**](pi_imager.md)
 
 O programa irá baixar a imagem e gravá-la automaticamente.
 
@@ -71,8 +71,9 @@ O programa irá baixar a imagem e gravá-la automaticamente.
 
 ### Abrir o navegador e acessar:
 ```
-klipper.local
+mainsail.local
 ```
+*(Ou o hostname personalizado que você configurou no Raspberry Pi Imager)*
 Se abrir o Mainsail → perfeito.
 
 ---
@@ -83,15 +84,17 @@ Se abrir o Mainsail → perfeito.
 
 Remote host:
 ```
-klipper.local
+mainsail.local
 ```
+*(Ou o hostname personalizado que você configurou no Raspberry Pi Imager)*
+
 Username:
 ```
-pi
+(O usuário que você criou no Pi Imager)
 ```
 Password:
 ```
-raspberry
+(A senha que você criou no Pi Imager)
 ```
 ## Se entrar → estamos dentro da Raspberry.
 
