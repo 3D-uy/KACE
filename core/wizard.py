@@ -65,7 +65,7 @@ MCU_SEARCH_TERMS = _load_mcu_search_terms()
 
 
 def discover_mcu():
-    """Milestone 3: Auto-Discovery of MCU"""
+    """Detect and return connected MCU hardware."""
     return discover_mcu_hardware()
 
 def run_wizard():

@@ -138,7 +138,7 @@ def main():
         if _action == "quit":
             sys.exit(0)
     
-    # Milestone 3 & 4: Interactive Wizard
+    # Interactive Wizard
     try:
         user_data = run_wizard()
     except (KeyboardInterrupt, EOFError):

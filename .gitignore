@@ -84,3 +84,6 @@ docs/PRD.md
 # Test results
 tests/results/
 tests/results_profiles/
+
+# Dev scratch directory — not part of the public project
+scratch/

@@ -7,7 +7,7 @@ _BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 _TEMPLATES_DIR = os.path.join(_BASE_DIR, 'templates')
 
 def generate_config(parsed_data, user_data, output_path=None):
-    """Milestone 2: Jinja2 Template Rendering"""
+    """Generate printer.cfg from parsed config and user data using Jinja2."""
     # Setup Jinja2 environment
     env = Environment(loader=FileSystemLoader(_TEMPLATES_DIR, encoding='utf-8'))
     template = env.get_template('printer.cfg.j2')
