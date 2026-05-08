@@ -22,11 +22,8 @@ gcode:
 [gcode_macro TEST_MOVEMENT]
 description: {t('macro.test_movement.desc')}
 gcode:
-    G28
     G90
-    G1 X50 Y50 Z50 F3000
-    G1 X100 Y100 F3000
-    G1 X50 Y50 F3000
+    G1 X20 Y20 Z20 F3000
 
 # {t('macro.test_extruder.desc')}
 [gcode_macro TEST_EXTRUDER]
@@ -81,24 +78,6 @@ gcode:
     G1 E-50 F300
     G90
 
-# {t('macro.print_start.desc')}
-[gcode_macro PRINT_START]
-description: {t('macro.print_start.desc')}
-gcode:
-    G28
-    G90
-
-# {t('macro.print_end.desc')}
-[gcode_macro PRINT_END]
-description: {t('macro.print_end.desc')}
-gcode:
-    G91
-    G1 Z10 F3000
-    G90
-    G28 X Y
-    M104 S0
-    M140 S0
-    M84
 """
     
     os.makedirs(output_dir, exist_ok=True)
