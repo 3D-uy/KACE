@@ -70,7 +70,8 @@ _git_supports_sparse() {
 echo -e "${C}[2/5]${R} Syncing KACE repository..."
 if [ -d "$INSTALL_DIR/.git" ]; then
     echo -e "  Existing installation found — updating..."
-    git -C "$INSTALL_DIR" pull --depth=1 --quiet
+    git -C "$INSTALL_DIR" fetch origin main --depth=1 --quiet
+    git -C "$INSTALL_DIR" reset --hard FETCH_HEAD --quiet
     echo -e "${G}  ✔ Repository updated${R}"
 else
     echo -e "  Cloning KACE into ${Y}${INSTALL_DIR}${R}..."
