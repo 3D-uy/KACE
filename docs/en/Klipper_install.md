@@ -71,7 +71,7 @@ The program will download the image and flash it automatically.
 
 ### Open your browser and go to:
 ```
-mainsail.local
+klipper.local
 ```
 *(Or the custom hostname you set in Raspberry Pi Imager)*
 If Mainsail opens → perfect.
@@ -84,17 +84,17 @@ If Mainsail opens → perfect.
 
 Remote host:
 ```
-mainsail.local
+klipper.local
 ```
 *(Or the custom hostname you set in Raspberry Pi Imager)*
 
-Username:
+Username: (The username you created in Pi Imager)
 ```
-(The username you created in Pi Imager)
+pi
 ```
-Password:
+Password: (The password you created in Pi Imager)
 ```
-(The password you created in Pi Imager)
+raspberry
 ```
 ## If you can log in → you are inside the Raspberry.
 

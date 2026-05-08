@@ -72,7 +72,7 @@ El programa descargará la imagen y la grabará automáticamente.
 
 ### Abrir el navegador y entrar en:
 ```
-mainsail.local
+klipper.local
 ```
 *(O el hostname personalizado que configuraste en Raspberry Pi Imager)*
 Si abre Mainsail → perfecto.
@@ -85,17 +85,17 @@ Si abre Mainsail → perfecto.
 
 Remote host:
 ```
-mainsail.local
+klipper.local
 ```
 *(O el hostname personalizado que configuraste en Raspberry Pi Imager)*
 
-Username:
+Username: (El usuario que creaste en Pi Imager)
 ```
-(El usuario que creaste en Pi Imager)
+pi
 ```
-Password:
+Password: (La contraseña que creaste en Pi Imager)
 ```
-(La contraseña que creaste en Pi Imager)
+raspberry
 ```
 ## Si entra → estamos dentro de la Raspberry.
 
