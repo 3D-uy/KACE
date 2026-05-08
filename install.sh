@@ -120,4 +120,6 @@ echo -e "  ${G}═════════════════════�
 echo ""
 echo -e "  ${C}Launching KACE...${R}"
 sleep 1
+# Reconnect stdin to the terminal so interactive prompts (questionary) work
+exec < /dev/tty || true
 cd "$INSTALL_DIR" && python3 kace.py
