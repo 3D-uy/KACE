@@ -342,6 +342,16 @@ UI_STRINGS: dict = {
         "Español":   "Seleccione el Método de Despliegue de la Configuración (printer.cfg):",
         "Português": "Selecione o Método de Deploy da Configuração (printer.cfg):",
     },
+    "kace.generate_guide_prompt": {
+        "English":   "Would you like to generate a post-install calibration and first-steps guide?",
+        "Español":   "¿Desea generar una guía de primeros pasos y calibración post-instalación?",
+        "Português": "Deseja gerar um guia de primeiros passos e calibração pós-instalação?",
+    },
+    "kace.guide_success": {
+        "English":   "Post-install guide generated at {path}",
+        "Español":   "Guía post-instalación generada en {path}",
+        "Português": "Guia pós-instalação gerado em {path}",
+    },
     "kace.deploy_none": {
         "English":   "None (Done)",
         "Español":   "Ninguno (Listo)",

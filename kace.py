@@ -82,7 +82,7 @@ from core.generator import generate_config
 from core.deployer import deploy_config, deploy_usb, deploy_local, deploy_avrdude
 from core.banner import print_kace_banner
 from core.translations import t
-
+from core.guide_generator import generate_first_steps_guide
 
 def print_summary(user_data: dict):
     """Print final summary with output paths and next steps."""
@@ -333,6 +333,16 @@ def main():
         user_data['dest_path'] = questionary.text(t("kace.ssh_dest_prompt"), default="~/printer_data/config/", style=custom_style).ask()
         if user_data['host'] and user_data['user'] and user_data['dest_path']:
             deploy_config(user_data)
+
+    generate_guide = questionary.confirm(
+        f"\n{t('kace.generate_guide_prompt')}",
+        default=True,
+        style=custom_style
+    ).ask()
+
+    if generate_guide:
+        guide_path = generate_first_steps_guide()
+        print(f"\n\033[92mSUCCESS:\033[0m {t('kace.guide_success', path=guide_path)}")
 
     time.sleep(0.5)
     print_summary(user_data)
