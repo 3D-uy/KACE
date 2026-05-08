@@ -342,15 +342,10 @@ UI_STRINGS: dict = {
         "Español":   "Seleccione el Método de Despliegue de la Configuración (printer.cfg):",
         "Português": "Selecione o Método de Deploy da Configuração (printer.cfg):",
     },
-    "kace.generate_guide_prompt": {
-        "English":   "Would you like to generate a post-install calibration and first-steps guide?",
-        "Español":   "¿Desea generar una guía de primeros pasos y calibración post-instalación?",
-        "Português": "Deseja gerar um guia de primeiros passos e calibração pós-instalação?",
-    },
-    "kace.guide_success": {
-        "English":   "Post-install guide generated at {path}",
-        "Español":   "Guía post-instalación generada en {path}",
-        "Português": "Guia pós-instalação gerado em {path}",
+    "kace.generate_macros_prompt": {
+        "English":   "Would you like to generate a starter macros configuration (macros.cfg)?",
+        "Español":   "¿Desea generar una configuración de macros iniciales (macros.cfg)?",
+        "Português": "Deseja gerar uma configuração de macros iniciais (macros.cfg)?",
     },
     "kace.deploy_none": {
         "English":   "None (Done)",
@@ -693,6 +688,67 @@ UI_STRINGS: dict = {
         "English":   "An unexpected error occurred during build: {error}",
         "Español":   "Ocurrió un error inesperado durante la compilación: {error}",
         "Português": "Ocorreu um erro inesperado durante a compilação: {error}",
+    },
+    # ── Macros strings ──────────────────────────────────────────
+    "macro.pid_hotend.desc": {
+        "English":   "PID Calibration for the hotend",
+        "Español":   "Calibración PID para el hotend",
+        "Português": "Calibração PID para o hotend",
+    },
+    "macro.pid_bed.desc": {
+        "English":   "PID Calibration for the bed",
+        "Español":   "Calibración PID para la cama",
+        "Português": "Calibração PID para a mesa",
+    },
+    "macro.test_movement.desc": {
+        "English":   "Test X and Y movement",
+        "Español":   "Probar el movimiento en X e Y",
+        "Português": "Testar o movimento em X e Y",
+    },
+    "macro.test_extruder.desc": {
+        "English":   "Test extruder movement (hotend must be hot)",
+        "Español":   "Probar el movimiento del extrusor (el hotend debe estar caliente)",
+        "Português": "Testar o movimento da extrusora (o hotend deve estar quente)",
+    },
+    "macro.preheat_pla.desc": {
+        "English":   "Preheat for PLA",
+        "Español":   "Precalentar para PLA",
+        "Português": "Preaquecer para PLA",
+    },
+    "macro.preheat_petg.desc": {
+        "English":   "Preheat for PETG",
+        "Español":   "Precalentar para PETG",
+        "Português": "Preaquecer para PETG",
+    },
+    "macro.home_and_center.desc": {
+        "English":   "Home all axes and center the toolhead",
+        "Español":   "Hacer home en todos los ejes y centrar el cabezal",
+        "Português": "Fazer home em todos os eixos e centralizar o cabeçote",
+    },
+    "macro.park_head.desc": {
+        "English":   "Park the toolhead",
+        "Español":   "Estacionar el cabezal",
+        "Português": "Estacionar o cabeçote",
+    },
+    "macro.load_filament.desc": {
+        "English":   "Load filament",
+        "Español":   "Cargar filamento",
+        "Português": "Carregar filamento",
+    },
+    "macro.unload_filament.desc": {
+        "English":   "Unload filament",
+        "Español":   "Descargar filamento",
+        "Português": "Descarregar filamento",
+    },
+    "macro.print_start.desc": {
+        "English":   "Start print procedure",
+        "Español":   "Iniciar procedimiento de impresión",
+        "Português": "Iniciar procedimento de impressão",
+    },
+    "macro.print_end.desc": {
+        "English":   "End print procedure",
+        "Español":   "Finalizar procedimiento de impresión",
+        "Português": "Finalizar procedimento de impressão",
     },
 }
 

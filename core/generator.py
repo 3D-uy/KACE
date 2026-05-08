@@ -1,12 +1,13 @@
 import os
 from jinja2 import Environment, FileSystemLoader
 from core.translations import translate_comment, get_lang
+from core.macro_generator import generate_starter_macros
 
 # Resolve templates directory relative to this file's location, not the CWD
 _BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 _TEMPLATES_DIR = os.path.join(_BASE_DIR, 'templates')
 
-def generate_config(parsed_data, user_data, output_path=None):
+def generate_config(parsed_data, user_data, output_path=None, include_macros=False):
     """Generate printer.cfg from parsed config and user data using Jinja2."""
     # Setup Jinja2 environment
     env = Environment(loader=FileSystemLoader(_TEMPLATES_DIR, encoding='utf-8'))
@@ -56,6 +57,8 @@ def generate_config(parsed_data, user_data, output_path=None):
     
     final_output = chr(10).join(aligned_lines)
     
+    if include_macros:
+        final_output = "[include macros.cfg]\n\n" + final_output
     # Validation: Do not proceed if generic TODO pins are left active, preventing Klipper startup errors
     has_active_todo = False
     for line in final_output.splitlines():
@@ -92,3 +95,6 @@ def generate_config(parsed_data, user_data, output_path=None):
     with open(cfg_file, 'w', encoding='utf-8') as f:
         f.write(final_output)
 
+    if include_macros:
+        output_dir = os.path.dirname(cfg_file)
+        generate_starter_macros(output_dir)
