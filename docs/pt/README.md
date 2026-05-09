@@ -66,6 +66,20 @@ bash <(curl -s https://raw.githubusercontent.com/3D-uy/KACE/main/install.sh)
 
 ---
 
+## 🎬 Documentação
+
+| Guia | Link |
+|------|------|
+| Guia de Testes | [`docs/en/TESTING.md`](../en/TESTING.md) |
+| Contribuição | [`docs/en/CONTRIBUTING.md`](../en/CONTRIBUTING.md) |
+| Release Engineering | [`docs/RELEASE.md`](../RELEASE.md) |
+| Configuração Pi Imager 🇧🇷 | [`docs/pt/pi_imager.md`](pi_imager.md) |
+| Instalação Klipper 🇧🇷 | [`docs/pt/Klipper_install.md`](Klipper_install.md) |
+| English 🇺🇸 | [`README.md`](../../README.md) |
+| Español 🇪🇸 | [`docs/es/README.md`](../es/README.md) |
+
+---
+
 ## 🟢 Status de Validação
 
 O KACE foi validado contra a **biblioteca completa de configurações oficiais do Klipper** usando seu framework de regressão automatizado.
@@ -179,21 +193,6 @@ Veja [`docs/en/ARCHITECTURE.md`](../en/ARCHITECTURE.md) para a referência compl
 ```bash
 sudo reboot
 ```
-
----
-
-## 🎬 Documentação
-
-| Guia | Link |
-|------|------|
-| Referência de Arquitetura | [`docs/en/ARCHITECTURE.md`](../en/ARCHITECTURE.md) |
-| Guia de Testes | [`docs/en/TESTING.md`](../en/TESTING.md) |
-| Contribuição | [`docs/en/CONTRIBUTING.md`](../en/CONTRIBUTING.md) |
-| Release Engineering | [`docs/RELEASE.md`](../RELEASE.md) |
-| Configuração Pi Imager 🇧🇷 | [`docs/pt/pi_imager.md`](pi_imager.md) |
-| Instalação Klipper 🇧🇷 | [`docs/pt/Klipper_install.md`](Klipper_install.md) |
-| English 🇺🇸 | [`README.md`](../../README.md) |
-| Español 🇪🇸 | [`docs/es/README.md`](../es/README.md) |
 
 ---
 
