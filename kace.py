@@ -78,7 +78,7 @@ if os.environ.get("KACE_AUTO") == "1":
 from core.scraper import fetch_raw_config, parse_config
 from core.wizard import run_wizard
 from core.style import custom_style
-from core.generator import generate_config
+from core.generator import generate_config, has_todo_pins
 from core.deployer import deploy_config, deploy_usb, deploy_local, deploy_avrdude
 from core.banner import print_kace_banner
 from core.translations import t
@@ -229,6 +229,18 @@ def main():
     # PHASE 1: CONFIGURATION FETCH & DRIVER SETUP
     # ==========================================
     raw_cfg = fetch_raw_config(user_data['board'])
+
+    # ── Validation Gate 1: Board config fetch ───────────────────────────
+    # If fetch returns nothing, there is no point continuing. This can happen
+    # if the board name is invalid, the network is unavailable, or the board
+    # was set to a printer profile that failed to load earlier.
+    if not raw_cfg:
+        print(f"\n\033[91m[!] Board configuration could not be fetched for: '{user_data['board']}'\033[0m")
+        print(f"\033[93m    This may indicate an invalid board selection or a network error.\033[0m")
+        print(f"\033[93m    Please re-run KACE and select a valid board configuration.\033[0m")
+        print(f"\033[2m[!] Aborting — cannot generate a configuration without board data.\033[0m")
+        sys.exit(1)
+
     parsed_data = parse_config(raw_cfg, user_data['board'])
 
     # ── Display Compatibility Check ───────────────────────────────────────────
@@ -346,44 +358,60 @@ def main():
     hint = user_data.get('mcu_hint')
     if mcu or hint == "manual":
         prompt_mcu = mcu if mcu else "manually selected board"
-        ans = questionary.confirm(t("kace.compile_prompt", mcu=prompt_mcu)).ask()
-        if ans:
-            from firmware.builder import build_firmware_orchestrator
-            print(f"\n\033[91m[*]\033[0m {t('kace.compiling')}", flush=True)
-            result = build_firmware_orchestrator(
-                mcu_path=user_data.get('mcu_path'),
-                derived_mcu=mcu,
-                hint=hint,
-                output_dir="~/kace"
-            )
 
-            if result.get("status") == "success":
-                print(f"\033[92mSUCCESS:\033[0m {t('kace.firmware_success', path=result.get('path'))}")
-                user_data['mcu_type'] = result.get('mcu')
+        # ── Validation Gate 2: Pre-compilation TODO scan ──────────────────
+        # If the parsed config already has unresolved TODO pins, compilation
+        # would produce a broken printer.cfg anyway. Skip the prompt entirely
+        # and explain why instead of wasting the user's time on a compile
+        # that is guaranteed to fail at the generation step.
+        _early_todos = has_todo_pins(parsed_data)
+        if _early_todos:
+            print(f"\n\033[91m[!] Firmware compilation skipped.\033[0m")
+            print(f"\033[93m    Board mapping incomplete — the following required pins could not be resolved:\033[0m")
+            for section, key in _early_todos:
+                print(f"\033[93m      • [{section}] → {key}\033[0m")
+            print(f"\033[93m    Select a specific board config instead of the stock profile, or\033[0m")
+            print(f"\033[93m    configure the missing pins manually in the generated printer.cfg.\033[0m")
+            print(f"\033[2m[!] Skipping firmware compilation — configuration has unresolved TODO pins.\033[0m")
+        else:
+            ans = questionary.confirm(t("kace.compile_prompt", mcu=prompt_mcu)).ask()
+            if ans:
+                from firmware.builder import build_firmware_orchestrator
+                print(f"\n\033[91m[*]\033[0m {t('kace.compiling')}", flush=True)
+                result = build_firmware_orchestrator(
+                    mcu_path=user_data.get('mcu_path'),
+                    derived_mcu=mcu,
+                    hint=hint,
+                    output_dir="~/kace"
+                )
 
-                deploy_options = [
-                    {"name": f"✅  {t('kace.deploy_none')}",   "value": "none"},
-                    {"name": f"📁  {t('kace.deploy_local')}",  "value": "local"},
-                    {"name": f"💾  {t('kace.deploy_usb')}",    "value": "usb"},
-                ]
-                if result.get('firmware') == 'klipper.elf.hex':
-                    deploy_options.insert(1, {"name": f"⚡  {t('kace.deploy_avrdude')}", "value": "avrdude"})
+                if result.get("status") == "success":
+                    print(f"\033[92mSUCCESS:\033[0m {t('kace.firmware_success', path=result.get('path'))}")
+                    user_data['mcu_type'] = result.get('mcu')
 
-                deploy_fw = questionary.select(
-                    f"\n{t('kace.deploy_firmware_prompt')}",
-                    choices=deploy_options,
-                    style=custom_style
-                ).ask()
+                    deploy_options = [
+                        {"name": f"✅  {t('kace.deploy_none')}",   "value": "none"},
+                        {"name": f"📁  {t('kace.deploy_local')}",  "value": "local"},
+                        {"name": f"💾  {t('kace.deploy_usb')}",    "value": "usb"},
+                    ]
+                    if result.get('firmware') == 'klipper.elf.hex':
+                        deploy_options.insert(1, {"name": f"⚡  {t('kace.deploy_avrdude')}", "value": "avrdude"})
 
-                if deploy_fw == "usb":
-                    deploy_usb(user_data, artifact_type="firmware")
-                elif deploy_fw == "local":
-                    deploy_local(user_data, artifact_type="firmware")
-                elif deploy_fw == "avrdude":
-                    deploy_avrdude(user_data, result.get("path"), result.get("mcu"))
+                    deploy_fw = questionary.select(
+                        f"\n{t('kace.deploy_firmware_prompt')}",
+                        choices=deploy_options,
+                        style=custom_style
+                    ).ask()
 
-            else:
-                print(f"\n\033[91mERROR:\033[0m {t('kace.firmware_error', message=result.get('message'))}")
+                    if deploy_fw == "usb":
+                        deploy_usb(user_data, artifact_type="firmware")
+                    elif deploy_fw == "local":
+                        deploy_local(user_data, artifact_type="firmware")
+                    elif deploy_fw == "avrdude":
+                        deploy_avrdude(user_data, result.get("path"), result.get("mcu"))
+
+                else:
+                    print(f"\n\033[91mERROR:\033[0m {t('kace.firmware_error', message=result.get('message'))}")
     else:
         print(f"\n\033[93m{t('kace.skip_firmware')}\033[0m")
 

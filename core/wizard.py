@@ -109,6 +109,7 @@ def run_wizard():
         # Falls back to "English" only in --auto / CI mode (dashboard bypassed).
         "language": get_lang(),
         "printer_profile": None,
+        "profile_loaded": False,   # True only after a successful fetch + parse
         "board": None,
         "kinematics": "cartesian",
         "x_size": "235",
@@ -139,25 +140,43 @@ def run_wizard():
                 continue
                 
             user_data["printer_profile"] = "Custom / Scratch Build" if ans == custom_choice_str else ans
-            
+
             if ans != custom_choice_str:
                 print(f"\n\033[96m>>> Loading defaults for {ans}...\033[0m")
                 raw = fetch_raw_config(ans)
-                if raw:
-                    parsed = parse_config(raw, ans)
-                    defaults = extract_profile_defaults(parsed)
-                    for k, v in defaults.items():
-                        user_data[k] = v
-                        
-                    print("\n\033[92mDetected profile:\033[0m")
-                    print(f"  - Build volume: {user_data.get('x_size')} x {user_data.get('y_size')} x {user_data.get('z_size')}")
-                    print(f"  - Kinematics: {user_data.get('kinematics')}")
-                    print(f"  - Thermistors: {user_data.get('hotend_thermistor')} (Hotend), {user_data.get('bed_thermistor')} (Bed)")
+                if not raw:
+                    # ── Fail-fast: fetch returned nothing ─────────────────────
+                    # Do NOT advance step. Print a clear diagnostic and loop back
+                    # so the user can select a different printer profile.
+                    print(f"\n\033[91m[!] Failed to load printer profile: '{ans}'\033[0m")
+                    print(f"\033[93m    The profile could not be fetched (network error or invalid name).\033[0m")
+                    print(f"\033[93m    Please select a different printer model or choose 'Custom / Scratch Build'.\033[0m")
+                    print(f"\033[2m[!] Aborting step progression — returning to printer selection.\033[0m")
+                    user_data["printer_profile"] = None
+                    user_data["profile_loaded"]  = False
+                    continue   # stay on step 0
+
+                parsed = parse_config(raw, ans)
+                defaults = extract_profile_defaults(parsed)
+                for k, v in defaults.items():
+                    user_data[k] = v
+
+                # Mark profile as successfully loaded — gates "Stock Board" in step 1
+                user_data["profile_loaded"] = True
+
+                print("\n\033[92mDetected profile:\033[0m")
+                print(f"  - Build volume: {user_data.get('x_size')} x {user_data.get('y_size')} x {user_data.get('z_size')}")
+                print(f"  - Kinematics: {user_data.get('kinematics')}")
+                print(f"  - Thermistors: {user_data.get('hotend_thermistor')} (Hotend), {user_data.get('bed_thermistor')} (Bed)")
             step += 1
 
         elif step == 1:
             choices = []
-            if user_data["printer_profile"] != "Custom / Scratch Build":
+            # ── Stock Board gate ──────────────────────────────────────────────
+            # Only shown when a printer profile was actually fetched and parsed
+            # successfully. A string-only check is insufficient — the fetch may
+            # have failed while the profile name was still stored in user_data.
+            if user_data.get("profile_loaded"):
                 choices.append({"name": t("choice.stock_board"), "value": "__stock__"})
                 
             if suggested_configs and not user_data["board"]:

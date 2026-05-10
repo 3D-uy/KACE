@@ -7,7 +7,26 @@ from core.macro_generator import generate_starter_macros
 _BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 _TEMPLATES_DIR = os.path.join(_BASE_DIR, 'templates')
 
+def has_todo_pins(parsed_data: dict) -> list:
+    """Return a list of (section, key) tuples for any unresolved TODO pins.
+
+    Scans parsed config values for literal 'TODO' strings.  Called early
+    in kace.py — before the firmware compilation prompt — so the user is
+    not sent through compilation for a config that is already known to be
+    incomplete.  An empty list means the config is clean.
+    """
+    todos = []
+    current_section = "unknown"
+    for section, values in parsed_data.items():
+        if isinstance(values, dict):
+            for key, val in values.items():
+                if isinstance(val, str) and "TODO" in val:
+                    todos.append((section, key))
+    return todos
+
+
 def generate_config(parsed_data, user_data, output_path=None, include_macros=False):
+
     """Generate printer.cfg from parsed config and user data using Jinja2."""
     # Setup Jinja2 environment
     env = Environment(loader=FileSystemLoader(_TEMPLATES_DIR, encoding='utf-8'))
