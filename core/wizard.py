@@ -172,10 +172,12 @@ def run_wizard():
                 # Mark profile as successfully loaded — gates "Stock Board" in step 1
                 user_data["profile_loaded"] = True
 
-                print("\n\033[92mDetected profile:\033[0m")
-                print(f"  - Build volume: {user_data.get('x_size')} x {user_data.get('y_size')} x {user_data.get('z_size')}")
-                print(f"  - Kinematics: {user_data.get('kinematics')}")
-                print(f"  - Thermistors: {user_data.get('hotend_thermistor')} (Hotend), {user_data.get('bed_thermistor')} (Bed)")
+                print(f"\n\033[92m{t('profile.detected_header')}\033[0m")
+                print(f"  - {t('profile.build_volume')}: {user_data.get('x_size')} x {user_data.get('y_size')} x {user_data.get('z_size')}")
+                print(f"  - {t('profile.kinematics')}: {user_data.get('kinematics')}")
+                print(f"  - {t('profile.hotend_thermistor')}: {user_data.get('hotend_thermistor')}")
+                print(f"  - {t('profile.bed_thermistor')}: {user_data.get('bed_thermistor')}")
+                print("")
             step += 1
 
         elif step == 1:

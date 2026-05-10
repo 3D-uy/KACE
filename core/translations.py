@@ -750,6 +750,32 @@ UI_STRINGS: dict = {
         "Español":   "Finalizar procedimiento de impresión",
         "Português": "Finalizar procedimento de impressão",
     },
+    # ── Profile summary strings ──────────────────────────────────
+    "profile.detected_header": {
+        "English":   "Detected profile:",
+        "Español":   "Perfil detectado:",
+        "Português": "Perfil detectado:",
+    },
+    "profile.build_volume": {
+        "English":   "Build volume",
+        "Español":   "Volumen de impresión",
+        "Português": "Volume de impressão",
+    },
+    "profile.kinematics": {
+        "English":   "Kinematics",
+        "Español":   "Cinemática",
+        "Português": "Cinemática",
+    },
+    "profile.hotend_thermistor": {
+        "English":   "Hotend thermistor",
+        "Español":   "Termistor del hotend",
+        "Português": "Termistor do hotend",
+    },
+    "profile.bed_thermistor": {
+        "English":   "Bed thermistor",
+        "Español":   "Termistor de la cama",
+        "Português": "Termistor da mesa",
+    },
     # ── Display Compatibility Layer strings ─────────────────────
     "display.warning_header": {
         "English":   "⚠️  Display Compatibility Warning",
