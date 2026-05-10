@@ -145,16 +145,24 @@ def run_wizard():
                 print(f"\n\033[96m>>> Loading defaults for {ans}...\033[0m")
                 raw = fetch_raw_config(ans)
                 if not raw:
-                    # ── Fail-fast: fetch returned nothing ─────────────────────
-                    # Do NOT advance step. Print a clear diagnostic and loop back
-                    # so the user can select a different printer profile.
+                    # ── Fetch failed — offer graceful fallback ─────────────────
+                    # Do not hard-block the user. A valid manual/scratch workflow
+                    # exists where the user selects a board manually without any
+                    # printer profile. Offer the choice rather than forcing a retry.
                     print(f"\n\033[91m[!] Failed to load printer profile: '{ans}'\033[0m")
                     print(f"\033[93m    The profile could not be fetched (network error or invalid name).\033[0m")
-                    print(f"\033[93m    Please select a different printer model or choose 'Custom / Scratch Build'.\033[0m")
-                    print(f"\033[2m[!] Aborting step progression — returning to printer selection.\033[0m")
+                    print(f"\033[2m[!] Profile fetch failed — offering fallback to Custom / Scratch Build.\033[0m")
+                    fallback = questionary.confirm(
+                        "Continue as Custom / Scratch Build? (Board will be selected manually)",
+                        default=True,
+                        style=custom_style
+                    ).ask()
                     user_data["printer_profile"] = None
                     user_data["profile_loaded"]  = False
-                    continue   # stay on step 0
+                    if fallback:
+                        step += 1   # advance to board selection — Stock Board stays hidden
+                    # In both cases, skip the rest of this step's parse logic
+                    continue
 
                 parsed = parse_config(raw, ans)
                 defaults = extract_profile_defaults(parsed)
