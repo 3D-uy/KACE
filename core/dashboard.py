@@ -136,9 +136,9 @@ def _render_status_panel(state: dict) -> None:
     if mcu_path:
         base_path = mcu_path.split('/')[-1]
         label     = f"({t('dashboard.detected')})" if mcu_val else "(Unknown)"
-        mcu_line  = f"  {_B}MCU           {_R} {base_path} {_DIM}{label}{_R}"
+        mcu_line  = f"  {_B}MCU           {_R} {_C}{base_path}{_R} {_DIM}{label}{_R}"
     else:
-        mcu_line  = f"  {_B}MCU           {_R} {_DIM}{t('dashboard.no_mcu')}{_R}"
+        mcu_line  = f"  {_B}MCU           {_R} {_Y}{t('dashboard.no_mcu')}{_R}"
 
     print(f"\n  {_C}{_B}{title}{_R}")
     print(SEP)
