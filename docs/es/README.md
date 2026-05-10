@@ -73,6 +73,7 @@ bash <(curl -s https://raw.githubusercontent.com/3D-uy/KACE/main/install.sh)
 | Guía de Testing | [`docs/en/TESTING.md`](../en/TESTING.md) |
 | Contribución | [`docs/en/CONTRIBUTING.md`](../en/CONTRIBUTING.md) |
 | Release Engineering | [`docs/RELEASE.md`](../RELEASE.md) |
+| Compatibilidad de Pantallas 🖥️ | [`docs/es/DISPLAYS.md`](DISPLAYS.md) |
 | Configuración Pi Imager 🇪🇸 | [`docs/es/pi_imager.md`](pi_imager.md) |
 | Instalación Klipper 🇪🇸 | [`docs/es/Klipper_install.md`](Klipper_install.md) |
 | English 🇺🇸 | [`README.md`](../../README.md) |

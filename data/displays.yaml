@@ -1,0 +1,232 @@
+# ============================================================
+#  KACE — Display Compatibility Database
+#  data/displays.yaml
+#
+#  This file defines the display compatibility layer for KACE.
+#  It classifies known display section types and printer models
+#  so KACE can detect risky configurations and warn users before
+#  configuration generation.
+#
+#  Philosophy: detect → classify → inform → recommend.
+#  KACE never automatically modifies or disables display sections.
+#
+#  status values:
+#    supported    — Known working natively under Klipper
+#    partial      — Works with limitations; reduced functionality expected
+#    unsupported  — Not compatible; may cause black screen / boot failure
+#    untested     — No data; outcome unknown
+#
+#  recommendation values:
+#    disconnect   — Strongly recommended to physically disconnect display
+#    optional     — User may choose to keep, with awareness of limitations
+#    none         — No action needed
+#
+#  Adding a new entry: add to the appropriate section below.
+#  No Python changes required.
+# ============================================================
+
+
+# ── Section-based detection ────────────────────────────────────────────────────
+# Keyed by Klipper config section name (lowercased).
+# These are matched against parsed config section keys from printer.cfg.
+
+display_configs:
+
+  # ── Standard / fully supported displays ─────────────────────
+  display:
+    status: supported
+    recommendation: none
+    notes:
+      - "Standard 12864 graphic and character LCDs are natively supported by Klipper"
+      - "Includes: RepRapDiscount Smart LCD, mini12864, Ender 3 stock LCD"
+      - "No compatibility concerns"
+
+  lcd_menu:
+    status: supported
+    recommendation: none
+    notes:
+      - "lcd_menu is a native Klipper feature — fully supported"
+      - "Used alongside standard [display] sections for menu navigation"
+
+  display_status:
+    status: supported
+    recommendation: none
+    notes:
+      - "display_status is a standard Klipper object — no compatibility concerns"
+
+  display_template:
+    status: supported
+    recommendation: none
+    notes:
+      - "display_template is a native Klipper templating feature — fully supported"
+
+  display_data:
+    status: supported
+    recommendation: none
+    notes:
+      - "display_data is a native Klipper feature — fully supported"
+
+  # ── DGUS / DWIN serial touchscreens ─────────────────────────
+  t5uid1:
+    status: unsupported
+    recommendation: disconnect
+    notes:
+      - "OEM DGUS touchscreen protocol — designed for Creality Marlin firmware"
+      - "Klipper has no built-in t5uid1 / DGUS support without community plugins"
+      - "Expected outcome without patching: black screen or boot loop"
+      - "Community plugin 'klipper-dgus' exists but is not installed by KACE"
+      - "Web UI (Mainsail/Fluidd) provides full printer control without the screen"
+
+  dwin_set:
+    status: partial
+    recommendation: disconnect
+    notes:
+      - "DWIN displays require firmware that exactly matches the display version"
+      - "Community Klipper DWIN/DGUS plugins exist but are not installed by KACE"
+      - "Partial support is available only with matching community display firmware"
+      - "Mismatch causes: frozen UI, missing menus, or black screen"
+
+  # ── Serial TFT bridge displays (Artillery, MKS TFT, etc.) ───
+  tft_serial:
+    status: partial
+    recommendation: optional
+    notes:
+      - "Serial TFT displays use a bridge protocol designed for Marlin"
+      - "May conflict with Klipper's UART/serial communication on some boards"
+      - "Menu functionality is typically limited or absent under Klipper"
+      - "Klipper serial TFT support is incomplete compared to Marlin"
+      - "Web UI (Mainsail/Fluidd) provides full feature parity from any device"
+
+  # ── Neopixel / RGB — outside KACE scope ─────────────────────
+  neopixel:
+    status: unsupported
+    recommendation: none
+    notes:
+      - "Neopixel/WS2812 LED sections are outside KACE's current scope"
+      - "KACE classifies configs with only neopixel display sections as UNSUPPORTED"
+      - "Neopixel can still be manually configured after generation"
+
+  dotstar:
+    status: unsupported
+    recommendation: none
+    notes:
+      - "Dotstar/APA102 LED sections are outside KACE's current scope"
+      - "Can be manually added after generation"
+
+  # ── SX1509 GPIO expander — exotic hardware ───────────────────
+  sx1509:
+    status: unsupported
+    recommendation: none
+    notes:
+      - "SX1509 GPIO expander is not supported by KACE's configuration engine"
+      - "Boards using SX1509 for display I/O will not have display support"
+
+  # ── HD44780 character displays ───────────────────────────────
+  hd44780:
+    status: supported
+    recommendation: none
+    notes:
+      - "HD44780 character displays are natively supported by Klipper"
+      - "No compatibility concerns"
+
+  # ── SSD1306 OLED ─────────────────────────────────────────────
+  ssd1306:
+    status: supported
+    recommendation: none
+    notes:
+      - "SSD1306 OLED displays are natively supported by Klipper"
+      - "No compatibility concerns"
+
+  # ── UC1701 / ST7920 ──────────────────────────────────────────
+  uc1701:
+    status: supported
+    recommendation: none
+    notes:
+      - "UC1701 displays (e.g., mini12864) are natively supported by Klipper"
+
+  st7920:
+    status: supported
+    recommendation: none
+    notes:
+      - "ST7920 displays (e.g., RepRapDiscount Smart LCD) are natively supported"
+
+
+# ── Printer model-based detection ─────────────────────────────────────────────
+# Keyed by lowercase substring of the printer config filename.
+# These catch OEM printers where the display issue is tied to the full
+# printer ecosystem (proprietary touchscreen firmware, serial bridge behavior)
+# rather than the MCU board alone.
+#
+# Checked FIRST before display_configs — printer profile takes precedence.
+
+printer_display_profiles:
+
+  # ── Creality CR-6 SE ─────────────────────────────────────────
+  cr6-se:
+    display_type: t5uid1
+    status: unsupported
+    recommendation: disconnect
+    notes:
+      - "The CR-6 SE uses a proprietary DGUS/t5uid1 touchscreen with Creality OEM firmware"
+      - "This display is not compatible with Klipper without a community firmware patch"
+      - "Users have reported black screen and boot issues when display remains connected"
+      - "Recommended: disconnect display and use Mainsail or Fluidd web interface"
+      - "Community resource: search 'CR-6 SE Klipper DGUS' for patch firmware"
+
+  # ── Artillery Sidewinder ──────────────────────────────────────
+  artillery-sidewinder:
+    display_type: tft_serial
+    status: partial
+    recommendation: optional
+    notes:
+      - "Artillery Sidewinder uses a serial TFT display designed for Marlin"
+      - "Serial TFT menus are typically non-functional or limited under Klipper"
+      - "Display may show partial information but control menus will not work correctly"
+      - "Web UI (Mainsail/Fluidd) provides full printer control from phone/tablet/PC"
+
+  # ── Artillery Genius ─────────────────────────────────────────
+  artillery-genius:
+    display_type: tft_serial
+    status: partial
+    recommendation: optional
+    notes:
+      - "Artillery Genius uses a serial TFT display designed for Marlin"
+      - "Serial TFT menus are typically non-functional or limited under Klipper"
+      - "Web UI (Mainsail/Fluidd) is the recommended interface"
+
+  # ── Artillery Hornet ─────────────────────────────────────────
+  artillery-hornet:
+    display_type: tft_serial
+    status: partial
+    recommendation: optional
+    notes:
+      - "Artillery Hornet uses a serial TFT display designed for Marlin"
+      - "Serial TFT menus are typically non-functional or limited under Klipper"
+
+  # ── Creality CR-10 Smart ──────────────────────────────────────
+  cr10-smart:
+    display_type: tft_serial
+    status: partial
+    recommendation: optional
+    notes:
+      - "CR-10 Smart uses a serial TFT display; limited functionality under Klipper"
+      - "Use web UI for full control"
+
+  # ── Creality Ender 6 ─────────────────────────────────────────
+  ender-6:
+    display_type: tft_serial
+    status: partial
+    recommendation: optional
+    notes:
+      - "Ender 6 uses a serial TFT display with limited Klipper compatibility"
+      - "Web UI is the recommended interface"
+
+  # ── MKS Robin-based printers (MKS TFT variants) ──────────────
+  mks-robin:
+    display_type: tft_serial
+    status: partial
+    recommendation: optional
+    notes:
+      - "MKS Robin boards often ship with MKS TFT serial displays"
+      - "MKS TFT menus have limited compatibility with Klipper"
+      - "Web UI recommended for full control"

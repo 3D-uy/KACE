@@ -750,6 +750,67 @@ UI_STRINGS: dict = {
         "Español":   "Finalizar procedimiento de impresión",
         "Português": "Finalizar procedimento de impressão",
     },
+    # ── Display Compatibility Layer strings ─────────────────────
+    "display.warning_header": {
+        "English":   "⚠️  Display Compatibility Warning",
+        "Español":   "⚠️  Advertencia de Compatibilidad de Pantalla",
+        "Português": "⚠️  Aviso de Compatibilidade de Display",
+    },
+    "display.status_supported": {
+        "English":   "🟢 SUPPORTED",
+        "Español":   "🟢 COMPATIBLE",
+        "Português": "🟢 SUPORTADO",
+    },
+    "display.status_partial": {
+        "English":   "🟡 PARTIAL SUPPORT",
+        "Español":   "🟡 SOPORTE PARCIAL",
+        "Português": "🟡 SUPORTE PARCIAL",
+    },
+    "display.status_unsupported": {
+        "English":   "🔴 UNSUPPORTED",
+        "Español":   "🔴 NO COMPATIBLE",
+        "Português": "🔴 NÃO SUPORTADO",
+    },
+    "display.status_untested": {
+        "English":   "⬜ UNTESTED",
+        "Español":   "⬜ SIN PRUEBAS",
+        "Português": "⬜ NÃO TESTADO",
+    },
+    "display.recommendation_disconnect": {
+        "English":   "Recommendation: Physically disconnect the display from the mainboard",
+        "Español":   "Recomendación: Desconecte físicamente la pantalla de la placa principal",
+        "Português": "Recomendação: Desconecte fisicamente o display da placa principal",
+    },
+    "display.recommendation_optional": {
+        "English":   "Recommendation: Display may have limited functionality — consider using the web UI instead",
+        "Español":   "Recomendación: La pantalla puede tener funcionalidad limitada — considere usar la interfaz web",
+        "Português": "Recomendação: O display pode ter funcionalidade limitada — considere usar a interface web",
+    },
+    "display.oem_explanation": {
+        "English":   "OEM printer touchscreens are often designed specifically for Marlin firmware and may not function correctly under Klipper without additional community modifications.",
+        "Español":   "Las pantallas táctiles de impresoras OEM generalmente están diseñadas específicamente para el firmware Marlin y pueden no funcionar correctamente en Klipper sin modificaciones adicionales de la comunidad.",
+        "Português": "As telas touchscreen de impressoras OEM são frequentemente projetadas especificamente para o firmware Marlin e podem não funcionar corretamente com o Klipper sem modificações adicionais da comunidade.",
+    },
+    "display.web_ui_hint": {
+        "English":   "💡 Mainsail and Fluidd provide full printer control from any phone, tablet, or PC — no physical screen required.",
+        "Español":   "💡 Mainsail y Fluidd ofrecen control total de la impresora desde cualquier teléfono, tablet o PC — sin necesidad de pantalla física.",
+        "Português": "💡 Mainsail e Fluidd oferecem controle total da impressora em qualquer telefone, tablet ou PC — sem necessidade de tela física.",
+    },
+    "display.docs_hint": {
+        "English":   "📖 For full details, see: docs/en/DISPLAYS.md",
+        "Español":   "📖 Para más detalles, consulte: docs/es/DISPLAYS.md",
+        "Português": "📖 Para mais detalhes, consulte: docs/pt/DISPLAYS.md",
+    },
+    "display.continue_prompt": {
+        "English":   "This printer may have display compatibility issues. Continue with configuration generation?",
+        "Español":   "Esta impresora puede tener problemas de compatibilidad de pantalla. ¿Continuar con la generación de la configuración?",
+        "Português": "Esta impressora pode ter problemas de compatibilidade de display. Continuar com a geração da configuração?",
+    },
+    "display.section_label": {
+        "English":   "Detected section",
+        "Español":   "Sección detectada",
+        "Português": "Seção detectada",
+    },
 }
 
 

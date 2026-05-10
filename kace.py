@@ -82,6 +82,7 @@ from core.generator import generate_config
 from core.deployer import deploy_config, deploy_usb, deploy_local, deploy_avrdude
 from core.banner import print_kace_banner
 from core.translations import t
+from core.display_checker import check_display_compatibility
 
 def print_summary(user_data: dict):
     """Print final summary with output paths and next steps."""
@@ -125,6 +126,82 @@ def print_summary(user_data: dict):
     print("")
 
 
+def _print_display_warning(findings: list) -> bool:
+    """Print a formatted ANSI display compatibility warning block.
+
+    For findings with status 'partial' or 'unsupported', prompts the user
+    to confirm before continuing. Returns True to continue, False to abort.
+    Skips the confirmation prompt entirely for 'supported' and 'untested'.
+    """
+    Y  = "\033[93m"   # amber / warning
+    R  = "\033[91m"   # red / error
+    C  = "\033[96m"   # cyan / info
+    G  = "\033[92m"   # green / ok
+    B  = "\033[1m"    # bold
+    RS = "\033[0m"    # reset
+    W  = "\033[97m"   # bright white
+    M  = "\033[95m"   # magenta
+
+    _STATUS_COLORS = {
+        "supported":   G,
+        "partial":     Y,
+        "unsupported": R,
+        "untested":    C,
+    }
+
+    needs_confirmation = any(
+        f["status"] in ("partial", "unsupported") for f in findings
+    )
+
+    border_color = R if any(f["status"] == "unsupported" for f in findings) else Y
+
+    print("")
+    print(f"  {border_color}{B}{'═' * 52}{RS}")
+    print(f"  {border_color}{B}  {t('display.warning_header')}{RS}")
+    print(f"  {border_color}{B}{'═' * 52}{RS}")
+    print("")
+    print(f"  {W}{t('display.oem_explanation')}{RS}")
+    print("")
+
+    for finding in findings:
+        status    = finding.get("status", "untested")
+        section   = finding.get("section", "?")
+        rec       = finding.get("recommendation", "none")
+        notes     = finding.get("notes", [])
+        sc        = _STATUS_COLORS.get(status, C)
+
+        status_key = f"display.status_{status}"
+        status_str = t(status_key)
+
+        print(f"  {B}{t('display.section_label')}:{RS} [{section}]   {sc}{B}{status_str}{RS}")
+
+        for note in notes:
+            print(f"    {C}•{RS} {note}")
+
+        if rec == "disconnect":
+            print(f"    {R}{B}{t('display.recommendation_disconnect')}{RS}")
+        elif rec == "optional":
+            print(f"    {Y}{t('display.recommendation_optional')}{RS}")
+
+        print("")
+
+    print(f"  {M}{t('display.web_ui_hint')}{RS}")
+    print(f"  {C}{t('display.docs_hint')}{RS}")
+    print(f"  {border_color}{B}{'─' * 52}{RS}")
+    print("")
+
+    if needs_confirmation:
+        ans = questionary.confirm(
+            t("display.continue_prompt"),
+            default=True,
+            style=custom_style
+        ).ask()
+        if ans is None or not ans:
+            return False
+
+    return True
+
+
 def main():
     print_kace_banner("Klipper Automated Configuration Ecosystem", __version__)
     
@@ -153,6 +230,20 @@ def main():
     # ==========================================
     raw_cfg = fetch_raw_config(user_data['board'])
     parsed_data = parse_config(raw_cfg, user_data['board'])
+
+    # ── Display Compatibility Check ───────────────────────────────────────────
+    # Run before generation so users can make an informed decision about
+    # their display. Non-invasive: never modifies the parsed config.
+    _display_findings = check_display_compatibility(
+        parsed_data,
+        printer_filename=user_data.get('printer_profile', ''),
+        board_filename=user_data.get('board', ''),
+    )
+    if _display_findings:
+        _should_continue = _print_display_warning(_display_findings)
+        if not _should_continue:
+            print(f"\n\033[93m{t('kace.cancelled')}\033[0m")
+            sys.exit(0)
 
     # --- Multi-Z Pin Verification ---
     z_motors = int(user_data.get('z_motors', 1))
