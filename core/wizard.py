@@ -63,6 +63,33 @@ def _load_mcu_search_terms() -> dict:
 
 MCU_SEARCH_TERMS = _load_mcu_search_terms()
 
+def _normalize_mcu_family(mcu: str) -> str:
+    """Normalize MCU to its base family for compatibility comparisons."""
+    if not mcu:
+        return ""
+    m = mcu.lower()
+    if m.startswith("lpc176"): return "lpc176x"
+    if m.startswith("stm32f103"): return "stm32f103"
+    if m.startswith("stm32f4"): return "stm32f4"
+    if m.startswith("stm32g0b"): return "stm32g0b"
+    if m.startswith("atmega2560"): return "atmega2560"
+    if m.startswith("rp2040"): return "rp2040"
+    return m
+
+def _load_printer_profiles() -> list:
+    """Load printer profile expected MCUs from data/boards.yaml."""
+    try:
+        import yaml
+        _db_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'boards.yaml')
+        _db_path = os.path.normpath(_db_path)
+        with open(_db_path, 'r', encoding='utf-8') as f:
+            db = yaml.safe_load(f)
+        return db.get('printer_profiles', [])
+    except Exception:
+        return []
+
+PRINTER_PROFILES_DB = _load_printer_profiles()
+
 
 def discover_mcu():
     """Detect and return connected MCU hardware."""
@@ -84,7 +111,7 @@ def run_wizard():
     
     suggested_configs = []
     if detected_mcu:
-        print(f"\nDetected MCU: {detected_mcu.upper()}\n")
+        print(f"\n{t('wizard.detected_mcu')}: {detected_mcu.upper()}\n")
         
         matched_base_mcu = None
         for base_mcu in MCU_SEARCH_TERMS:
@@ -181,6 +208,7 @@ def run_wizard():
             step += 1
 
         elif step == 1:
+            print("")
             choices = []
             # ── Stock Board gate ──────────────────────────────────────────────
             # Only shown when a printer profile was actually fetched and parsed
@@ -206,6 +234,37 @@ def run_wizard():
                 continue
                 
             if ans == "__stock__":
+                printer_prof = user_data["printer_profile"]
+                detected = user_data["mcu_type"]
+                
+                expected_mcus = []
+                if printer_prof:
+                    for entry in PRINTER_PROFILES_DB:
+                        terms = entry.get("search_terms", [])
+                        if any(term in printer_prof.lower() for term in terms):
+                            expected_mcus.extend(entry.get("expected_mcu", []))
+                            break
+                            
+                if expected_mcus and detected:
+                    norm_detected = _normalize_mcu_family(detected)
+                    match_found = any(
+                        norm_detected == _normalize_mcu_family(exp) or 
+                        detected.startswith(exp) or 
+                        exp.startswith(detected) 
+                        for exp in expected_mcus
+                    )
+                    
+                    if not match_found:
+                        print(f"\n\033[91m{t('wizard.stock_hardware_warning_title')}\033[0m\n")
+                        print(f"{t('wizard.stock_hardware_profile')}\n  {printer_prof}\n")
+                        print(f"{t('wizard.stock_hardware_expected')}\n  {', '.join(expected_mcus).upper()}\n")
+                        print(f"{t('wizard.stock_hardware_detected')}\n  {detected.upper()}\n")
+                        print(f"{t('wizard.stock_hardware_mismatch')}\n")
+                        print(f"{t('wizard.stock_hardware_reasons')}\n")
+                        
+                        questionary.confirm(t("wizard.stock_hardware_ack"), default=True, style=custom_style).ask()
+                        continue
+
                 user_data["board"] = user_data["printer_profile"]
                 step += 1
                 continue
@@ -316,6 +375,7 @@ def run_wizard():
             step += 1
             
         elif step == 8:
+            print("")
             preset_choices = list(THERMISTOR_PRESETS)
             if user_data["bed_thermistor"] not in preset_choices:
                 preset_choices.insert(0, user_data["bed_thermistor"])

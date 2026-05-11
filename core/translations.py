@@ -129,6 +129,46 @@ UI_STRINGS: dict = {
         "Español":   ">>> Asignando pines para [ {motor} ] ...",
         "Português": ">>> Mapeando pinos para [ {motor} ] ...",
     },
+    "wizard.detected_mcu": {
+        "English":   "Detected MCU",
+        "Español":   "MCU Detectado",
+        "Português": "MCU Detectado",
+    },
+    "wizard.stock_hardware_warning_title": {
+        "English":   "[!] Incompatible stock hardware detected",
+        "Español":   "[!] Hardware de fábrica incompatible detectado",
+        "Português": "[!] Hardware de fábrica incompatível detectado",
+    },
+    "wizard.stock_hardware_profile": {
+        "English":   "Printer profile:",
+        "Español":   "Perfil de impresora:",
+        "Português": "Perfil da impressora:",
+    },
+    "wizard.stock_hardware_expected": {
+        "English":   "Expected stock MCU:",
+        "Español":   "MCU de fábrica esperado:",
+        "Português": "MCU de fábrica esperado:",
+    },
+    "wizard.stock_hardware_detected": {
+        "English":   "Detected MCU:",
+        "Español":   "MCU detectado:",
+        "Português": "MCU detectado:",
+    },
+    "wizard.stock_hardware_mismatch": {
+        "English":   "The connected controller does not match the expected stock hardware for this printer.",
+        "Español":   "El controlador conectado no coincide con el hardware de fábrica esperado para esta impresora.",
+        "Português": "O controlador conectado não corresponde ao hardware de fábrica esperado para esta impressora.",
+    },
+    "wizard.stock_hardware_reasons": {
+        "English":   "This usually means:\n- the printer has a replacement mainboard\n- or the selected printer profile is incorrect\n\nPlease select a compatible manual board instead.",
+        "Español":   "Esto generalmente significa:\n- la impresora tiene una placa base de reemplazo\n- o el perfil de impresora seleccionado es incorrecto\n\nPor favor, seleccione una placa manual compatible en su lugar.",
+        "Português": "Isso geralmente significa:\n- a impressora tem uma placa-mãe de substituição\n- ou o perfil da impressora selecionado está incorreto\n\nPor favor, selecione uma placa manual compatível.",
+    },
+    "wizard.stock_hardware_ack": {
+        "English":   "Press Enter to continue...",
+        "Español":   "Presione Enter para continuar...",
+        "Português": "Pressione Enter para continuar...",
+    },
     "wizard.no_drivers_warning": {
         "English":   "Warning: Your board does not have enough available stepper drivers in its config for this Z motor.",
         "Español":   "Advertencia: Su placa no tiene suficientes drivers disponibles para este motor Z.",

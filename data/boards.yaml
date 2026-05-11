@@ -252,3 +252,13 @@ mcu_firmware:
   - pattern: "host"
     arch: linux
     early_return: true
+
+# ============================================================
+#  Printer Profile Hardware Expectations
+# ============================================================
+printer_profiles:
+  - search_terms:
+      - cr6se
+      - cr-6
+    expected_mcu:
+      - stm32f103
