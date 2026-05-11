@@ -113,17 +113,30 @@ def run_wizard():
     if detected_mcu:
         print(f"\n{t('wizard.detected_mcu')}: {detected_mcu.upper()}\n")
         
-        matched_base_mcu = None
-        for base_mcu in MCU_SEARCH_TERMS:
-            if detected_mcu.startswith(base_mcu):
-                matched_base_mcu = base_mcu
-                break
-                
-        if matched_base_mcu:
-            search_terms = MCU_SEARCH_TERMS[matched_base_mcu]
-            for b in board_configs:
-                if any(term in b.lower() for term in search_terms):
-                    suggested_configs.append(b)
+        exact_matches = []
+        # First pass: try to find an exact or prefix match directly.
+        for base_mcu, terms in MCU_SEARCH_TERMS.items():
+            if detected_mcu == base_mcu or detected_mcu.startswith(base_mcu):
+                for b in board_configs:
+                    if any(term in b.lower() for term in terms):
+                        if b not in exact_matches:
+                            exact_matches.append(b)
+                if exact_matches:
+                    break
+                    
+        if exact_matches:
+            suggested_configs = exact_matches
+        else:
+            # Second pass: fallback to normalized family matching
+            norm_det = _normalize_mcu_family(detected_mcu)
+            if norm_det:
+                fallback_matches = []
+                for base_mcu, terms in MCU_SEARCH_TERMS.items():
+                    if _normalize_mcu_family(base_mcu) == norm_det or base_mcu.startswith(norm_det) or norm_det.startswith(base_mcu):
+                        for b in board_configs:
+                            if any(term in b.lower() for term in terms) and b not in fallback_matches:
+                                fallback_matches.append(b)
+                suggested_configs = fallback_matches
 
     if mcu_hint == "manual" and not detected_mcu:
         print("\nUsing manual MCU. You will have a chance to enter the compiler configuration later.")
@@ -191,6 +204,7 @@ def run_wizard():
                     # In both cases, skip the rest of this step's parse logic
                     continue
 
+                user_data["raw_config"] = raw
                 parsed = parse_config(raw, ans)
                 defaults = extract_profile_defaults(parsed)
                 for k, v in defaults.items():
@@ -245,7 +259,9 @@ def run_wizard():
                             expected_mcus.extend(entry.get("expected_mcu", []))
                             break
                             
-                if expected_mcus and detected:
+                if not expected_mcus:
+                    print("\n\033[94m[INFO] No OEM hardware expectations defined for this printer profile. Proceeding.\033[0m\n")
+                elif detected:
                     norm_detected = _normalize_mcu_family(detected)
                     match_found = any(
                         norm_detected == _normalize_mcu_family(exp) or 

@@ -20,14 +20,9 @@ boards:
   - mcu: lpc1769
     search_terms:
       - skr-v1.4
-      - skr-v1.3
-      - sgen-l
     bltouch:
       skr-v1.4:
         sensor_pin: "^P0.10"
-        control_pin: "P2.0"
-      skr-v1.3:
-        sensor_pin: "^P1.27"
         control_pin: "P2.0"
     features:
       uart: true
@@ -36,9 +31,15 @@ boards:
 
   - mcu: lpc1768
     search_terms:
+      - skr-v1.4
+      - skr-v1.3
+      - sgen-l
       - mks-sgenl
       - sbase
-    bltouch: {}
+    bltouch:
+      skr-v1.3:
+        sensor_pin: "^P1.27"
+        control_pin: "P2.0"
 
   - mcu: stm32f103
     search_terms:
@@ -262,3 +263,16 @@ printer_profiles:
       - cr-6
     expected_mcu:
       - stm32f103
+  - search_terms:
+      - ender-3-v2
+    expected_mcu:
+      - stm32f103
+  - search_terms:
+      - artillery-genius
+    expected_mcu:
+      - stm32f4
+  - search_terms:
+      - anet-a8
+      - anet-a4
+    expected_mcu:
+      - atmega1284p
